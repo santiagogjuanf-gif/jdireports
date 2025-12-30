@@ -475,47 +475,5 @@ const todayLoginsResult = await query(`
     });
   }
 });
-// ================================================
-// RUTA DE DEBUG - TEMPORAL
-// ================================================
-router.post('/debug-login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    
-    // Buscar usuario
-    const user = await queryOne(
-      'SELECT id, name, email, password, role, is_active FROM users WHERE email = ?',
-      [email]
-    );
-    
-    console.log('🔍 Usuario encontrado:', user ? 'SÍ' : 'NO');
-    if (user) {
-      console.log('📧 Email en BD:', user.email);
-      console.log('👤 Nombre:', user.name);
-      console.log('🔑 Rol:', user.role);
-      console.log('✅ Activo:', user.is_active);
-      console.log('🔐 Password hash en BD:', user.password.substring(0, 10) + '...');
-    }
-    
-    console.log('📧 Email enviado:', email);
-    console.log('🔑 Password enviado:', password);
-    
-    res.json({
-      userFound: !!user,
-      userData: user ? {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        is_active: user.is_active
-      } : null,
-      receivedData: { email, password }
-    });
-    
-  } catch (error) {
-    console.log('❌ Error en debug:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
 
 module.exports = router;

@@ -29,10 +29,10 @@ const router = express.Router();
 // ================================================
 
 const loginValidation = [
-  body('email')
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('Debe ser un email válido'),
+  body('identifier')
+    .trim()
+    .notEmpty()
+    .withMessage('Email o username es requerido'),
   body('password')
     .isLength({ min: 6 })
     .withMessage('La contraseña debe tener al menos 6 caracteres')
@@ -97,65 +97,75 @@ const handleValidationErrors = (req, res, next) => {
 // ================================================
 router.post('/login', loginValidation, handleValidationErrors, async (req, res) => {
   try {
-    const { email, password } = req.body;
-    
-    // Buscar usuario por email
-    const user = await queryOne(
-      'SELECT id, name, email, password, role, is_active FROM users WHERE email = ?',
-      [email]
-    );
-    
+    const { identifier, password } = req.body;
+
+    // Buscar usuario por email o username
+    const user = await queryOne(`
+      SELECT
+        id, name, email, username, password, role, is_active,
+        password_reset_required, preferred_language, phone
+      FROM users
+      WHERE email = ? OR username = ?
+    `, [identifier, identifier]);
+
     if (!user) {
-      logAuth('login', email, false, req, 'Usuario no encontrado');
+      logAuth('login', identifier, false, req, 'Usuario no encontrado');
       throw new AuthenticationError('Credenciales inválidas');
     }
-    
+
     // Verificar si el usuario está activo
     if (!user.is_active) {
-      logAuth('login', email, false, req, 'Usuario inactivo');
+      logAuth('login', identifier, false, req, 'Usuario inactivo');
       throw new AuthenticationError('Cuenta desactivada. Contacta al administrador');
     }
-    
+
     // Verificar contraseña
     const isValidPassword = await verifyPassword(password, user.password);
     if (!isValidPassword) {
-      logAuth('login', email, false, req, 'Contraseña incorrecta');
+      logAuth('login', identifier, false, req, 'Contraseña incorrecta');
       throw new AuthenticationError('Credenciales inválidas');
     }
-    
+
     // Generar token JWT
     const token = generateToken(user);
-    
+
     // Registrar login exitoso
-    logAuth('login', email, true, req);
+    logAuth('login', identifier, true, req);
     await logActivity(user.id, null, 'login', `Usuario ${user.name} inició sesión`, req);
-    
+
     // Respuesta exitosa (sin incluir password)
     const userResponse = {
       id: user.id,
       name: user.name,
       email: user.email,
-      role: user.role
+      username: user.username,
+      role: user.role,
+      preferred_language: user.preferred_language,
+      phone: user.phone,
+      password_reset_required: user.password_reset_required
     };
-    
+
     res.json({
       success: true,
-      message: `¡Bienvenido ${user.name}!`,
+      message: user.password_reset_required
+        ? 'Debes cambiar tu contraseña en el primer inicio de sesión'
+        : `¡Bienvenido ${user.name}!`,
       user: userResponse,
       token,
-      expiresIn: process.env.JWT_EXPIRES_IN || '7d'
+      expiresIn: process.env.JWT_EXPIRES_IN || '7d',
+      requiresPasswordChange: user.password_reset_required
     });
-    
+
   } catch (error) {
     logError(error, req, 'Login Route');
-    
+
     if (error instanceof AuthenticationError) {
       return res.status(401).json({
         error: 'Error de autenticación',
         message: error.message
       });
     }
-    
+
     res.status(500).json({
       error: 'Error interno',
       message: 'Error durante el proceso de login'
@@ -259,8 +269,25 @@ router.post('/register', authenticateToken, registerValidation, handleValidation
 // ================================================
 router.get('/verify', authenticateToken, async (req, res) => {
   try {
-    const user = req.user;
-    
+    const userId = req.userId;
+
+    // Obtener información actualizada del usuario
+    const user = await queryOne(`
+      SELECT
+        id, name, email, username, phone, role,
+        is_active, preferred_language, password_reset_required
+      FROM users
+      WHERE id = ?
+    `, [userId]);
+
+    if (!user) {
+      throw new AuthenticationError('Usuario no encontrado');
+    }
+
+    if (!user.is_active) {
+      throw new AuthenticationError('Cuenta desactivada');
+    }
+
     res.json({
       success: true,
       valid: true,
@@ -268,15 +295,29 @@ router.get('/verify', authenticateToken, async (req, res) => {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: user.role
+        username: user.username,
+        phone: user.phone,
+        role: user.role,
+        preferred_language: user.preferred_language,
+        password_reset_required: user.password_reset_required
       }
     });
-    
+
   } catch (error) {
     logError(error, req, 'Verify Token Route');
+
+    if (error instanceof AuthenticationError) {
+      return res.status(401).json({
+        error: 'Error de autenticación',
+        message: error.message,
+        valid: false
+      });
+    }
+
     res.status(500).json({
       error: 'Error interno',
-      message: 'Error verificando el token'
+      message: 'Error verificando el token',
+      valid: false
     });
   }
 });
@@ -288,56 +329,61 @@ router.put('/change-password', authenticateToken, changePasswordValidation, hand
   try {
     const { currentPassword, newPassword } = req.body;
     const userId = req.userId;
-    
+
     // Obtener contraseña actual del usuario
     const user = await queryOne(
-      'SELECT password FROM users WHERE id = ?',
+      'SELECT password, password_reset_required FROM users WHERE id = ?',
       [userId]
     );
-    
+
     if (!user) {
       throw new AuthenticationError('Usuario no encontrado');
     }
-    
+
     // Verificar contraseña actual
     const isValidCurrentPassword = await verifyPassword(currentPassword, user.password);
     if (!isValidCurrentPassword) {
       throw new AuthenticationError('La contraseña actual es incorrecta');
     }
-    
+
     // Hash de la nueva contraseña
     const hashedNewPassword = await hashPassword(newPassword);
-    
-    // Actualizar contraseña en la base de datos
+
+    // Actualizar contraseña y resetear el flag de cambio requerido
     await query(
-      'UPDATE users SET password = ?, updated_at = NOW() WHERE id = ?',
+      'UPDATE users SET password = ?, password_reset_required = FALSE, updated_at = NOW() WHERE id = ?',
       [hashedNewPassword, userId]
     );
-    
+
     // Registrar la actividad
+    const activityMessage = user.password_reset_required
+      ? `Usuario ${req.user.name} completó el cambio obligatorio de contraseña`
+      : `Usuario ${req.user.name} cambió su contraseña`;
+
     await logActivity(
-      userId, 
-      null, 
-      'password_changed', 
-      `Usuario ${req.user.name} cambió su contraseña`,
+      userId,
+      null,
+      'password_changed',
+      activityMessage,
       req
     );
-    
+
     res.json({
       success: true,
-      message: 'Contraseña actualizada exitosamente'
+      message: 'Contraseña actualizada exitosamente',
+      firstTimeChangeCompleted: user.password_reset_required
     });
-    
+
   } catch (error) {
     logError(error, req, 'Change Password Route');
-    
+
     if (error instanceof AuthenticationError) {
       return res.status(401).json({
         error: 'Error de autenticación',
         message: error.message
       });
     }
-    
+
     res.status(500).json({
       error: 'Error interno',
       message: 'Error al cambiar la contraseña'
@@ -382,44 +428,114 @@ router.post('/logout', authenticateToken, async (req, res) => {
 router.get('/profile', authenticateToken, async (req, res) => {
   try {
     const userId = req.userId;
-    
+
     // Obtener información completa del usuario
     const user = await queryOne(`
-      SELECT 
+      SELECT
         u.id,
         u.name,
         u.email,
+        u.username,
+        u.phone,
         u.role,
         u.is_active,
+        u.preferred_language,
+        u.password_reset_required,
         u.created_at,
         creator.name as created_by_name
       FROM users u
       LEFT JOIN users creator ON u.created_by = creator.id
       WHERE u.id = ?
     `, [userId]);
-    
+
     if (!user) {
       throw new AuthenticationError('Usuario no encontrado');
     }
-    
+
     res.json({
       success: true,
       user: {
         id: user.id,
         name: user.name,
         email: user.email,
+        username: user.username,
+        phone: user.phone,
         role: user.role,
         is_active: user.is_active,
+        preferred_language: user.preferred_language,
+        password_reset_required: user.password_reset_required,
         created_at: user.created_at,
         created_by_name: user.created_by_name
       }
     });
-    
+
   } catch (error) {
     logError(error, req, 'Profile Route');
     res.status(500).json({
       error: 'Error interno',
       message: 'Error obteniendo información del perfil'
+    });
+  }
+});
+
+// ================================================
+// RUTA PARA ACTUALIZAR PREFERENCIAS DEL PERFIL
+// ================================================
+router.put('/profile/preferences', authenticateToken, [
+  body('preferred_language')
+    .optional()
+    .isIn(['es', 'en', 'fr'])
+    .withMessage('Idioma no válido. Debe ser: es, en o fr'),
+  body('phone')
+    .optional()
+    .matches(/^[+\d\s()-]+$/)
+    .withMessage('Número de teléfono no válido')
+], handleValidationErrors, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { preferred_language, phone } = req.body;
+
+    // Construir el objeto de actualización solo con campos proporcionados
+    const updates = {};
+    if (preferred_language) updates.preferred_language = preferred_language;
+    if (phone !== undefined) updates.phone = phone; // Permite establecer phone a NULL
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({
+        error: 'Datos inválidos',
+        message: 'Debes proporcionar al menos un campo para actualizar'
+      });
+    }
+
+    // Construir query dinámicamente
+    const setClause = Object.keys(updates).map(key => `${key} = ?`).join(', ');
+    const values = [...Object.values(updates), userId];
+
+    await query(
+      `UPDATE users SET ${setClause}, updated_at = NOW() WHERE id = ?`,
+      values
+    );
+
+    // Registrar actividad
+    await logActivity(
+      userId,
+      null,
+      'profile_updated',
+      `Usuario ${req.user.name} actualizó sus preferencias`,
+      req
+    );
+
+    res.json({
+      success: true,
+      message: 'Preferencias actualizadas exitosamente',
+      updated: updates
+    });
+
+  } catch (error) {
+    logError(error, req, 'Update Preferences Route');
+    res.status(500).json({
+      error: 'Error interno',
+      message: 'Error actualizando preferencias'
     });
   }
 });

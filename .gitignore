@@ -1,0 +1,14 @@
+node_modules/
+.env
+*.log
+logs/
+.DS_Store
+Thumbs.db
+storage/
+uploads/
+*.jpg
+*.jpeg
+*.png
+*.pdf
+*.tmp
+.vscode/

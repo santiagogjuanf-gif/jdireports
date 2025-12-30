@@ -108,6 +108,9 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 // Servir assets
 app.use('/assets', express.static(path.join(__dirname, '../assets')));
 
+// Servir archivos estáticos del frontend
+app.use(express.static(path.join(__dirname, '../frontend/public')));
+
 // ================================================
 // RUTAS DE API
 // ================================================
@@ -138,10 +141,10 @@ app.get('/health', (req, res) => {
 });
 
 // ================================================
-// RUTA RAÍZ
+// RUTA DE API INFO
 // ================================================
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.json({
     name: 'JD Cleaning Services API',
     version: '1.0.0',
@@ -155,15 +158,23 @@ app.get('/', (req, res) => {
 });
 
 // ================================================
-// MANEJO DE RUTAS NO ENCONTRADAS
+// MANEJO DE RUTAS DE API NO ENCONTRADAS
 // ================================================
 
-app.use('*', (req, res) => {
+app.use('/api/*', (req, res) => {
   res.status(404).json({
     error: 'No encontrado',
-    message: 'La ruta solicitada no existe',
+    message: 'La ruta de API solicitada no existe',
     path: req.originalUrl
   });
+});
+
+// ================================================
+// SPA FALLBACK - Servir index.html para rutas no-API
+// ================================================
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/public/index.html'));
 });
 
 // ================================================

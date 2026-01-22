@@ -1,0 +1,109 @@
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║  📋 EJECUTA ESTOS 3 COMANDOS SIMPLES PARA VER QUÉ ESTÁ PASANDO ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+
+IMPORTANTE: Estos comandos mostrarán en pantalla EXACTAMENTE qué está
+fallando en el login.
+
+
+═══════════════════════════════════════════════════════════════════
+PASO 1: ACTUALIZAR EL CÓDIGO
+═══════════════════════════════════════════════════════════════════
+
+Abre PowerShell o CMD y ejecuta:
+
+cd C:\xampp\htdocs\jdireports
+git pull origin claude/find-fix-bug-mjs1a1eafgejasz0-JJV9h
+
+
+═══════════════════════════════════════════════════════════════════
+PASO 2: EJECUTAR DIAGNÓSTICO COMPLETO
+═══════════════════════════════════════════════════════════════════
+
+Ejecuta este comando:
+
+node diagnostico-login.js
+
+Este script va a:
+✅ Verificar la conexión a MySQL
+✅ Buscar usuarios admin en la base de datos
+✅ Probar diferentes contraseñas comunes
+✅ Mostrarte las credenciales correctas si las encuentra
+✅ Decirte exactamente qué está mal si algo falla
+
+
+═══════════════════════════════════════════════════════════════════
+PASO 3: COPIAR Y ENVIARME LA SALIDA
+═══════════════════════════════════════════════════════════════════
+
+1. Cuando termine de ejecutarse, COPIA TODO lo que salió en pantalla
+
+2. Envíame una captura de pantalla o el texto completo
+
+3. Con eso voy a saber EXACTAMENTE qué está pasando
+
+
+═══════════════════════════════════════════════════════════════════
+OPCIÓN ALTERNATIVA: VER LOGS DEL SERVIDOR EN TIEMPO REAL
+═══════════════════════════════════════════════════════════════════
+
+Si quieres ver qué pasa CUANDO haces login:
+
+1. DETÉN el servidor (Ctrl+C en la ventana donde corre)
+
+2. Cambia temporalmente el archivo de rutas:
+
+   rename backend\routes\auth.js auth-original.js
+   rename backend\routes\auth-debug.js auth.js
+
+3. Reinicia el servidor:
+
+   node backend/server.js
+
+4. Intenta hacer login desde el navegador
+
+5. Mira la consola del servidor - verás TODOS los pasos del login
+
+6. Copia todo lo que salga y envíamelo
+
+7. Cuando termines, restaura el archivo original:
+
+   rename backend\routes\auth.js auth-debug.js
+   rename backend\routes\auth-original.js auth.js
+
+
+═══════════════════════════════════════════════════════════════════
+¿QUÉ ESPERAR?
+═══════════════════════════════════════════════════════════════════
+
+El diagnóstico mostrará algo como:
+
+✅ Conexión a MySQL exitosa
+✅ Tabla users existe
+✅ Se encontró 1 usuario admin
+✅ ¡CONTRASEÑA ENCONTRADA!: "admin123"
+
+   ┌─────────────────────────────────────┐
+   │  CREDENCIALES DE LOGIN:             │
+   ├─────────────────────────────────────┤
+   │  Usuario: admin                     │
+   │  Password: admin123                 │
+   └─────────────────────────────────────┘
+
+
+O si hay problemas:
+
+❌ NO HAY USUARIOS ADMIN EN LA BASE DE DATOS
+🔧 SOLUCIÓN: Ejecuta este comando para crear uno:
+   node backend/scripts/create-admin.js
+
+
+═══════════════════════════════════════════════════════════════════
+
+POR FAVOR, EJECUTA:  node diagnostico-login.js
+
+Y ENVÍAME TODO LO QUE SALGA EN PANTALLA
+
+═══════════════════════════════════════════════════════════════════

@@ -1,0 +1,123 @@
+========================================
+🔧 SOLUCIÓN PARA ERROR 401 EN LOGIN
+========================================
+
+El error 401 (Unauthorized) significa que el usuario o contraseña no coinciden.
+Vamos a crear el usuario admin correctamente siguiendo estos pasos:
+
+========================================
+OPCIÓN 1: USAR EL SCRIPT AUTOMÁTICO (RECOMENDADO)
+========================================
+
+1. Asegúrate de que el servidor esté DETENIDO (Ctrl+C en la ventana donde corre)
+
+2. Ejecuta este comando en PowerShell o CMD:
+
+   node backend/scripts/create-admin.js
+
+3. Si sale error "Cannot find module", ejecuta primero:
+
+   npm install
+
+4. El script creará automáticamente el usuario admin y te mostrará las credenciales
+
+5. Reinicia el servidor:
+
+   node backend/server.js
+
+6. Prueba el login con las credenciales que te mostró el script
+
+
+========================================
+OPCIÓN 2: CREAR USUARIO MANUALMENTE CON SQL
+========================================
+
+Si la Opción 1 no funciona, sigue estos pasos:
+
+1. Genera el hash de contraseña ejecutando:
+
+   node generar-hash.js
+
+   (Copia el hash que te muestre)
+
+2. Abre phpMyAdmin en tu navegador:
+   http://localhost/phpmyadmin
+
+3. Selecciona la base de datos: jd_cleaning_services
+
+4. Ve a la pestaña SQL
+
+5. Ejecuta este SQL (REEMPLAZA el hash con el que generaste):
+
+   DELETE FROM users WHERE username = 'admin';
+
+   INSERT INTO users (
+       name, email, username, full_name, password, role,
+       is_active, password_reset_required, preferred_language, phone
+   ) VALUES (
+       'Administrador',
+       'admin@jdcleaning.com',
+       'admin',
+       'Administrador del Sistema',
+       'PEGA_AQUI_EL_HASH_QUE_GENERASTE',
+       'admin',
+       1, 0, 'es', '1234567890'
+   );
+
+6. Verifica que se creó:
+
+   SELECT * FROM users WHERE username = 'admin';
+
+7. Reinicia el servidor
+
+8. Prueba el login con:
+   Usuario: admin
+   Contraseña: admin123
+
+
+========================================
+OPCIÓN 3: VERIFICAR QUÉ ESTÁ PASANDO
+========================================
+
+1. Abre la tabla users en phpMyAdmin
+
+2. Verifica si existe un usuario con username = 'admin'
+
+3. Si existe pero el login no funciona, puede ser:
+   - El hash de la contraseña es incorrecto
+   - El campo is_active está en 0 (debe ser 1)
+   - El servidor está usando otra base de datos
+
+4. Para verificar qué base de datos está usando el servidor:
+   - Abre el archivo .env
+   - Verifica que DB_NAME=jd_cleaning_services
+   - Verifica que DB_USER=root
+   - Verifica que DB_PASSWORD esté vacío o con la contraseña correcta
+
+
+========================================
+COMANDOS ÚTILES PARA DIAGNOSTICAR
+========================================
+
+Ver todos los usuarios en la base de datos:
+   SELECT id, username, email, role, is_active FROM users;
+
+Ver el hash de contraseña del admin:
+   SELECT username, password FROM users WHERE username = 'admin';
+
+Verificar que bcryptjs está instalado:
+   npm list bcryptjs
+
+
+========================================
+SI NADA FUNCIONA
+========================================
+
+Envíame esta información:
+
+1. Captura de pantalla de la tabla users en phpMyAdmin
+2. Contenido del archivo .env (sin mostrar JWT_SECRET completo)
+3. Últimas 10 líneas de la consola del servidor cuando intentas hacer login
+4. Resultado de ejecutar: npm list bcryptjs
+
+========================================

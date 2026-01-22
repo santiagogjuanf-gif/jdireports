@@ -13,7 +13,7 @@ const path = require('path');
 
 // Importar middleware
 const { errorHandler } = require('./middleware/errorHandler');
-const { requestLogger } = require('./middleware/logger');
+const { logger: requestLogger } = require('./middleware/logger');
 const rateLimiter = require('./middleware/rateLimiter');
 
 // Importar rutas

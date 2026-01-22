@@ -170,6 +170,15 @@ app.use('/api/*', (req, res) => {
 });
 
 // ================================================
+// RUTAS DE FRONTEND
+// ================================================
+
+// Ruta de login
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/public/login.html'));
+});
+
+// ================================================
 // SPA FALLBACK - Servir index.html para rutas no-API
 // ================================================
 

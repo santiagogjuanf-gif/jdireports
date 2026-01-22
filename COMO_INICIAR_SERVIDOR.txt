@@ -1,0 +1,165 @@
+========================================
+🚀 CÓMO INICIAR EL SERVIDOR CORRECTAMENTE
+========================================
+
+ERROR ACTUAL: ERR_CONNECTION_REFUSED
+CAUSA: El servidor backend NO está corriendo
+
+========================================
+PASO 1: VERIFICAR CONFIGURACIÓN
+========================================
+
+Ejecuta este comando para verificar que todo está listo:
+
+    node verificar-servidor.js
+
+Si encuentra problemas, te dirá cómo solucionarlos.
+
+========================================
+PASO 2: ASEGURARTE QUE XAMPP ESTÁ CORRIENDO
+========================================
+
+1. Abre el Panel de Control de XAMPP
+2. Verifica que el módulo MySQL esté INICIADO (botón verde "Running")
+3. Si no está iniciado, haz clic en "Start" junto a MySQL
+
+========================================
+PASO 3: INICIAR EL SERVIDOR BACKEND
+========================================
+
+Abre PowerShell o CMD en la carpeta del proyecto:
+
+    cd C:\xampp\htdocs\jdireports
+    node backend/server.js
+
+DEBES VER ESTOS MENSAJES:
+
+    ✅ Conexión a MySQL establecida correctamente
+    🚀 Servidor corriendo en http://localhost:3000
+    📁 Sirviendo archivos estáticos desde: [ruta]/frontend/public
+
+SI VES ESTOS MENSAJES: ✅ El servidor está corriendo correctamente
+
+SI VES ERRORES: ❌ Sigue las instrucciones de la sección "ERRORES COMUNES" abajo
+
+========================================
+PASO 4: CREAR USUARIO ADMIN
+========================================
+
+IMPORTANTE: Abre OTRA VENTANA de PowerShell/CMD (deja el servidor corriendo)
+
+En la nueva ventana, ejecuta:
+
+    cd C:\xampp\htdocs\jdireports
+    node backend/scripts/create-admin.js
+
+Este script:
+- Creará el usuario admin con la contraseña correcta
+- Te mostrará las credenciales para hacer login
+
+========================================
+PASO 5: PROBAR EL LOGIN
+========================================
+
+1. Abre el navegador en: http://localhost:3000/login
+
+2. Usa las credenciales que te mostró el script create-admin.js
+
+3. Si todo está bien, deberías entrar al dashboard
+
+========================================
+ERRORES COMUNES AL INICIAR EL SERVIDOR
+========================================
+
+ERROR: Cannot find module 'express'
+SOLUCIÓN:
+    npm install
+
+ERROR: connect ECONNREFUSED 127.0.0.1:3306
+SOLUCIÓN:
+    - MySQL no está corriendo
+    - Inicia MySQL desde el panel de XAMPP
+
+ERROR: Access denied for user 'root'@'localhost'
+SOLUCIÓN:
+    - Verifica el archivo .env
+    - DB_USER debe ser 'root'
+    - DB_PASSWORD debe estar vacío o con la contraseña de MySQL
+    - Si configuraste contraseña en MySQL, ponla en .env
+
+ERROR: Unknown database 'jd_cleaning_services'
+SOLUCIÓN:
+    1. Abre phpMyAdmin: http://localhost/phpmyadmin
+    2. Crea la base de datos: jd_cleaning_services
+    3. Ejecuta las migraciones (copia el contenido de los archivos .sql)
+
+ERROR: Port 3000 already in use
+SOLUCIÓN:
+    - Ya hay un servidor corriendo en el puerto 3000
+    - Detén el otro proceso o usa otro puerto
+    - Para matar el proceso en Windows:
+      taskkill /F /IM node.exe
+
+ERROR: JWT_SECRET must be a non-empty string
+SOLUCIÓN:
+    - Abre el archivo .env
+    - Genera un secret con:
+      node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+    - Copia el resultado en JWT_SECRET=
+
+========================================
+VERIFICAR QUE EL SERVIDOR ESTÁ CORRIENDO
+========================================
+
+Método 1: Ver la consola
+- La ventana de PowerShell/CMD debe mostrar los mensajes de inicio
+- No debe mostrar errores
+- NO debe regresar al prompt (C:\xampp\htdocs\jdireports>)
+
+Método 2: Abrir en el navegador
+- Abre: http://localhost:3000
+- Debes ver la página de login o dashboard
+- NO debe mostrar "This site can't be reached"
+
+Método 3: Verificar el puerto
+- Ejecuta en otra ventana de PowerShell:
+  netstat -ano | findstr :3000
+- Debe mostrar una línea con "LISTENING"
+
+========================================
+COMANDOS ÚTILES
+========================================
+
+Ver procesos de Node.js corriendo:
+    tasklist | findstr node.exe
+
+Matar todos los procesos de Node.js:
+    taskkill /F /IM node.exe
+
+Ver qué está usando el puerto 3000:
+    netstat -ano | findstr :3000
+
+Ver logs del servidor en tiempo real:
+    (El servidor muestra logs automáticamente en la consola)
+
+========================================
+FLUJO COMPLETO DE INICIO
+========================================
+
+1. Abrir XAMPP → Iniciar MySQL
+2. Abrir PowerShell #1:
+   cd C:\xampp\htdocs\jdireports
+   node backend/server.js
+   (Dejar corriendo, NO cerrar)
+
+3. Abrir PowerShell #2:
+   cd C:\xampp\htdocs\jdireports
+   node backend/scripts/create-admin.js
+   (Este se ejecuta una sola vez)
+
+4. Abrir navegador:
+   http://localhost:3000/login
+
+5. Hacer login con las credenciales que mostró el script
+
+========================================

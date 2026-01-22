@@ -31,6 +31,7 @@
             max-width: 400px;
             width: 100%;
             animation: slideIn 0.5s ease;
+            position: relative;
         }
 
         @keyframes slideIn {
@@ -42,6 +43,46 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        .language-selector {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 10;
+            display: flex;
+            gap: 5px;
+            background: rgba(255,255,255,0.2);
+            padding: 5px;
+            border-radius: 20px;
+        }
+
+        .language-btn {
+            width: 35px;
+            height: 35px;
+            border: 2px solid transparent;
+            background: rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .language-btn:hover {
+            background: rgba(255,255,255,0.5);
+            transform: scale(1.1);
+        }
+
+        .language-btn.active {
+            background: white;
+            color: #667eea;
+            border-color: white;
+            transform: scale(1.15);
         }
 
         .login-header {
@@ -188,10 +229,17 @@
 </head>
 <body>
     <div class="login-container">
+        <!-- Selector de idioma -->
+        <div class="language-selector">
+            <button class="language-btn active" data-lang="es" title="Español">ES</button>
+            <button class="language-btn" data-lang="en" title="English">EN</button>
+            <button class="language-btn" data-lang="fr" title="Français">FR</button>
+        </div>
+
         <div class="login-header">
             <i class="fas fa-broom"></i>
             <h1>JDI Cleaning Services</h1>
-            <p>Sistema de Gestión</p>
+            <p data-i18n="subtitle">Sistema de Gestión</p>
         </div>
         
         <div class="login-body">
@@ -199,13 +247,14 @@
             
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="username">Usuario o Email</label>
+                    <label for="username" data-i18n="usernameLabel">Usuario o Email</label>
                     <div class="input-wrapper">
                         <i class="fas fa-user"></i>
                         <input 
                             type="text" 
                             id="username" 
                             name="username" 
+                            data-i18n-placeholder="usernamePlaceholder"
                             placeholder="Ingresa tu usuario o email"
                             required
                             autocomplete="username"
@@ -214,13 +263,14 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Contraseña</label>
+                    <label for="password" data-i18n="passwordLabel">Contraseña</label>
                     <div class="input-wrapper">
                         <i class="fas fa-lock"></i>
                         <input 
                             type="password" 
                             id="password" 
                             name="password" 
+                            data-i18n-placeholder="passwordPlaceholder"
                             placeholder="Ingresa tu contraseña"
                             required
                             autocomplete="current-password"
@@ -229,13 +279,103 @@
                 </div>
 
                 <button type="submit" class="btn-login" id="btnLogin">
-                    Iniciar Sesión
+                    <span data-i18n="loginButton">Iniciar Sesión</span>
                 </button>
             </form>
         </div>
     </div>
 
     <script>
+        // ================================================
+        // TRADUCCIONES
+        // ================================================
+        const translations = {
+            es: {
+                subtitle: 'Sistema de Gestión',
+                usernameLabel: 'Usuario o Email',
+                usernamePlaceholder: 'Ingresa tu usuario o email',
+                passwordLabel: 'Contraseña',
+                passwordPlaceholder: 'Ingresa tu contraseña',
+                loginButton: 'Iniciar Sesión',
+                loggingIn: 'Iniciando sesión',
+                loginSuccess: '¡Login exitoso! Redirigiendo...',
+                loginError: 'Usuario o contraseña incorrectos',
+                connectionError: 'Error de conexión con el servidor. Verifica que el backend esté corriendo.',
+                fillAllFields: 'Por favor completa todos los campos'
+            },
+            en: {
+                subtitle: 'Management System',
+                usernameLabel: 'Username or Email',
+                usernamePlaceholder: 'Enter your username or email',
+                passwordLabel: 'Password',
+                passwordPlaceholder: 'Enter your password',
+                loginButton: 'Login',
+                loggingIn: 'Logging in',
+                loginSuccess: 'Login successful! Redirecting...',
+                loginError: 'Incorrect username or password',
+                connectionError: 'Connection error with server. Verify that backend is running.',
+                fillAllFields: 'Please fill all fields'
+            },
+            fr: {
+                subtitle: 'Système de Gestion',
+                usernameLabel: 'Utilisateur ou Email',
+                usernamePlaceholder: 'Entrez votre utilisateur ou email',
+                passwordLabel: 'Mot de passe',
+                passwordPlaceholder: 'Entrez votre mot de passe',
+                loginButton: 'Se connecter',
+                loggingIn: 'Connexion en cours',
+                loginSuccess: 'Connexion réussie! Redirection...',
+                loginError: 'Nom d\'utilisateur ou mot de passe incorrect',
+                connectionError: 'Erreur de connexion avec le serveur. Vérifiez que le backend fonctionne.',
+                fillAllFields: 'Veuillez remplir tous les champs'
+            }
+        };
+
+        // ================================================
+        // MANEJO DE IDIOMA
+        // ================================================
+        let currentLang = localStorage.getItem('language') || 'es';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('language', lang);
+            document.documentElement.lang = lang;
+
+            // Actualizar botones de idioma
+            document.querySelectorAll('.language-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+
+            // Actualizar textos
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.dataset.i18n;
+                if (translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+
+            // Actualizar placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                const key = element.dataset.i18nPlaceholder;
+                if (translations[lang][key]) {
+                    element.placeholder = translations[lang][key];
+                }
+            });
+        }
+
+        // Configurar botones de idioma
+        document.querySelectorAll('.language-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                setLanguage(btn.dataset.lang);
+            });
+        });
+
+        // Establecer idioma inicial
+        setLanguage(currentLang);
+
+        // ================================================
+        // LOGIN
+        // ================================================
         const API_URL = 'http://localhost:3000/api';
         const loginForm = document.getElementById('loginForm');
         const btnLogin = document.getElementById('btnLogin');
@@ -246,7 +386,8 @@
             window.location.href = '/';
         }
 
-        function showAlert(message, type = 'error') {
+        function showAlert(messageKey, type = 'error') {
+            const message = translations[currentLang][messageKey] || messageKey;
             alert.textContent = message;
             alert.className = `alert alert-${type} show`;
             
@@ -262,13 +403,16 @@
             const password = document.getElementById('password').value;
 
             if (!username || !password) {
-                showAlert('Por favor completa todos los campos');
+                showAlert('fillAllFields');
                 return;
             }
 
             // Deshabilitar botón y mostrar loading
             btnLogin.disabled = true;
-            btnLogin.innerHTML = 'Iniciando sesión<span class="loading"></span>';
+            const btnText = btnLogin.querySelector('[data-i18n="loginButton"]');
+            const originalText = btnText.textContent;
+            btnText.textContent = translations[currentLang].loggingIn;
+            btnLogin.innerHTML = btnText.outerHTML + '<span class="loading"></span>';
 
             try {
                 const response = await fetch(`${API_URL}/auth/login`, {
@@ -285,26 +429,28 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Guardar token y datos del usuario
+                    // Guardar token, datos del usuario e idioma
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
                     
-                    showAlert('¡Login exitoso! Redirigiendo...', 'success');
+                    showAlert('loginSuccess', 'success');
                     
                     // Redirigir al dashboard
                     setTimeout(() => {
                         window.location.href = '/';
                     }, 1000);
                 } else {
-                    showAlert(data.message || 'Usuario o contraseña incorrectos');
+                    showAlert('loginError');
                     btnLogin.disabled = false;
-                    btnLogin.innerHTML = 'Iniciar Sesión';
+                    btnText.textContent = originalText;
+                    btnLogin.innerHTML = btnText.outerHTML;
                 }
             } catch (error) {
                 console.error('Error de login:', error);
-                showAlert('Error de conexión con el servidor. Verifica que el backend esté corriendo.');
+                showAlert('connectionError');
                 btnLogin.disabled = false;
-                btnLogin.innerHTML = 'Iniciar Sesión';
+                btnText.textContent = originalText;
+                btnLogin.innerHTML = btnText.outerHTML;
             }
         });
 

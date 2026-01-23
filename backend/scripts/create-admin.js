@@ -35,25 +35,31 @@ async function createAdmin() {
     await connection.execute(`DELETE FROM users WHERE role = 'admin'`);
     console.log('🗑️  Usuario admin anterior eliminado (si existía)');
 
-    // Insertar nuevo admin (solo columnas básicas)
+    // Insertar nuevo admin con todos los campos
     const [result] = await connection.execute(`
       INSERT INTO users (
-        name, email, username, password, role, is_active
-      ) VALUES (?, ?, ?, ?, ?, ?)
+        name, email, username, full_name, password, role, is_active,
+        password_reset_required, preferred_language, created_by
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       'Administrador',
       'admin@jdcleaning.com',
       'admin',
+      'Administrador del Sistema',
       passwordHash,
       'admin',
-      1
+      1,
+      0, // No requiere cambio de contraseña
+      'es', // Idioma por defecto
+      null // Creado por el sistema
     ]);
 
     console.log(`✅ Usuario admin creado con ID: ${result.insertId}\n`);
 
     // Verificar el usuario
     const [users] = await connection.execute(`
-      SELECT id, name, email, username, role, is_active, preferred_language
+      SELECT id, name, email, username, full_name, role, is_active,
+             preferred_language, password_reset_required, created_at
       FROM users
       WHERE role = 'admin'
     `);

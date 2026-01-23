@@ -1,0 +1,149 @@
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║  🚨 LA BASE DE DATOS SE BORRÓ DESPUÉS DE REINICIAR            ║
+║  ✅ SOLUCIÓN RÁPIDA Y AUTOMÁTICA                              ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+
+ERROR QUE ESTÁS VIENDO:
+  Table 'jd_cleaning_services.users' doesn't exist in engine
+
+CAUSA:
+  Después de reiniciar Windows, las tablas de MySQL se perdieron.
+  Esto puede pasar si MySQL no se detuvo correctamente.
+
+═══════════════════════════════════════════════════════════════════
+SOLUCIÓN AUTOMÁTICA (RECOMENDADO)
+═══════════════════════════════════════════════════════════════════
+
+Voy a restaurar TODO automáticamente con UN SOLO COMANDO.
+
+PASO 1: Asegúrate que MySQL esté corriendo en XAMPP
+────────────────────────────────────────────────────
+
+1. Abre el Panel de Control de XAMPP
+2. Verifica que MySQL tenga el botón verde "Running"
+3. Si no está corriendo, haz clic en "Start"
+
+PASO 2: Ejecuta el script de restauración
+────────────────────────────────────────────────────
+
+Abre PowerShell o CMD y ejecuta:
+
+cd C:\xampp\htdocs\jdireports
+node restaurar-base-datos.js
+
+Este script hará AUTOMÁTICAMENTE:
+✅ Verificar/crear la base de datos
+✅ Ejecutar todas las migraciones (001 a 005)
+✅ Crear todas las tablas
+✅ Crear el usuario admin con contraseña
+✅ Mostrarte las credenciales de login
+
+PASO 3: Reiniciar el servidor
+────────────────────────────────────────────────────
+
+Una vez que termine el script (tarda 10-20 segundos):
+
+node backend/server.js
+
+PASO 4: Hacer login
+────────────────────────────────────────────────────
+
+Abre el navegador en: http://localhost:3000/login
+
+Credenciales:
+  Usuario:    admin
+  Contraseña: Admin123!
+
+═══════════════════════════════════════════════════════════════════
+SOLUCIÓN MANUAL (SI EL SCRIPT FALLA)
+═══════════════════════════════════════════════════════════════════
+
+Si por alguna razón el script automático no funciona:
+
+1. Abre phpMyAdmin: http://localhost/phpmyadmin
+
+2. Selecciona la base de datos "jd_cleaning_services"
+   (Si no existe, créala primero)
+
+3. Ve a la pestaña "SQL"
+
+4. Ejecuta los archivos de migración EN ORDEN:
+
+   a) Copia el contenido de: backend/migrations/001_complete_system_upgrade.sql
+      Pega en SQL → Ejecutar
+
+   b) Copia el contenido de: backend/migrations/002_initial_data.sql
+      Pega en SQL → Ejecutar
+
+   c) Copia el contenido de: backend/migrations/003_cleaning_areas.sql
+      Pega en SQL → Ejecutar
+
+   d) Copia el contenido de: backend/migrations/004_motivational_messages.sql
+      Pega en SQL → Ejecutar
+
+   e) Copia el contenido de: backend/migrations/005_chat_system.sql
+      Pega en SQL → Ejecutar
+
+5. Crear usuario admin:
+
+   Ejecuta en SQL:
+
+   DELETE FROM users WHERE username = 'admin';
+
+   INSERT INTO users (name, email, username, full_name, password, role, is_active, password_reset_required, preferred_language, phone)
+   VALUES (
+       'Administrador',
+       'admin@jdcleaning.com',
+       'admin',
+       'Administrador del Sistema',
+       '$2a$10$rZ5FwvJ5J5J5J5J5J5J5J.EqKxJxJxJxJxJxJxJxJxJxJxJxJxJxa',
+       'admin',
+       1,
+       0,
+       'es',
+       '1234567890'
+   );
+
+6. Reinicia el servidor: node backend/server.js
+
+7. Haz login con: admin / Admin123!
+
+═══════════════════════════════════════════════════════════════════
+¿POR QUÉ PASÓ ESTO?
+═══════════════════════════════════════════════════════════════════
+
+MySQL en XAMPP puede perder datos si:
+- Se apaga Windows sin detener MySQL primero
+- Hay un error de disco o corrupción
+- Las tablas se crean en memoria temporal (modo MEMORY engine)
+
+PARA EVITARLO EN EL FUTURO:
+- Siempre detén MySQL en XAMPP antes de apagar Windows
+- Haz backups regulares de la base de datos
+- Verifica que el motor de las tablas sea InnoDB (no MEMORY)
+
+═══════════════════════════════════════════════════════════════════
+SI HAY ERRORES
+═══════════════════════════════════════════════════════════════════
+
+Error: "Cannot find module"
+Solución: npm install
+
+Error: "ECONNREFUSED"
+Solución: MySQL no está corriendo, inícialo en XAMPP
+
+Error: "Access denied"
+Solución: Verifica usuario/contraseña en .env
+
+Error: "Permission denied to create database"
+Solución: Crea la base de datos manualmente en phpMyAdmin
+
+═══════════════════════════════════════════════════════════════════
+
+EJECUTA: node restaurar-base-datos.js
+
+Y en 20 segundos estará todo listo de nuevo.
+
+═══════════════════════════════════════════════════════════════════

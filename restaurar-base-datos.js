@@ -45,6 +45,40 @@ async function restaurarBaseDatos() {
         // Cambiar a la base de datos
         await connection.query(`USE \`${dbName}\``);
 
+        // PASO 2.5: Eliminar todas las tablas existentes
+        console.log('📋 PASO 2.5: Eliminando tablas existentes...\n');
+
+        try {
+            // Deshabilitar checks de foreign keys temporalmente
+            await connection.query('SET FOREIGN_KEY_CHECKS = 0');
+
+            // Obtener todas las tablas
+            const [tables] = await connection.query('SHOW TABLES');
+
+            if (tables.length > 0) {
+                console.log(`   Encontradas ${tables.length} tablas existentes, eliminándolas...\n`);
+
+                for (const table of tables) {
+                    const tableName = Object.values(table)[0];
+                    try {
+                        await connection.query(`DROP TABLE IF EXISTS \`${tableName}\``);
+                        console.log(`   ✅ Tabla ${tableName} eliminada`);
+                    } catch (error) {
+                        console.log(`   ⚠️  No se pudo eliminar ${tableName}: ${error.message}`);
+                    }
+                }
+                console.log('');
+            } else {
+                console.log('   No hay tablas existentes\n');
+            }
+
+            // Reactivar checks de foreign keys
+            await connection.query('SET FOREIGN_KEY_CHECKS = 1');
+
+        } catch (error) {
+            console.log(`   ⚠️  Error al eliminar tablas: ${error.message}\n`);
+        }
+
         // PASO 3: Ejecutar migraciones
         console.log('📋 PASO 3: Ejecutando migraciones...\n');
 

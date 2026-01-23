@@ -431,8 +431,8 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ [MAIN] Botón "Ver Calendario" encontrado');
     btnVerCalendario.addEventListener('click', function(e) {
       e.preventDefault();
-      console.log('🔘 [MAIN] Click en "Ver Calendario"');
-      alert('Funcionalidad: Ver Calendario\n\nEsta función mostrará el calendario de órdenes programadas.\n\n(En desarrollo)');
+      console.log('🔘 [MAIN] Click en "Ver Calendario" - Redirigiendo...');
+      window.location.href = '/calendario.html';
     });
   } else {
     console.warn('⚠️ [MAIN] Botón "Ver Calendario" NO encontrado');

@@ -403,3 +403,103 @@ console.log(
   '%cVersión: 1.0.0',
   'color: #666; font-size: 12px;'
 );
+
+// ================================================
+// FUNCIONALIDAD DE BOTONES DEL DASHBOARD
+// ================================================
+
+// Esperar a que el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('🔧 [MAIN] Inicializando funcionalidad de botones...');
+
+  // BOTONES DEL HERO
+  const btnNuevaOrden = document.querySelector('.hero-actions .btn-primary');
+  const btnVerCalendario = document.querySelector('.hero-actions .btn-secondary');
+
+  if (btnNuevaOrden) {
+    console.log('✅ [MAIN] Botón "Nueva Orden" encontrado');
+    btnNuevaOrden.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log('🔘 [MAIN] Click en "Nueva Orden"');
+      alert('Funcionalidad: Nueva Orden\n\nEsta función abrirá el formulario para crear una nueva orden de limpieza.\n\n(En desarrollo)');
+    });
+  } else {
+    console.warn('⚠️ [MAIN] Botón "Nueva Orden" NO encontrado');
+  }
+
+  if (btnVerCalendario) {
+    console.log('✅ [MAIN] Botón "Ver Calendario" encontrado');
+    btnVerCalendario.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log('🔘 [MAIN] Click en "Ver Calendario"');
+      alert('Funcionalidad: Ver Calendario\n\nEsta función mostrará el calendario de órdenes programadas.\n\n(En desarrollo)');
+    });
+  } else {
+    console.warn('⚠️ [MAIN] Botón "Ver Calendario" NO encontrado');
+  }
+
+  // BOTONES DE ACCIONES RÁPIDAS
+  const actionCards = document.querySelectorAll('.action-card');
+  console.log(`🔍 [MAIN] Se encontraron ${actionCards.length} tarjetas de acción`);
+
+  actionCards.forEach((card, index) => {
+    const title = card.querySelector('h3')?.textContent || 'Acción ' + (index + 1);
+    console.log(`✅ [MAIN] Registrando event listener para: "${title}"`);
+
+    card.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log(`🔘 [MAIN] Click en tarjeta: "${title}"`);
+
+      const actions = {
+        'Nueva Orden': 'abrirá el formulario para crear una orden de limpieza',
+        'Nuevo Trabajador': 'permitirá registrar un nuevo trabajador en el sistema',
+        'Generar Reporte': 'generará y descargará un reporte en formato PDF',
+        'Solicitar Material': 'abrirá el formulario para solicitar material del inventario'
+      };
+
+      const description = actions[title] || 'ejecutará la funcionalidad correspondiente';
+
+      alert(`Funcionalidad: ${title}\n\nEsta función ${description}.\n\n(En desarrollo)`);
+      showNotification(`${title} - En desarrollo`, 'info');
+    });
+  });
+
+  // BOTÓN DE LOGOUT EN EL MENÚ DE USUARIO
+  const userAvatar = document.querySelector('.user-avatar');
+  if (userAvatar) {
+    console.log('✅ [MAIN] Avatar de usuario encontrado');
+    userAvatar.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log('🔘 [MAIN] Click en avatar de usuario');
+
+      // Mostrar menú contextual
+      const shouldLogout = confirm('¿Deseas cerrar sesión?');
+      if (shouldLogout) {
+        console.log('🚪 [MAIN] Usuario confirma logout');
+        if (window.auth && typeof window.auth.logout === 'function') {
+          window.auth.logout();
+        } else {
+          console.error('❌ [MAIN] Función logout no disponible');
+          window.location.href = '/login.html';
+        }
+      }
+    });
+  } else {
+    console.warn('⚠️ [MAIN] Avatar de usuario NO encontrado');
+  }
+
+  // CAMPANA DE NOTIFICACIONES
+  const notificationBell = document.querySelector('.notification-bell');
+  if (notificationBell) {
+    console.log('✅ [MAIN] Campana de notificaciones encontrada');
+    notificationBell.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log('🔘 [MAIN] Click en campana de notificaciones');
+      alert('Notificaciones\n\n• Nueva orden asignada\n• Recordatorio: Revisión pendiente\n• Material disponible para recoger\n\n(En desarrollo)');
+    });
+  } else {
+    console.warn('⚠️ [MAIN] Campana de notificaciones NO encontrada');
+  }
+
+  console.log('✅ [MAIN] Todos los event listeners registrados correctamente');
+});

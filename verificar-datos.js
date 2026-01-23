@@ -89,10 +89,15 @@ async function verificarDatos() {
 
         // Verificar mensajes motivacionales
         try {
-            const [messages] = await connection.query('SELECT language, COUNT(*) as count FROM motivational_messages GROUP BY language');
-            if (messages.length > 0) {
+            const [total] = await connection.query('SELECT COUNT(*) as count FROM motivational_messages');
+            if (total[0].count > 0) {
                 console.log('\n💬 MENSAJES MOTIVACIONALES:');
-                messages.forEach(m => console.log(`   - ${m.language.toUpperCase()}: ${m.count} mensajes`));
+                console.log(`   - Total: ${total[0].count} mensajes`);
+
+                // Mostrar 3 ejemplos
+                const [examples] = await connection.query('SELECT message_es, emoji FROM motivational_messages LIMIT 3');
+                console.log('\n   Ejemplos:');
+                examples.forEach((msg, i) => console.log(`   ${i + 1}. ${msg.emoji} ${msg.message_es}`));
             } else {
                 console.log('\n⚠️  No hay mensajes motivacionales en la base de datos');
             }

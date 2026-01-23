@@ -72,10 +72,10 @@ async function verificarDatos() {
 
         // Verificar materiales
         try {
-            const [materials] = await connection.query('SELECT name, category FROM materials LIMIT 5');
+            const [materials] = await connection.query('SELECT name, unit FROM materials LIMIT 5');
             if (materials.length > 0) {
                 console.log('\n🧴 MATERIALES (primeros 5):');
-                materials.forEach(m => console.log(`   - ${m.name} (${m.category})`));
+                materials.forEach(m => console.log(`   - ${m.name} (${m.unit})`));
                 const [total] = await connection.query('SELECT COUNT(*) as count FROM materials');
                 if (total[0].count > 5) {
                     console.log(`   ... y ${total[0].count - 5} más`);

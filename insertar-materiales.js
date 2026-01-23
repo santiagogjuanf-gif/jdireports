@@ -22,9 +22,9 @@ async function insertarMateriales() {
             console.log('✅ Ya hay materiales en la base de datos\n');
 
             // Mostrar los primeros 5
-            const [materials] = await connection.query('SELECT name_es, category FROM materials LIMIT 5');
+            const [materials] = await connection.query('SELECT name, unit FROM materials LIMIT 5');
             console.log('🧴 Materiales (primeros 5):');
-            materials.forEach(m => console.log(`   - ${m.name_es} (${m.category})`));
+            materials.forEach(m => console.log(`   - ${m.name} (${m.unit})`));
 
             if (existing[0].count > 5) {
                 console.log(`   ... y ${existing[0].count - 5} más\n`);
@@ -37,34 +37,34 @@ async function insertarMateriales() {
 
         // Insertar materiales (con INSERT IGNORE para evitar duplicados)
         const insertSQL = `
-INSERT IGNORE INTO materials (name_es, name_en, name_fr, category, is_active, display_order) VALUES
+INSERT IGNORE INTO materials (name, description, unit, current_stock, min_stock, is_active) VALUES
 -- Productos de Limpieza
-('Windex', 'Windex', 'Windex', 'cleaning', TRUE, 1),
-('Limpiador neutral', 'Neutral cleaner', 'Nettoyant neutre', 'cleaning', TRUE, 2),
-('Desinfectante', 'Disinfectant', 'Désinfectant', 'cleaning', TRUE, 3),
-('Ácido para tazas', 'Bowl cleaner', 'Nettoyant pour cuvette', 'cleaning', TRUE, 4),
-('Limpiador de pisos', 'Floor cleaner', 'Nettoyant pour sols', 'cleaning', TRUE, 5),
-('Desengrasante', 'Degreaser', 'Dégraissant', 'cleaning', TRUE, 6),
-('Limpiador multiusos', 'All-purpose cleaner', 'Nettoyant multi-usages', 'cleaning', TRUE, 7),
-('Pulidor de muebles', 'Furniture polish', 'Polish à meubles', 'cleaning', TRUE, 8),
+('Windex', 'Limpiador de vidrios', 'liter', 0, 2, TRUE),
+('Limpiador neutral', 'Limpiador de uso general', 'liter', 0, 3, TRUE),
+('Desinfectante', 'Desinfectante para superficies', 'liter', 0, 2, TRUE),
+('Ácido para tazas', 'Limpiador para baños', 'liter', 0, 2, TRUE),
+('Limpiador de pisos', 'Limpiador especializado para pisos', 'liter', 0, 3, TRUE),
+('Desengrasante', 'Desengrasante para cocinas', 'liter', 0, 2, TRUE),
+('Limpiador multiusos', 'Limpiador para todo tipo de superficies', 'liter', 0, 3, TRUE),
+('Pulidor de muebles', 'Pulidor y abrillantador de madera', 'liter', 0, 1, TRUE),
 
 -- Herramientas
-('Escobón', 'Broom', 'Balai', 'tools', TRUE, 10),
-('Escoba', 'Small broom', 'Petit balai', 'tools', TRUE, 11),
-('Trapeador', 'Mop', 'Vadrouille', 'tools', TRUE, 12),
-('Recogedor', 'Dustpan', 'Pelle à poussière', 'tools', TRUE, 13),
-('Cubeta', 'Bucket', 'Seau', 'tools', TRUE, 14),
-('Atomizador', 'Spray bottle', 'Vaporisateur', 'tools', TRUE, 15),
-('Esponja', 'Sponge', 'Éponge', 'tools', TRUE, 16),
-('Paño de microfibra', 'Microfiber cloth', 'Chiffon microfibre', 'tools', TRUE, 17),
-('Cepillo para taza', 'Toilet brush', 'Brosse de toilette', 'tools', TRUE, 18),
-('Jalador de agua (Squeegee)', 'Squeegee', 'Raclette', 'tools', TRUE, 19),
-('Guantes de limpieza', 'Cleaning gloves', 'Gants de nettoyage', 'tools', TRUE, 20),
+('Escobón', 'Escoba grande para exteriores', 'unit', 0, 3, TRUE),
+('Escoba', 'Escoba pequeña para interiores', 'unit', 0, 5, TRUE),
+('Trapeador', 'Trapeador de microfibra', 'unit', 0, 5, TRUE),
+('Recogedor', 'Recogedor de basura', 'unit', 0, 3, TRUE),
+('Cubeta', 'Cubeta de plástico 10L', 'unit', 0, 4, TRUE),
+('Atomizador', 'Botella con atomizador', 'unit', 0, 5, TRUE),
+('Esponja', 'Esponja de limpieza', 'pack', 0, 10, TRUE),
+('Paño de microfibra', 'Paño de microfibra multiuso', 'pack', 0, 10, TRUE),
+('Cepillo para taza', 'Cepillo para inodoro', 'unit', 0, 3, TRUE),
+('Jalador de agua', 'Jalador de agua para pisos y vidrios', 'unit', 0, 3, TRUE),
+('Guantes de limpieza', 'Guantes de goma para limpieza', 'pack', 0, 5, TRUE),
 
 -- Consumibles
-('Bolsas de basura', 'Garbage bags', 'Sacs poubelle', 'supplies', TRUE, 30),
-('Papel toalla', 'Paper towels', 'Essuie-tout', 'supplies', TRUE, 31),
-('Toallitas desinfectantes', 'Disinfectant wipes', 'Lingettes désinfectantes', 'supplies', TRUE, 32)
+('Bolsas de basura', 'Bolsas de basura grande 100L', 'pack', 0, 20, TRUE),
+('Papel toalla', 'Papel toalla en rollo', 'pack', 0, 15, TRUE),
+('Toallitas desinfectantes', 'Toallitas desinfectantes desechables', 'pack', 0, 10, TRUE)
         `;
 
         await connection.query(insertSQL);
@@ -74,16 +74,18 @@ INSERT IGNORE INTO materials (name_es, name_en, name_fr, category, is_active, di
         const [result] = await connection.query('SELECT COUNT(*) as count FROM materials');
         console.log(`📦 Total de materiales: ${result[0].count}\n`);
 
-        // Mostrar por categoría
-        const [byCategory] = await connection.query(`
-            SELECT category, COUNT(*) as count FROM materials GROUP BY category
+        // Mostrar por unidad de medida
+        const [byUnit] = await connection.query(`
+            SELECT unit, COUNT(*) as count FROM materials GROUP BY unit
         `);
 
-        console.log('📊 Materiales por categoría:');
-        byCategory.forEach(cat => {
-            const categoryName = cat.category === 'cleaning' ? 'Productos de Limpieza' :
-                                cat.category === 'tools' ? 'Herramientas' : 'Consumibles';
-            console.log(`   - ${categoryName}: ${cat.count}`);
+        console.log('📊 Materiales por unidad de medida:');
+        byUnit.forEach(u => {
+            const unitName = u.unit === 'unit' ? 'Unidades' :
+                            u.unit === 'liter' ? 'Litros' :
+                            u.unit === 'pack' ? 'Paquetes' :
+                            u.unit === 'kg' ? 'Kilogramos' : 'Cajas';
+            console.log(`   - ${unitName}: ${u.count}`);
         });
 
         console.log('\n✅ Proceso completado\n');

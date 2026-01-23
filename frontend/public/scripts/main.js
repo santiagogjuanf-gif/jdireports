@@ -455,7 +455,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'Nueva Orden': '/nueva-orden.html',
         'Nuevo Trabajador': '/nuevo-trabajador.html',
         'Solicitar Material': '/solicitar-material.html',
-        'Generar Reporte': null  // Pendiente
+        'Generar Reporte': '/generar-reporte.html'
       };
 
       if (redirects[title]) {

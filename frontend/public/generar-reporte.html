@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generar Reporte - JDI Cleaning Services</title>
+    <link rel="stylesheet" href="/styles/global.css">
+    <link rel="stylesheet" href="/styles/generar-reporte.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <i class="fas fa-file-chart-line"></i>
+                <h1>Generar Reporte</h1>
+            </div>
+            <div class="header-actions">
+                <a href="/" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver al Dashboard
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+
+            <!-- Report Type Selection -->
+            <section class="report-type-section">
+                <h2>Tipo de Reporte</h2>
+                <div class="report-types-grid">
+                    <div class="report-type-card" data-type="orders">
+                        <div class="report-type-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <h3>Reporte de Órdenes</h3>
+                        <p>Listado de órdenes por fecha y estado</p>
+                    </div>
+                    <div class="report-type-card" data-type="workers">
+                        <div class="report-type-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Reporte de Trabajadores</h3>
+                        <p>Desempeño y órdenes completadas</p>
+                    </div>
+                    <div class="report-type-card" data-type="materials">
+                        <div class="report-type-icon">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <h3>Reporte de Materiales</h3>
+                        <p>Inventario y solicitudes de material</p>
+                    </div>
+                    <div class="report-type-card" data-type="summary">
+                        <div class="report-type-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <h3>Reporte Resumen</h3>
+                        <p>Estadísticas generales del negocio</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Filters Section -->
+            <section class="filters-section" id="filtersSection" style="display: none;">
+                <h2>Filtros</h2>
+                <div class="filters-grid">
+                    <div class="form-group">
+                        <label for="startDate">Fecha Inicio</label>
+                        <input type="date" id="startDate" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">Fecha Fin</label>
+                        <input type="date" id="endDate" class="form-control">
+                    </div>
+                    <div class="form-group" id="statusFilterGroup" style="display: none;">
+                        <label for="statusFilter">Estado</label>
+                        <select id="statusFilter" class="form-control">
+                            <option value="">Todos los estados</option>
+                            <option value="pending">Pendiente</option>
+                            <option value="assigned">Asignado</option>
+                            <option value="in_progress">En Progreso</option>
+                            <option value="completed">Completado</option>
+                            <option value="cancelled">Cancelado</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filters-actions">
+                    <button class="btn btn-primary" id="generateReportBtn">
+                        <i class="fas fa-file-pdf"></i> Generar Reporte
+                    </button>
+                    <button class="btn btn-secondary" id="exportCSVBtn">
+                        <i class="fas fa-file-csv"></i> Exportar CSV
+                    </button>
+                </div>
+            </section>
+
+            <!-- Report Preview Section -->
+            <section class="report-preview-section" id="reportPreviewSection" style="display: none;">
+                <div class="section-header">
+                    <h2>Vista Previa del Reporte</h2>
+                    <button class="btn btn-icon" id="printReportBtn" title="Imprimir">
+                        <i class="fas fa-print"></i>
+                    </button>
+                </div>
+
+                <div id="reportContent" class="report-content">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+            </section>
+
+            <!-- Statistics Summary -->
+            <section class="statistics-section" id="statisticsSection" style="display: none;">
+                <h2>Estadísticas</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #0099CC 0%, #0077AA 100%);">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-value" id="statTotalOrders">0</span>
+                            <span class="stat-label">Total de Órdenes</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #00A651 0%, #008841 100%);">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-value" id="statCompletedOrders">0</span>
+                            <span class="stat-label">Órdenes Completadas</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-value" id="statPendingOrders">0</span>
+                            <span class="stat-label">Órdenes Pendientes</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%);">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-value" id="statCompletionRate">0%</span>
+                            <span class="stat-label">Tasa de Completado</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Generando reporte...</p>
+    </div>
+
+    <script src="/scripts/generar-reporte.js"></script>
+</body>
+</html>

@@ -83,6 +83,7 @@ document.getElementById('nuevaOrdenForm').addEventListener('submit', async (e) =
         client_name: document.getElementById('client_name').value,
         client_phone: document.getElementById('client_phone').value || '',
         address: document.getElementById('address').value,
+        city: document.getElementById('city').value,
         scheduled_date: scheduledDateTime,
         notes: document.getElementById('notes').value || null
     };

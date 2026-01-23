@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nueva Orden - JDI Cleaning Services</title>
+    <title>Nuevo Trabajador - JDI Cleaning Services</title>
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/animations.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         .form-container {
-            max-width: 900px;
+            max-width: 800px;
             margin: 2rem auto;
             padding: 2rem;
             background: rgba(255, 255, 255, 0.95);
@@ -63,8 +63,7 @@
         }
 
         .form-group input,
-        .form-group select,
-        .form-group textarea {
+        .form-group select {
             width: 100%;
             padding: 0.75rem;
             border: 2px solid #e0e0e0;
@@ -74,48 +73,8 @@
         }
 
         .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
+        .form-group select:focus {
             outline: none;
-            border-color: #0099CC;
-        }
-
-        .form-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .areas-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .area-checkbox {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem;
-            background: #f8f9fa;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .area-checkbox:hover {
-            background: #e3f2fd;
-            border-color: #0099CC;
-        }
-
-        .area-checkbox input[type="checkbox"] {
-            width: auto;
-            margin: 0;
-        }
-
-        .area-checkbox.selected {
-            background: #e3f2fd;
             border-color: #0099CC;
         }
 
@@ -127,10 +86,6 @@
 
         @media (max-width: 768px) {
             .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .areas-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -159,9 +114,14 @@
             color: white;
         }
 
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 153, 204, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .btn-secondary {
@@ -171,6 +131,47 @@
 
         .btn-secondary:hover {
             background: #d0d0d0;
+        }
+
+        .password-strength {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .password-strength.weak {
+            color: #ff6b6b;
+        }
+
+        .password-strength.medium {
+            color: #ffa94d;
+        }
+
+        .password-strength.strong {
+            color: #51cf66;
+        }
+
+        .password-requirements {
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: #888;
+            line-height: 1.5;
+        }
+
+        .password-requirements li {
+            list-style: none;
+        }
+
+        .password-requirements li.valid {
+            color: #51cf66;
+        }
+
+        .password-requirements li.valid::before {
+            content: "✓ ";
+        }
+
+        .password-requirements li.invalid::before {
+            content: "✗ ";
+            color: #ff6b6b;
         }
 
         .loading-overlay {
@@ -211,6 +212,12 @@
         .hidden {
             display: none;
         }
+
+        .help-text {
+            font-size: 0.875rem;
+            color: #888;
+            margin-top: 0.25rem;
+        }
     </style>
 </head>
 <body>
@@ -249,70 +256,86 @@
         <div class="container">
             <div class="form-container">
                 <div class="form-header">
-                    <i class="fas fa-clipboard-list"></i>
+                    <i class="fas fa-user-plus"></i>
                     <div>
-                        <h1>Nueva Orden de Limpieza</h1>
-                        <p style="margin: 0; color: #888;">Complete la información para crear una nueva orden</p>
+                        <h1>Nuevo Trabajador</h1>
+                        <p style="margin: 0; color: #888;">Complete la información para registrar un nuevo trabajador</p>
                     </div>
                 </div>
 
-                <form id="nuevaOrdenForm">
-                    <!-- Sección: Información Básica -->
+                <form id="nuevoTrabajadorForm">
+                    <!-- Sección: Información Personal -->
                     <div class="form-section">
-                        <h2><i class="fas fa-info-circle"></i> Información Básica</h2>
+                        <h2><i class="fas fa-id-card"></i> Información Personal</h2>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="client_name">Nombre del Cliente *</label>
-                                <input type="text" id="client_name" name="client_name" required>
+                                <label for="name">Nombre *</label>
+                                <input type="text" id="name" name="name" required placeholder="Ej: Juan Pérez">
+                                <span class="help-text">Nombre como aparecerá en el sistema</span>
                             </div>
 
                             <div class="form-group">
-                                <label for="client_phone">Teléfono</label>
-                                <input type="tel" id="client_phone" name="client_phone">
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="address">Dirección *</label>
-                                <input type="text" id="address" name="address" required placeholder="Ej: 123 Calle Principal">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="city">Ciudad *</label>
-                                <input type="text" id="city" name="city" required placeholder="Ej: Miami, FL">
+                                <label for="full_name">Nombre Completo</label>
+                                <input type="text" id="full_name" name="full_name" placeholder="Ej: Juan Carlos Pérez García">
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="scheduled_date">Fecha Programada *</label>
-                                <input type="date" id="scheduled_date" name="scheduled_date" required>
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" name="email" required placeholder="Ej: juan.perez@example.com">
+                                <span class="help-text">Se usará para iniciar sesión</span>
                             </div>
 
                             <div class="form-group">
-                                <label for="scheduled_time">Hora Programada *</label>
-                                <input type="time" id="scheduled_time" name="scheduled_time" required>
+                                <label for="phone">Teléfono</label>
+                                <input type="tel" id="phone" name="phone" placeholder="Ej: 305-555-1234">
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Sección: Áreas de Limpieza -->
-                    <div class="form-section">
-                        <h2><i class="fas fa-map-marked-alt"></i> Áreas de Limpieza *</h2>
-                        <div id="areasGrid" class="areas-grid">
-                            <!-- Se llenarán dinámicamente desde la BD -->
-                        </div>
-                    </div>
-
-                    <!-- Sección: Detalles Adicionales -->
-                    <div class="form-section">
-                        <h2><i class="fas fa-sticky-note"></i> Detalles Adicionales</h2>
 
                         <div class="form-group">
-                            <label for="notes">Notas / Instrucciones Especiales</label>
-                            <textarea id="notes" name="notes" placeholder="Ej: Usar productos especiales, áreas de difícil acceso, etc."></textarea>
+                            <label for="username">Usuario (Opcional)</label>
+                            <input type="text" id="username" name="username" placeholder="Ej: jperez">
+                            <span class="help-text">Si no se proporciona, se usará el email para login</span>
+                        </div>
+                    </div>
+
+                    <!-- Sección: Credenciales -->
+                    <div class="form-section">
+                        <h2><i class="fas fa-lock"></i> Credenciales de Acceso</h2>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="password">Contraseña *</label>
+                                <input type="password" id="password" name="password" required minlength="6">
+                                <ul class="password-requirements" id="passwordRequirements">
+                                    <li id="req-length" class="invalid">Mínimo 6 caracteres</li>
+                                    <li id="req-uppercase" class="invalid">Al menos 1 letra mayúscula</li>
+                                    <li id="req-lowercase" class="invalid">Al menos 1 letra minúscula</li>
+                                    <li id="req-number" class="invalid">Al menos 1 número</li>
+                                </ul>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password_confirm">Confirmar Contraseña *</label>
+                                <input type="password" id="password_confirm" name="password_confirm" required minlength="6">
+                                <span class="help-text" id="passwordMatch"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección: Preferencias -->
+                    <div class="form-section">
+                        <h2><i class="fas fa-cog"></i> Preferencias</h2>
+
+                        <div class="form-group">
+                            <label for="preferred_language">Idioma Preferido</label>
+                            <select id="preferred_language" name="preferred_language">
+                                <option value="es" selected>Español</option>
+                                <option value="en">English</option>
+                                <option value="fr">Français</option>
+                            </select>
                         </div>
                     </div>
 
@@ -321,8 +344,8 @@
                         <button type="button" class="btn btn-secondary" onclick="window.location.href='/'">
                             <i class="fas fa-times"></i> Cancelar
                         </button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Crear Orden
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <i class="fas fa-save"></i> Crear Trabajador
                         </button>
                     </div>
                 </form>
@@ -334,10 +357,10 @@
     <div id="loadingOverlay" class="loading-overlay hidden">
         <div class="loading-content">
             <div class="spinner"></div>
-            <p>Creando orden...</p>
+            <p>Creando trabajador...</p>
         </div>
     </div>
 
-    <script src="scripts/nueva-orden.js"></script>
+    <script src="scripts/nuevo-trabajador.js"></script>
 </body>
 </html>

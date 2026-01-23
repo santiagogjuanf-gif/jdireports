@@ -453,7 +453,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // Redirigir según la acción
       const redirects = {
         'Nueva Orden': '/nueva-orden.html',
-        'Nuevo Trabajador': null, // Pendiente
+        'Nuevo Trabajador': '/nuevo-trabajador.html',
         'Generar Reporte': null,  // Pendiente
         'Solicitar Material': null // Pendiente
       };
@@ -462,7 +462,6 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = redirects[title];
       } else {
         const actions = {
-          'Nuevo Trabajador': 'permitirá registrar un nuevo trabajador en el sistema',
           'Generar Reporte': 'generará y descargará un reporte en formato PDF',
           'Solicitar Material': 'abrirá el formulario para solicitar material del inventario'
         };

@@ -34,7 +34,7 @@ async function restaurarBaseDatos() {
 
         const dbName = process.env.DB_NAME || 'jd_cleaning_services';
 
-        await connection.execute(`
+        await connection.query(`
             CREATE DATABASE IF NOT EXISTS \`${dbName}\`
             CHARACTER SET utf8mb4
             COLLATE utf8mb4_unicode_ci
@@ -43,7 +43,7 @@ async function restaurarBaseDatos() {
         console.log(`✅ Base de datos "${dbName}" lista\n`);
 
         // Cambiar a la base de datos
-        await connection.execute(`USE \`${dbName}\``);
+        await connection.query(`USE \`${dbName}\``);
 
         // PASO 3: Ejecutar migraciones
         console.log('📋 PASO 3: Ejecutando migraciones...\n');
@@ -68,7 +68,7 @@ async function restaurarBaseDatos() {
 
             for (const statement of statements) {
                 try {
-                    await connection.execute(statement);
+                    await connection.query(statement);
                 } catch (error) {
                     // Ignorar errores de "tabla ya existe"
                     if (!error.message.includes('already exists')) {
@@ -85,7 +85,7 @@ async function restaurarBaseDatos() {
         // PASO 4: Verificar tablas creadas
         console.log('📋 PASO 4: Verificando tablas creadas...\n');
 
-        const [tables] = await connection.execute('SHOW TABLES');
+        const [tables] = await connection.query('SHOW TABLES');
 
         console.log(`Se crearon ${tables.length} tablas:\n`);
         tables.forEach((table, index) => {
@@ -98,7 +98,7 @@ async function restaurarBaseDatos() {
         console.log('📋 PASO 5: Creando usuario administrador...\n');
 
         // Eliminar admin anterior si existe
-        await connection.execute(`DELETE FROM users WHERE username = 'admin'`);
+        await connection.query(`DELETE FROM users WHERE username = 'admin'`);
 
         const password = 'Admin123!';
         const passwordHash = await bcrypt.hash(password, 10);

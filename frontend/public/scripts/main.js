@@ -454,16 +454,15 @@ document.addEventListener('DOMContentLoaded', function() {
       const redirects = {
         'Nueva Orden': '/nueva-orden.html',
         'Nuevo Trabajador': '/nuevo-trabajador.html',
-        'Generar Reporte': null,  // Pendiente
-        'Solicitar Material': null // Pendiente
+        'Solicitar Material': '/solicitar-material.html',
+        'Generar Reporte': null  // Pendiente
       };
 
       if (redirects[title]) {
         window.location.href = redirects[title];
       } else {
         const actions = {
-          'Generar Reporte': 'generará y descargará un reporte en formato PDF',
-          'Solicitar Material': 'abrirá el formulario para solicitar material del inventario'
+          'Generar Reporte': 'generará y descargará un reporte en formato PDF'
         };
         const description = actions[title] || 'ejecutará la funcionalidad correspondiente';
         alert(`Funcionalidad: ${title}\n\nEsta función ${description}.\n\n(En desarrollo)`);

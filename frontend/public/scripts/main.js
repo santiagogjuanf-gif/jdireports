@@ -420,8 +420,8 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ [MAIN] Botón "Nueva Orden" encontrado');
     btnNuevaOrden.addEventListener('click', function(e) {
       e.preventDefault();
-      console.log('🔘 [MAIN] Click en "Nueva Orden"');
-      alert('Funcionalidad: Nueva Orden\n\nEsta función abrirá el formulario para crear una nueva orden de limpieza.\n\n(En desarrollo)');
+      console.log('🔘 [MAIN] Click en "Nueva Orden" - Redirigiendo...');
+      window.location.href = '/nueva-orden.html';
     });
   } else {
     console.warn('⚠️ [MAIN] Botón "Nueva Orden" NO encontrado');
@@ -450,17 +450,26 @@ document.addEventListener('DOMContentLoaded', function() {
       e.preventDefault();
       console.log(`🔘 [MAIN] Click en tarjeta: "${title}"`);
 
-      const actions = {
-        'Nueva Orden': 'abrirá el formulario para crear una orden de limpieza',
-        'Nuevo Trabajador': 'permitirá registrar un nuevo trabajador en el sistema',
-        'Generar Reporte': 'generará y descargará un reporte en formato PDF',
-        'Solicitar Material': 'abrirá el formulario para solicitar material del inventario'
+      // Redirigir según la acción
+      const redirects = {
+        'Nueva Orden': '/nueva-orden.html',
+        'Nuevo Trabajador': null, // Pendiente
+        'Generar Reporte': null,  // Pendiente
+        'Solicitar Material': null // Pendiente
       };
 
-      const description = actions[title] || 'ejecutará la funcionalidad correspondiente';
-
-      alert(`Funcionalidad: ${title}\n\nEsta función ${description}.\n\n(En desarrollo)`);
-      showNotification(`${title} - En desarrollo`, 'info');
+      if (redirects[title]) {
+        window.location.href = redirects[title];
+      } else {
+        const actions = {
+          'Nuevo Trabajador': 'permitirá registrar un nuevo trabajador en el sistema',
+          'Generar Reporte': 'generará y descargará un reporte en formato PDF',
+          'Solicitar Material': 'abrirá el formulario para solicitar material del inventario'
+        };
+        const description = actions[title] || 'ejecutará la funcionalidad correspondiente';
+        alert(`Funcionalidad: ${title}\n\nEsta función ${description}.\n\n(En desarrollo)`);
+        showNotification(`${title} - En desarrollo`, 'info');
+      }
     });
   });
 

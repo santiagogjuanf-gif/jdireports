@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Orden - JDI Cleaning Services</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .form-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .form-header i {
+            font-size: 2rem;
+            color: #0099CC;
+        }
+
+        .form-header h1 {
+            font-size: 1.8rem;
+            color: #333;
+            margin: 0;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section h2 {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #0099CC;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .areas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .area-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .area-checkbox:hover {
+            background: #e3f2fd;
+            border-color: #0099CC;
+        }
+
+        .area-checkbox input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .area-checkbox.selected {
+            background: #e3f2fd;
+            border-color: #0099CC;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .areas-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0099CC 0%, #0077AA 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 153, 204, 0.3);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #555;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0099CC;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Fondo animado -->
+    <div class="animated-background">
+        <div class="bubble bubble-1"></div>
+        <div class="bubble bubble-2"></div>
+        <div class="bubble bubble-3"></div>
+        <div class="bubble bubble-4"></div>
+        <div class="bubble bubble-5"></div>
+        <div class="bubble bubble-6"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header glass-effect">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="logo-placeholder">
+                        <i class="fas fa-broom"></i>
+                    </div>
+                    <span class="logo-text">JDI Cleaning</span>
+                </div>
+                <div class="user-menu">
+                    <div class="user-avatar">
+                        <img src="https://ui-avatars.com/api/?name=Admin&background=0099CC&color=fff" alt="Usuario">
+                        <div class="status-indicator online"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Formulario -->
+    <main class="main-content">
+        <div class="container">
+            <div class="form-container">
+                <div class="form-header">
+                    <i class="fas fa-clipboard-list"></i>
+                    <div>
+                        <h1>Nueva Orden de Limpieza</h1>
+                        <p style="margin: 0; color: #888;">Complete la información para crear una nueva orden</p>
+                    </div>
+                </div>
+
+                <form id="nuevaOrdenForm">
+                    <!-- Sección: Información Básica -->
+                    <div class="form-section">
+                        <h2><i class="fas fa-info-circle"></i> Información Básica</h2>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="client_name">Nombre del Cliente *</label>
+                                <input type="text" id="client_name" name="client_name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="client_phone">Teléfono</label>
+                                <input type="tel" id="client_phone" name="client_phone">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address">Dirección *</label>
+                            <input type="text" id="address" name="address" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="scheduled_date">Fecha Programada *</label>
+                                <input type="date" id="scheduled_date" name="scheduled_date" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="scheduled_time">Hora Programada *</label>
+                                <input type="time" id="scheduled_time" name="scheduled_time" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección: Áreas de Limpieza -->
+                    <div class="form-section">
+                        <h2><i class="fas fa-map-marked-alt"></i> Áreas de Limpieza *</h2>
+                        <div id="areasGrid" class="areas-grid">
+                            <!-- Se llenarán dinámicamente desde la BD -->
+                        </div>
+                    </div>
+
+                    <!-- Sección: Detalles Adicionales -->
+                    <div class="form-section">
+                        <h2><i class="fas fa-sticky-note"></i> Detalles Adicionales</h2>
+
+                        <div class="form-group">
+                            <label for="notes">Notas / Instrucciones Especiales</label>
+                            <textarea id="notes" name="notes" placeholder="Ej: Usar productos especiales, áreas de difícil acceso, etc."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='/'">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Crear Orden
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Creando orden...</p>
+        </div>
+    </div>
+
+    <script src="scripts/nueva-orden.js"></script>
+</body>
+</html>

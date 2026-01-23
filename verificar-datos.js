@@ -20,14 +20,14 @@ async function verificarDatos() {
         const tablasImportantes = [
             'users',
             'cleaning_areas',
-            'products',
+            'materials',
             'motivational_messages',
-            'work_orders',
-            'workers',
-            'inventory_requests',
+            'orders',
             'daily_reports',
-            'chat_messages',
-            'notifications'
+            'messages',
+            'notifications',
+            'material_requests',
+            'conversations'
         ];
 
         for (const tabla of tablasImportantes) {
@@ -70,21 +70,21 @@ async function verificarDatos() {
             }
         } catch (e) {}
 
-        // Verificar productos
+        // Verificar materiales
         try {
-            const [products] = await connection.query('SELECT name, category FROM products LIMIT 5');
-            if (products.length > 0) {
-                console.log('\n🧴 PRODUCTOS (primeros 5):');
-                products.forEach(p => console.log(`   - ${p.name} (${p.category})`));
-                const [total] = await connection.query('SELECT COUNT(*) as count FROM products');
+            const [materials] = await connection.query('SELECT name, category FROM materials LIMIT 5');
+            if (materials.length > 0) {
+                console.log('\n🧴 MATERIALES (primeros 5):');
+                materials.forEach(m => console.log(`   - ${m.name} (${m.category})`));
+                const [total] = await connection.query('SELECT COUNT(*) as count FROM materials');
                 if (total[0].count > 5) {
                     console.log(`   ... y ${total[0].count - 5} más`);
                 }
             } else {
-                console.log('\n⚠️  No hay productos en la base de datos');
+                console.log('\n⚠️  No hay materiales en la base de datos');
             }
         } catch (e) {
-            console.log('\n⚠️  Tabla products no existe o está vacía');
+            console.log('\n⚠️  Tabla materials no existe o está vacía');
         }
 
         // Verificar mensajes motivacionales
@@ -103,17 +103,28 @@ async function verificarDatos() {
         console.log('\n' + '='.repeat(70));
         console.log('\n💡 RECOMENDACIÓN:\n');
 
-        const [products] = await connection.query('SELECT COUNT(*) as count FROM products').catch(() => [{count: 0}]);
-        const [messages] = await connection.query('SELECT COUNT(*) as count FROM motivational_messages').catch(() => [{count: 0}]);
+        try {
+            const [materials] = await connection.query('SELECT COUNT(*) as count FROM materials');
+            const [messages] = await connection.query('SELECT COUNT(*) as count FROM motivational_messages');
+            const [areas] = await connection.query('SELECT COUNT(*) as count FROM cleaning_areas');
 
-        if (products[0].count === 0 || messages[0].count === 0) {
-            console.log('⚠️  Faltan datos iniciales. Ejecuta:');
-            console.log('   node ejecutar-todas-migraciones.js');
-        } else {
-            console.log('✅ La base de datos tiene todos los datos necesarios');
+            const materialsCount = materials[0].count;
+            const messagesCount = messages[0].count;
+            const areasCount = areas[0].count;
+
+            if (materialsCount === 0 || messagesCount === 0 || areasCount === 0) {
+                console.log('⚠️  Faltan datos iniciales. Ejecuta:');
+                console.log('   node ejecutar-todas-migraciones.js\n');
+            } else {
+                console.log('✅ La base de datos tiene todos los datos necesarios');
+                console.log(`   - ${areasCount} áreas de limpieza`);
+                console.log(`   - ${messagesCount} mensajes motivacionales`);
+                console.log(`   - ${materialsCount} materiales\n`);
+            }
+        } catch (error) {
+            console.log('⚠️  Error verificando datos:', error.message);
+            console.log('   Ejecuta: node ejecutar-todas-migraciones.js\n');
         }
-
-        console.log();
 
     } catch (error) {
         console.error('\n❌ Error:', error.message);

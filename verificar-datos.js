@@ -1,0 +1,128 @@
+const mysql = require('mysql2/promise');
+
+async function verificarDatos() {
+    let connection;
+
+    try {
+        console.log('🔌 Conectando a MySQL...\n');
+        connection = await mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            password: '',
+            database: 'jd_cleaning_services'
+        });
+
+        console.log('✅ Conectado a la base de datos\n');
+        console.log('📊 VERIFICACIÓN DE DATOS EN TABLAS\n');
+        console.log('='.repeat(70));
+
+        // Lista de tablas importantes a verificar
+        const tablasImportantes = [
+            'users',
+            'cleaning_areas',
+            'products',
+            'motivational_messages',
+            'work_orders',
+            'workers',
+            'inventory_requests',
+            'daily_reports',
+            'chat_messages',
+            'notifications'
+        ];
+
+        for (const tabla of tablasImportantes) {
+            try {
+                const [rows] = await connection.query(`SELECT COUNT(*) as count FROM ${tabla}`);
+                const count = rows[0].count;
+
+                if (count > 0) {
+                    console.log(`✅ ${tabla.padEnd(30)} ${count} registros`);
+                } else {
+                    console.log(`⚪ ${tabla.padEnd(30)} 0 registros (vacía)`);
+                }
+            } catch (error) {
+                console.log(`❌ ${tabla.padEnd(30)} (tabla no existe)`);
+            }
+        }
+
+        console.log('\n' + '='.repeat(70));
+        console.log('\n📋 DETALLES DE DATOS IMPORTANTES:\n');
+
+        // Verificar usuarios
+        try {
+            const [users] = await connection.query('SELECT username, role FROM users');
+            if (users.length > 0) {
+                console.log('👥 USUARIOS:');
+                users.forEach(u => console.log(`   - ${u.username} (${u.role})`));
+            }
+        } catch (e) {}
+
+        // Verificar áreas
+        try {
+            const [areas] = await connection.query('SELECT name_key, name_es FROM cleaning_areas LIMIT 5');
+            if (areas.length > 0) {
+                console.log('\n🏢 ÁREAS DE LIMPIEZA (primeras 5):');
+                areas.forEach(a => console.log(`   - ${a.name_key}: ${a.name_es}`));
+                const [total] = await connection.query('SELECT COUNT(*) as count FROM cleaning_areas');
+                if (total[0].count > 5) {
+                    console.log(`   ... y ${total[0].count - 5} más`);
+                }
+            }
+        } catch (e) {}
+
+        // Verificar productos
+        try {
+            const [products] = await connection.query('SELECT name, category FROM products LIMIT 5');
+            if (products.length > 0) {
+                console.log('\n🧴 PRODUCTOS (primeros 5):');
+                products.forEach(p => console.log(`   - ${p.name} (${p.category})`));
+                const [total] = await connection.query('SELECT COUNT(*) as count FROM products');
+                if (total[0].count > 5) {
+                    console.log(`   ... y ${total[0].count - 5} más`);
+                }
+            } else {
+                console.log('\n⚠️  No hay productos en la base de datos');
+            }
+        } catch (e) {
+            console.log('\n⚠️  Tabla products no existe o está vacía');
+        }
+
+        // Verificar mensajes motivacionales
+        try {
+            const [messages] = await connection.query('SELECT language, COUNT(*) as count FROM motivational_messages GROUP BY language');
+            if (messages.length > 0) {
+                console.log('\n💬 MENSAJES MOTIVACIONALES:');
+                messages.forEach(m => console.log(`   - ${m.language.toUpperCase()}: ${m.count} mensajes`));
+            } else {
+                console.log('\n⚠️  No hay mensajes motivacionales en la base de datos');
+            }
+        } catch (e) {
+            console.log('\n⚠️  Tabla motivational_messages no existe o está vacía');
+        }
+
+        console.log('\n' + '='.repeat(70));
+        console.log('\n💡 RECOMENDACIÓN:\n');
+
+        const [products] = await connection.query('SELECT COUNT(*) as count FROM products').catch(() => [{count: 0}]);
+        const [messages] = await connection.query('SELECT COUNT(*) as count FROM motivational_messages').catch(() => [{count: 0}]);
+
+        if (products[0].count === 0 || messages[0].count === 0) {
+            console.log('⚠️  Faltan datos iniciales. Ejecuta:');
+            console.log('   node ejecutar-todas-migraciones.js');
+        } else {
+            console.log('✅ La base de datos tiene todos los datos necesarios');
+        }
+
+        console.log();
+
+    } catch (error) {
+        console.error('\n❌ Error:', error.message);
+        process.exit(1);
+    } finally {
+        if (connection) {
+            await connection.end();
+        }
+    }
+}
+
+verificarDatos();

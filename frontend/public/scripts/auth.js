@@ -6,30 +6,49 @@ const API_URL = 'http://localhost:3000/api';
 
 // Verificar si el usuario está autenticado
 function checkAuth() {
+    console.log('🔍 [AUTH DEBUG] ========== INICIANDO VERIFICACIÓN DE AUTENTICACIÓN ==========');
+
     const token = localStorage.getItem('token');
     const currentPage = window.location.pathname;
 
+    console.log('🔍 [AUTH DEBUG] Página actual:', currentPage);
+    console.log('🔍 [AUTH DEBUG] Token existe:', !!token);
+    if (token) {
+        console.log('🔍 [AUTH DEBUG] Token:', token.substring(0, 30) + '...');
+    }
+
     // Si estamos en login.html y ya hay token, redirigir al dashboard
     if (currentPage.includes('login.html') && token) {
+        console.log('🔍 [AUTH DEBUG] Ya hay token en login.html, redirigiendo al dashboard...');
         window.location.href = '/';
         return;
     }
 
     // Si NO estamos en login.html y NO hay token, redirigir a login
     if (!currentPage.includes('login.html') && !token) {
+        console.log('🔍 [AUTH DEBUG] No hay token, redirigiendo a login...');
         window.location.href = '/login.html';
         return;
     }
 
     // Si hay token, verificarlo con el servidor
     if (token && !currentPage.includes('login.html')) {
+        console.log('🔍 [AUTH DEBUG] Hay token, verificando con servidor...');
         verifyToken(token);
     }
+
+    console.log('🔍 [AUTH DEBUG] ========== FIN DE VERIFICACIÓN ==========');
 }
 
 // Verificar token con el servidor
 async function verifyToken(token) {
+    console.log('🔍 [AUTH DEBUG] Iniciando verificación de token...');
+    console.log('🔍 [AUTH DEBUG] Token:', token.substring(0, 20) + '...');
+    console.log('🔍 [AUTH DEBUG] URL:', `${API_URL}/auth/verify`);
+
     try {
+        console.log('🔍 [AUTH DEBUG] Haciendo petición a /auth/verify...');
+
         const response = await fetch(`${API_URL}/auth/verify`, {
             method: 'GET',
             headers: {
@@ -37,16 +56,27 @@ async function verifyToken(token) {
             }
         });
 
+        console.log('🔍 [AUTH DEBUG] Respuesta recibida');
+        console.log('🔍 [AUTH DEBUG] Status:', response.status);
+        console.log('🔍 [AUTH DEBUG] Status Text:', response.statusText);
+
         if (!response.ok) {
+            console.error('❌ [AUTH DEBUG] Token inválido o expirado');
+            console.error('❌ [AUTH DEBUG] Respuesta:', await response.text());
             // Token inválido, cerrar sesión
             logout();
         } else {
+            console.log('✅ [AUTH DEBUG] Token válido');
             // Token válido, cargar datos del usuario
             const data = await response.json();
+            console.log('✅ [AUTH DEBUG] Datos del usuario:', data);
             loadUserData(data.user);
         }
     } catch (error) {
-        console.error('Error verificando token:', error);
+        console.error('❌ [AUTH DEBUG] Error verificando token:', error);
+        console.error('❌ [AUTH DEBUG] Error completo:', error.message, error.stack);
+        // Si hay error de red, NO cerrar sesión automáticamente
+        // logout();
     }
 }
 
@@ -64,8 +94,12 @@ function loadUserData(user) {
 
 // Cerrar sesión
 function logout() {
+    console.log('🚪 [AUTH DEBUG] ========== CERRANDO SESIÓN ==========');
+    console.log('🚪 [AUTH DEBUG] Stack trace:', new Error().stack);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    console.log('🚪 [AUTH DEBUG] Token y usuario eliminados de localStorage');
+    console.log('🚪 [AUTH DEBUG] Redirigiendo a /login.html...');
     window.location.href = '/login.html';
 }
 

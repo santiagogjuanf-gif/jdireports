@@ -248,7 +248,7 @@ const logActivity = async (userId, orderId, action, description, req = null) => 
     const activityData = {
       user_id: userId || null,
       order_id: orderId || null,
-      action,
+      action_type: action,
       description
     };
     

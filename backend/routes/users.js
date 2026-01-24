@@ -103,7 +103,7 @@ const handleValidationErrors = (req, res, next) => {
 // ================================================
 // LISTAR TODOS LOS USUARIOS - SIMPLIFICADO
 // ================================================
-router.get('/', requireSupervisor, async (req, res) => {
+router.get('/', authenticateToken, requireSupervisor, async (req, res) => {
   try {
     const { page = 1, limit = 10, role, status, search } = req.query;
     const offset = (page - 1) * limit;
@@ -219,7 +219,7 @@ router.get('/', requireSupervisor, async (req, res) => {
 // ================================================
 // OBTENER USUARIO POR ID
 // ================================================
-router.get('/:id', userIdValidation, handleValidationErrors, requireSupervisor, async (req, res) => {
+router.get('/:id', authenticateToken, userIdValidation, handleValidationErrors, requireSupervisor, async (req, res) => {
   try {
     const userId = parseInt(req.params.id);
     const currentUserRole = req.userRole;
@@ -301,7 +301,7 @@ router.get('/:id', userIdValidation, handleValidationErrors, requireSupervisor, 
 // ================================================
 // CREAR NUEVO USUARIO
 // ================================================
-router.post('/', createUserValidation, handleValidationErrors, requireSupervisor, async (req, res) => {
+router.post('/', authenticateToken, createUserValidation, handleValidationErrors, requireSupervisor, async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
     const creatorRole = req.userRole;
@@ -381,7 +381,7 @@ router.post('/', createUserValidation, handleValidationErrors, requireSupervisor
 // ================================================
 // ACTUALIZAR USUARIO
 // ================================================
-router.put('/:id', userIdValidation, updateUserValidation, handleValidationErrors, requireUserModifyPermission, async (req, res) => {
+router.put('/:id', authenticateToken, userIdValidation, updateUserValidation, handleValidationErrors, requireUserModifyPermission, async (req, res) => {
   try {
     const userId = parseInt(req.params.id);
     const { name, email, role } = req.body;
@@ -488,7 +488,7 @@ router.put('/:id', userIdValidation, updateUserValidation, handleValidationError
 // ================================================
 // ACTIVAR/DESACTIVAR USUARIO
 // ================================================
-router.put('/:id/toggle-status', userIdValidation, handleValidationErrors, requireUserModifyPermission, async (req, res) => {
+router.put('/:id/toggle-status', authenticateToken, userIdValidation, handleValidationErrors, requireUserModifyPermission, async (req, res) => {
   try {
     const userId = parseInt(req.params.id);
     const currentUserId = req.userId;
@@ -569,7 +569,7 @@ router.put('/:id/toggle-status', userIdValidation, handleValidationErrors, requi
 // ================================================
 // OBTENER TRABAJADORES DISPONIBLES PARA ASIGNACIÓN
 // ================================================
-router.get('/workers/available', requireRole(['admin', 'jefe', 'gerente']), async (req, res) => {
+router.get('/workers/available', authenticateToken, requireRole(['admin', 'jefe', 'gerente']), async (req, res) => {
   try {
     // Query simple para obtener trabajadores
     const workersResult = await query(`

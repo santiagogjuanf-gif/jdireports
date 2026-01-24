@@ -298,8 +298,7 @@ router.get('/', authenticateToken, async (req, res) => {
         o.city,
         o.scheduled_date,
         o.status,
-        o.work_started_at,
-        o.work_completed_at,
+        o.started_at,
         o.created_at,
         creator.name as created_by_name,
         responsible.name as responsible_worker_name,
@@ -655,9 +654,9 @@ router.post('/:id/start', authenticateToken, requireRole(['trabajador']), startW
     await query(`
       UPDATE orders SET
         status = 'in_progress',
-        work_started_at = NOW(),
-        gps_start_latitude = ?,
-        gps_start_longitude = ?,
+        started_at = NOW(),
+        start_gps_latitude = ?,
+        start_gps_longitude = ?,
         updated_at = NOW()
       WHERE id = ?
     `, [gps_start_latitude, gps_start_longitude, orderId]);

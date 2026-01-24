@@ -372,65 +372,40 @@ window.addEventListener('error', function(e) {
 });
 
 // ================================================
-// CONSOLE STYLING (DEV)
-// ================================================
-
-console.log(
-  '%c🧹 JDI Cleaning Services %c- Sistema de Gestión',
-  'color: #0099CC; font-size: 20px; font-weight: bold;',
-  'color: #00A651; font-size: 16px;'
-);
-
-console.log(
-  '%cVersión: 1.0.0',
-  'color: #666; font-size: 12px;'
-);
-
-// ================================================
 // FUNCIONALIDAD DE BOTONES DEL DASHBOARD
 // ================================================
 
 // Esperar a que el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('🔧 [MAIN] Inicializando funcionalidad de botones...');
 
   // BOTONES DEL HERO
   const btnNuevaOrden = document.querySelector('.hero-actions .btn-primary');
   const btnVerCalendario = document.querySelector('.hero-actions .btn-secondary');
 
   if (btnNuevaOrden) {
-    console.log('✅ [MAIN] Botón "Nueva Orden" encontrado');
     btnNuevaOrden.addEventListener('click', function(e) {
       e.preventDefault();
-      console.log('🔘 [MAIN] Click en "Nueva Orden" - Redirigiendo...');
       window.location.href = '/nueva-orden';
     });
   } else {
-    console.warn('⚠️ [MAIN] Botón "Nueva Orden" NO encontrado');
   }
 
   if (btnVerCalendario) {
-    console.log('✅ [MAIN] Botón "Ver Calendario" encontrado');
     btnVerCalendario.addEventListener('click', function(e) {
       e.preventDefault();
-      console.log('🔘 [MAIN] Click en "Ver Calendario" - Redirigiendo...');
       window.location.href = '/calendario';
     });
   } else {
-    console.warn('⚠️ [MAIN] Botón "Ver Calendario" NO encontrado');
   }
 
   // BOTONES DE ACCIONES RÁPIDAS
   const actionCards = document.querySelectorAll('.action-card');
-  console.log(`🔍 [MAIN] Se encontraron ${actionCards.length} tarjetas de acción`);
 
   actionCards.forEach((card, index) => {
     const title = card.querySelector('h3')?.textContent || 'Acción ' + (index + 1);
-    console.log(`✅ [MAIN] Registrando event listener para: "${title}"`);
 
     card.addEventListener('click', function(e) {
       e.preventDefault();
-      console.log(`🔘 [MAIN] Click en tarjeta: "${title}"`);
 
       // Redirigir según la acción
       const redirects = {
@@ -458,13 +433,11 @@ document.addEventListener('DOMContentLoaded', function() {
   const userDropdown = document.getElementById('userDropdown');
 
   if (userAvatar && userDropdown) {
-    console.log('✅ [MAIN] Avatar de usuario y dropdown encontrados');
 
     // Toggle dropdown al hacer click en avatar
     userAvatar.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
-      console.log('🔘 [MAIN] Click en avatar de usuario - toggleando dropdown');
       userDropdown.classList.toggle('hidden');
     });
 
@@ -480,10 +453,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (menuProfile) {
       menuProfile.addEventListener('click', function(e) {
         e.preventDefault();
-        console.log('🔘 [MAIN] Click en "Mi Perfil"');
         userDropdown.classList.add('hidden');
-        showNotification('Funcionalidad de perfil en desarrollo', 'info');
-        // TODO: window.location.href = '/perfil';
+        window.location.href = '/perfil';
       });
     }
 
@@ -492,10 +463,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (menuSettings) {
       menuSettings.addEventListener('click', function(e) {
         e.preventDefault();
-        console.log('🔘 [MAIN] Click en "Configuración"');
         userDropdown.classList.add('hidden');
-        showNotification('Funcionalidad de configuración en desarrollo', 'info');
-        // TODO: window.location.href = '/configuracion';
+        window.location.href = '/configuracion';
       });
     }
 
@@ -507,7 +476,6 @@ document.addEventListener('DOMContentLoaded', function() {
       menuLanguage.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        console.log('🔘 [MAIN] Click en "Idioma" - Toggle submenu');
         languageSubmenu.classList.toggle('show');
         languageSubmenu.classList.toggle('hidden');
       });
@@ -518,7 +486,6 @@ document.addEventListener('DOMContentLoaded', function() {
           e.preventDefault();
           e.stopPropagation();
           const selectedLang = this.dataset.lang;
-          console.log('🌐 [MAIN] Idioma seleccionado:', selectedLang);
 
           // Guardar idioma en localStorage
           localStorage.setItem('language', selectedLang);
@@ -553,12 +520,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (menuLogout) {
       menuLogout.addEventListener('click', function(e) {
         e.preventDefault();
-        console.log('🔘 [MAIN] Click en "Cerrar Sesión"');
         userDropdown.classList.add('hidden');
 
         const shouldLogout = confirm('¿Estás seguro de que deseas cerrar sesión?');
         if (shouldLogout) {
-          console.log('🚪 [MAIN] Usuario confirma logout');
           if (window.auth && typeof window.auth.logout === 'function') {
             window.auth.logout();
           } else {
@@ -571,7 +536,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   } else {
-    console.warn('⚠️ [MAIN] Avatar de usuario o dropdown NO encontrado');
   }
 
   // ================================================
@@ -582,12 +546,10 @@ document.addEventListener('DOMContentLoaded', function() {
   const closeNotifications = document.getElementById('closeNotifications');
 
   if (notificationBell && notificationsPanel) {
-    console.log('✅ [MAIN] Sistema de notificaciones inicializado');
 
     notificationBell.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
-      console.log('🔘 [MAIN] Toggle panel de notificaciones');
       notificationsPanel.classList.toggle('hidden');
       notificationsPanel.classList.toggle('show');
       // Cerrar chat si está abierto
@@ -622,10 +584,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const chatMessages = document.getElementById('chatMessages');
 
   if (floatingChatBtn && chatPanel) {
-    console.log('✅ [MAIN] Sistema de chat inicializado');
 
     floatingChatBtn.addEventListener('click', function() {
-      console.log('🔘 [MAIN] Toggle panel de chat');
       chatPanel.classList.toggle('hidden');
       chatPanel.classList.toggle('show');
       // Cerrar notificaciones si están abiertas
@@ -695,7 +655,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  console.log('✅ [MAIN] Todos los event listeners registrados correctamente');
 
   // ================================================
   // CARGAR DATOS REALES DEL DASHBOARD
@@ -711,8 +670,6 @@ document.addEventListener('DOMContentLoaded', function() {
 const API_BASE_URL = 'http://localhost:3000/api';
 
 async function loadDashboardData() {
-  console.log('📊 [DASHBOARD] Cargando datos del dashboard...');
-
   // Cargar datos en paralelo
   await Promise.all([
     loadUserName(),

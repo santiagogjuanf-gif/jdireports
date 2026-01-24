@@ -46,41 +46,62 @@
                     <h3 style="margin-bottom: 1.5rem; color: var(--color-gray-600);"><i class="fas fa-user-edit"></i> Información Personal</h3>
 
                     <div class="form-group">
-                        <label for="name">Nombre Completo *</label>
-                        <input type="text" id="name" required autocomplete="off">
+                        <label for="name">
+                            <i class="fas fa-user"></i>
+                            Nombre Completo *
+                        </label>
+                        <input type="text" id="name" required autocomplete="off" placeholder="Ingresa tu nombre completo">
                     </div>
 
                     <div class="form-group">
-                        <label for="email">Email *</label>
-                        <input type="email" id="email" required autocomplete="off">
+                        <label for="email">
+                            <i class="fas fa-envelope"></i>
+                            Email *
+                        </label>
+                        <input type="email" id="email" required autocomplete="off" placeholder="tu@email.com">
                     </div>
 
                     <div class="form-group">
-                        <label for="phone">Teléfono</label>
-                        <input type="tel" id="phone" autocomplete="off">
+                        <label for="phone">
+                            <i class="fas fa-phone"></i>
+                            Teléfono
+                        </label>
+                        <input type="tel" id="phone" autocomplete="off" placeholder="+1 (555) 123-4567">
                     </div>
 
                     <div class="form-group">
-                        <label for="username">Usuario</label>
-                        <input type="text" id="username" disabled style="background: #f5f5f5; cursor: not-allowed;">
+                        <label for="username">
+                            <i class="fas fa-at"></i>
+                            Usuario
+                        </label>
+                        <input type="text" id="username" disabled style="background: #f5f5f5; cursor: not-allowed;" placeholder="usuario">
                     </div>
 
                     <div style="border-top: 2px solid #e0e0e0; margin: 2rem 0; padding-top: 2rem;">
                         <h3 style="margin-bottom: 1.5rem; color: var(--color-gray-600);"><i class="fas fa-lock"></i> Cambiar Contraseña</h3>
 
                         <div class="form-group">
-                            <label for="currentPassword">Contraseña Actual</label>
-                            <input type="password" id="currentPassword" autocomplete="off">
+                            <label for="currentPassword">
+                                <i class="fas fa-key"></i>
+                                Contraseña Actual
+                            </label>
+                            <input type="password" id="currentPassword" autocomplete="off" placeholder="Ingresa tu contraseña actual">
                         </div>
 
                         <div class="form-group">
-                            <label for="newPassword">Nueva Contraseña</label>
-                            <input type="password" id="newPassword" autocomplete="off">
+                            <label for="newPassword">
+                                <i class="fas fa-lock"></i>
+                                Nueva Contraseña
+                            </label>
+                            <input type="password" id="newPassword" autocomplete="off" placeholder="Mínimo 6 caracteres">
                         </div>
 
                         <div class="form-group">
-                            <label for="confirmPassword">Confirmar Nueva Contraseña</label>
-                            <input type="password" id="confirmPassword" autocomplete="off">
+                            <label for="confirmPassword">
+                                <i class="fas fa-check-circle"></i>
+                                Confirmar Nueva Contraseña
+                            </label>
+                            <input type="password" id="confirmPassword" autocomplete="off" placeholder="Repite tu nueva contraseña">
                         </div>
                     </div>
 

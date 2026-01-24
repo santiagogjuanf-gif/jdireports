@@ -144,29 +144,50 @@
 
 .form-group {
     margin-bottom: 1.5rem;
+    position: relative;
 }
 
 .form-group label {
-    display: block;
-    font-weight: 500;
-    color: #333;
-    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 0.75rem;
     font-size: 0.9rem;
+    letter-spacing: 0.3px;
+}
+
+.form-group label i {
+    color: #0099CC;
+    font-size: 1rem;
 }
 
 .form-control {
     width: 100%;
-    padding: 0.75rem 1rem;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
+    padding: 0.875rem 1.25rem;
+    padding-left: 1rem;
+    border: 2px solid #e8e8e8;
+    border-radius: 10px;
     font-size: 0.95rem;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-family: 'Poppins', sans-serif;
+    background: #fafafa;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.form-control:hover {
+    border-color: #d0d0d0;
+    background: #ffffff;
 }
 
 .form-control:focus {
     outline: none;
     border-color: #0099CC;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(0, 153, 204, 0.1),
+                0 2px 8px rgba(0, 153, 204, 0.15);
+    transform: translateY(-1px);
     box-shadow: 0 0 0 3px rgba(0, 153, 204, 0.1);
 }
 

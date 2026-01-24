@@ -4,7 +4,8 @@
 
 const express = require('express');
 const { body, param, validationResult } = require('express-validator');
-const { 
+const {
+  authenticateToken,
   requireRole,
   requireSupervisor,
   requireUserModifyPermission,

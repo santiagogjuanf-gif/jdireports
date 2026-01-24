@@ -271,32 +271,32 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="name">Nombre *</label>
-                                <input type="text" id="name" name="name" required placeholder="Ej: Juan Pérez">
+                                <input type="text" autocomplete="off" id="name" name="name" required placeholder="Ej: Juan Pérez">
                                 <span class="help-text">Nombre como aparecerá en el sistema</span>
                             </div>
 
                             <div class="form-group">
                                 <label for="full_name">Nombre Completo</label>
-                                <input type="text" id="full_name" name="full_name" placeholder="Ej: Juan Carlos Pérez García">
+                                <input type="text" autocomplete="off" id="full_name" name="full_name" placeholder="Ej: Juan Carlos Pérez García">
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="email">Email *</label>
-                                <input type="email" id="email" name="email" required placeholder="Ej: juan.perez@example.com">
+                                <input type="email" autocomplete="off" id="email" name="email" required placeholder="Ej: juan.perez@example.com">
                                 <span class="help-text">Se usará para iniciar sesión</span>
                             </div>
 
                             <div class="form-group">
                                 <label for="phone">Teléfono</label>
-                                <input type="tel" id="phone" name="phone" placeholder="Ej: 305-555-1234">
+                                <input type="tel" autocomplete="off" id="phone" name="phone" placeholder="Ej: 305-555-1234">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="username">Usuario (Opcional)</label>
-                            <input type="text" id="username" name="username" placeholder="Ej: jperez">
+                            <input type="text" autocomplete="off" id="username" name="username" placeholder="Ej: jperez">
                             <span class="help-text">Si no se proporciona, se usará el email para login</span>
                         </div>
                     </div>
@@ -307,7 +307,7 @@
 
                         <div class="form-group">
                             <label for="role">Rol en el Sistema *</label>
-                            <select id="role" name="role" required>
+                            <select autocomplete="off" id="role" name="role" required>
                                 <option value="">Seleccione un rol</option>
                                 <option value="trabajador" selected>Trabajador</option>
                                 <option value="gerente">Gerente</option>
@@ -331,7 +331,7 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="password">Contraseña *</label>
-                                <input type="password" id="password" name="password" required minlength="6">
+                                <input type="password" autocomplete="off" id="password" name="password" required minlength="6">
                                 <ul class="password-requirements" id="passwordRequirements">
                                     <li id="req-length" class="invalid">Mínimo 6 caracteres</li>
                                     <li id="req-uppercase" class="invalid">Al menos 1 letra mayúscula</li>
@@ -342,7 +342,7 @@
 
                             <div class="form-group">
                                 <label for="password_confirm">Confirmar Contraseña *</label>
-                                <input type="password" id="password_confirm" name="password_confirm" required minlength="6">
+                                <input type="password" autocomplete="off" id="password_confirm" name="password_confirm" required minlength="6">
                                 <span class="help-text" id="passwordMatch"></span>
                             </div>
                         </div>
@@ -354,7 +354,7 @@
 
                         <div class="form-group">
                             <label for="preferred_language">Idioma Preferido</label>
-                            <select id="preferred_language" name="preferred_language">
+                            <select autocomplete="off" id="preferred_language" name="preferred_language">
                                 <option value="es" selected>Español</option>
                                 <option value="en">English</option>
                                 <option value="fr">Français</option>

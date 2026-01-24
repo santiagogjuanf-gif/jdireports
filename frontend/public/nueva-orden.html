@@ -264,24 +264,24 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="client_name">Nombre del Cliente *</label>
-                                <input type="text" id="client_name" name="client_name" required>
+                                <input type="text" autocomplete="off" id="client_name" name="client_name" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="client_phone">Teléfono</label>
-                                <input type="tel" id="client_phone" name="client_phone">
+                                <input type="tel" autocomplete="off" id="client_phone" name="client_phone">
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="address">Dirección *</label>
-                                <input type="text" id="address" name="address" required placeholder="Ej: 123 Calle Principal">
+                                <input type="text" autocomplete="off" id="address" name="address" required placeholder="Ej: 123 Calle Principal">
                             </div>
 
                             <div class="form-group">
                                 <label for="city">Ciudad *</label>
-                                <input type="text" id="city" name="city" required placeholder="Ej: Miami, FL">
+                                <input type="text" autocomplete="off" id="city" name="city" required placeholder="Ej: Miami, FL">
                             </div>
                         </div>
 
@@ -306,13 +306,26 @@
                         </div>
                     </div>
 
+                    <!-- Sección: Asignación de Trabajador -->
+                    <div class="form-section">
+                        <h2><i class="fas fa-user-hard-hat"></i> Asignación de Trabajador</h2>
+                        <div class="form-group">
+                            <label for="responsible_worker_id">Trabajador Responsable (Opcional)</label>
+                            <select autocomplete="off" id="responsible_worker_id" name="responsible_worker_id">
+                                <option value="">Sin asignar - Asignar después</option>
+                                <!-- Se llenarán los trabajadores disponibles dinámicamente -->
+                            </select>
+                            <span class="help-text">Puedes dejar sin asignar y asignar trabajador más tarde desde el calendario</span>
+                        </div>
+                    </div>
+
                     <!-- Sección: Detalles Adicionales -->
                     <div class="form-section">
                         <h2><i class="fas fa-sticky-note"></i> Detalles Adicionales</h2>
 
                         <div class="form-group">
                             <label for="notes">Notas / Instrucciones Especiales</label>
-                            <textarea id="notes" name="notes" placeholder="Ej: Usar productos especiales, áreas de difícil acceso, etc."></textarea>
+                            <textarea id="notes" name="notes" placeholder="Ej: Usar productos especiales, áreas de difícil acceso, etc." autocomplete="off"></textarea>
                         </div>
                     </div>
 

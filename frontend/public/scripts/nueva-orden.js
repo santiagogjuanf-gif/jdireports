@@ -6,6 +6,40 @@ const API_BASE_URL = 'http://localhost:3000/api';
 let selectedAreas = [];
 
 // ================================================
+// CARGAR TRABAJADORES DISPONIBLES
+// ================================================
+
+async function cargarTrabajadores() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/users?role=trabajador&status=active`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        if (!response.ok) {
+            console.warn('No se pudieron cargar los trabajadores');
+            return;
+        }
+
+        const data = await response.json();
+        const select = document.getElementById('responsible_worker_id');
+
+        if (data.users && data.users.length > 0) {
+            data.users.forEach(worker => {
+                const option = document.createElement('option');
+                option.value = worker.id;
+                option.textContent = `${worker.name} ${worker.email ? '(' + worker.email + ')' : ''}`;
+                select.appendChild(option);
+            });
+        }
+
+    } catch (error) {
+        console.error('Error cargando trabajadores:', error);
+    }
+}
+
+// ================================================
 // CARGAR ÁREAS DE LIMPIEZA
 // ================================================
 
@@ -78,6 +112,8 @@ document.getElementById('nuevaOrdenForm').addEventListener('submit', async (e) =
     const scheduledDateTime = `${date} ${time}:00`;
 
     // Obtener datos del formulario
+    const responsible_worker_id = document.getElementById('responsible_worker_id').value;
+
     const orderData = {
         order_type: 'regular',
         client_name: document.getElementById('client_name').value,
@@ -87,6 +123,11 @@ document.getElementById('nuevaOrdenForm').addEventListener('submit', async (e) =
         scheduled_date: scheduledDateTime,
         notes: document.getElementById('notes').value || null
     };
+
+    // Agregar trabajador responsable si fue seleccionado
+    if (responsible_worker_id) {
+        orderData.responsible_worker_id = parseInt(responsible_worker_id);
+    }
 
     try {
         // Mostrar loading
@@ -227,8 +268,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // Cargar áreas
+    // Cargar áreas y trabajadores
     cargarAreas();
+    cargarTrabajadores();
 });
 
 // Agregar animaciones CSS si no existen

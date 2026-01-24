@@ -106,34 +106,19 @@
             <section class="hero slide-up">
                 <div class="hero-content">
                     <h1 class="hero-title">
-                        <span class="gradient-text">Bienvenido al Sistema</span>
-                        <br>
-                        de Gestión JDI
+                        <span class="gradient-text">Bienvenido</span>
+                        <span id="heroUserName">Usuario</span>
                     </h1>
                     <p class="hero-subtitle">Administra tus órdenes de limpieza de manera eficiente y profesional</p>
                     <div class="hero-actions">
-                        <button class="btn btn-primary btn-glow">
+                        <button class="btn btn-primary btn-glow" onclick="window.location.href='/nueva-orden'">
                             <i class="fas fa-plus"></i>
                             Nueva Orden
                         </button>
-                        <button class="btn btn-secondary">
+                        <button class="btn btn-secondary" onclick="window.location.href='/calendario'">
                             <i class="fas fa-calendar"></i>
                             Ver Calendario
                         </button>
-                    </div>
-                </div>
-                <div class="hero-image">
-                    <div class="floating-card card-1">
-                        <i class="fas fa-check-circle"></i>
-                        <span>150 Órdenes Completadas</span>
-                    </div>
-                    <div class="floating-card card-2">
-                        <i class="fas fa-users"></i>
-                        <span>25 Trabajadores Activos</span>
-                    </div>
-                    <div class="floating-card card-3">
-                        <i class="fas fa-star"></i>
-                        <span>4.9 Calificación</span>
                     </div>
                 </div>
             </section>
@@ -145,12 +130,8 @@
                         <i class="fas fa-clipboard-check"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 class="stat-number count-up" data-target="42">0</h3>
+                        <h3 class="stat-number" id="statActiveOrders">-</h3>
                         <p class="stat-label">Órdenes Activas</p>
-                        <div class="stat-trend positive">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>12% este mes</span>
-                        </div>
                     </div>
                 </div>
 
@@ -159,12 +140,8 @@
                         <i class="fas fa-check-double"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 class="stat-number count-up" data-target="128">0</h3>
+                        <h3 class="stat-number" id="statCompletedOrders">-</h3>
                         <p class="stat-label">Completadas</p>
-                        <div class="stat-trend positive">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>8% este mes</span>
-                        </div>
                     </div>
                 </div>
 
@@ -173,12 +150,8 @@
                         <i class="fas fa-users"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 class="stat-number count-up" data-target="25">0</h3>
+                        <h3 class="stat-number" id="statWorkers">-</h3>
                         <p class="stat-label">Trabajadores</p>
-                        <div class="stat-trend neutral">
-                            <i class="fas fa-minus"></i>
-                            <span>Sin cambios</span>
-                        </div>
                     </div>
                 </div>
 
@@ -187,12 +160,8 @@
                         <i class="fas fa-clock"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 class="stat-number count-up" data-target="8">0</h3>
+                        <h3 class="stat-number" id="statPending">-</h3>
                         <p class="stat-label">Pendientes</p>
-                        <div class="stat-trend negative">
-                            <i class="fas fa-arrow-down"></i>
-                            <span>3% este mes</span>
-                        </div>
                     </div>
                 </div>
             </section>
@@ -204,102 +173,53 @@
                         <i class="fas fa-list"></i>
                         Órdenes Recientes
                     </h2>
-                    <button class="btn btn-text">
+                    <button class="btn btn-text" onclick="window.location.href='/calendario'">
                         Ver todas
                         <i class="fas fa-arrow-right"></i>
                     </button>
                 </div>
 
-                <div class="orders-grid">
-                    <div class="order-card glass-effect hover-lift">
-                        <div class="order-header">
-                            <span class="order-number">#JDI-2025-0042</span>
-                            <span class="order-status status-active">En Progreso</span>
-                        </div>
-                        <h3 class="order-client">Edificio Torre Azul</h3>
-                        <p class="order-address">
-                            <i class="fas fa-map-marker-alt"></i>
-                            Av. Principal 123, Piso 5
-                        </p>
-                        <div class="order-details">
-                            <div class="order-detail">
-                                <i class="fas fa-calendar"></i>
-                                <span>Hoy, 14:30</span>
-                            </div>
-                            <div class="order-detail">
-                                <i class="fas fa-user"></i>
-                                <span>Juan Pérez</span>
-                            </div>
-                        </div>
-                        <div class="order-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 65%"></div>
-                            </div>
-                            <span class="progress-text">65% Completado</span>
-                        </div>
+                <div class="orders-grid" id="recentOrdersGrid">
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #888;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p>Cargando órdenes...</p>
                     </div>
+                </div>
+            </section>
 
-                    <div class="order-card glass-effect hover-lift">
-                        <div class="order-header">
-                            <span class="order-number">#JDI-2025-0041</span>
-                            <span class="order-status status-pending">Pendiente</span>
-                        </div>
-                        <h3 class="order-client">Casa Residencial</h3>
-                        <p class="order-address">
-                            <i class="fas fa-map-marker-alt"></i>
-                            Calle 45 #12-34
-                        </p>
-                        <div class="order-details">
-                            <div class="order-detail">
-                                <i class="fas fa-calendar"></i>
-                                <span>Mañana, 09:00</span>
-                            </div>
-                            <div class="order-detail">
-                                <i class="fas fa-user"></i>
-                                <span>María García</span>
-                            </div>
-                        </div>
-                        <div class="order-actions">
-                            <button class="btn btn-small btn-primary">
-                                <i class="fas fa-play"></i>
-                                Iniciar
-                            </button>
-                            <button class="btn btn-small btn-secondary">
-                                <i class="fas fa-edit"></i>
-                                Editar
-                            </button>
-                        </div>
-                    </div>
+            <!-- Workers Table -->
+            <section class="workers-section slide-up" style="animation-delay: 0.5s;">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-users"></i>
+                        Trabajadores
+                    </h2>
+                    <button class="btn btn-primary" onclick="window.location.href='/nuevo-trabajador'">
+                        <i class="fas fa-user-plus"></i>
+                        Nuevo Trabajador
+                    </button>
+                </div>
 
-                    <div class="order-card glass-effect hover-lift">
-                        <div class="order-header">
-                            <span class="order-number">#JDI-2025-0040</span>
-                            <span class="order-status status-completed">Completada</span>
-                        </div>
-                        <h3 class="order-client">Oficinas Corporate</h3>
-                        <p class="order-address">
-                            <i class="fas fa-map-marker-alt"></i>
-                            Centro Empresarial, Oficina 302
-                        </p>
-                        <div class="order-details">
-                            <div class="order-detail">
-                                <i class="fas fa-calendar"></i>
-                                <span>Ayer, 15:00</span>
-                            </div>
-                            <div class="order-detail">
-                                <i class="fas fa-user"></i>
-                                <span>Carlos López</span>
-                            </div>
-                        </div>
-                        <div class="order-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span>Excelente servicio</span>
-                        </div>
-                    </div>
+                <div class="workers-table-container glass-effect">
+                    <table class="workers-table" id="workersTable">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Teléfono</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="workersTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 2rem; color: #888;">
+                                    <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                                    <p>Cargando trabajadores...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
 

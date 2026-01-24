@@ -551,4 +551,211 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   console.log('✅ [MAIN] Todos los event listeners registrados correctamente');
+
+  // ================================================
+  // CARGAR DATOS REALES DEL DASHBOARD
+  // ================================================
+
+  loadDashboardData();
 });
+
+// ================================================
+// FUNCIONES PARA CARGAR DATOS DEL BACKEND
+// ================================================
+
+const API_BASE_URL = 'http://localhost:3000/api';
+
+async function loadDashboardData() {
+  console.log('📊 [DASHBOARD] Cargando datos del dashboard...');
+
+  // Cargar datos en paralelo
+  await Promise.all([
+    loadUserName(),
+    loadStatistics(),
+    loadRecentOrders(),
+    loadWorkersTable()
+  ]);
+}
+
+// Cargar nombre de usuario
+async function loadUserName() {
+  try {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const userName = user.name || 'Usuario';
+
+    const heroNameEl = document.getElementById('heroUserName');
+    if (heroNameEl) {
+      heroNameEl.textContent = userName;
+    }
+  } catch (error) {
+    console.error('Error cargando nombre de usuario:', error);
+  }
+}
+
+// Cargar estadísticas
+async function loadStatistics() {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    // Obtener estadísticas de órdenes
+    const ordersResponse = await fetch(`${API_BASE_URL}/orders?limit=1000`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (ordersResponse.ok) {
+      const ordersData = await ordersResponse.json();
+      const orders = ordersData.orders || [];
+
+      const activeOrders = orders.filter(o => ['assigned', 'in_progress'].includes(o.status)).length;
+      const completedOrders = orders.filter(o => o.status === 'completed').length;
+      const pendingOrders = orders.filter(o => o.status === 'pending').length;
+
+      document.getElementById('statActiveOrders').textContent = activeOrders;
+      document.getElementById('statCompletedOrders').textContent = completedOrders;
+      document.getElementById('statPending').textContent = pendingOrders;
+    }
+
+    // Obtener cantidad de trabajadores
+    const usersResponse = await fetch(`${API_BASE_URL}/users?role=trabajador`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (usersResponse.ok) {
+      const usersData = await usersResponse.json();
+      const workers = usersData.users || [];
+      document.getElementById('statWorkers').textContent = workers.length;
+    }
+
+  } catch (error) {
+    console.error('Error cargando estadísticas:', error);
+    // Mostrar 0 en caso de error
+    document.getElementById('statActiveOrders').textContent = '0';
+    document.getElementById('statCompletedOrders').textContent = '0';
+    document.getElementById('statWorkers').textContent = '0';
+    document.getElementById('statPending').textContent = '0';
+  }
+}
+
+// Cargar órdenes recientes
+async function loadRecentOrders() {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    const response = await fetch(`${API_BASE_URL}/orders?limit=3&orderBy=created_at&sortOrder=DESC`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    const grid = document.getElementById('recentOrdersGrid');
+
+    if (!response.ok) {
+      grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #888;">No se pudieron cargar las órdenes</div>';
+      return;
+    }
+
+    const data = await response.json();
+    const orders = data.orders || [];
+
+    if (orders.length === 0) {
+      grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #888;"><i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i><p>No hay órdenes aún</p></div>';
+      return;
+    }
+
+    grid.innerHTML = orders.map(order => createOrderCard(order)).join('');
+
+  } catch (error) {
+    console.error('Error cargando órdenes recientes:', error);
+    document.getElementById('recentOrdersGrid').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #888;">Error al cargar órdenes</div>';
+  }
+}
+
+function createOrderCard(order) {
+  const statusMap = {
+    'pending': { label: 'Pendiente', class: 'status-pending' },
+    'assigned': { label: 'Asignada', class: 'status-pending' },
+    'in_progress': { label: 'En Progreso', class: 'status-active' },
+    'completed': { label: 'Completada', class: 'status-completed' },
+    'cancelled': { label: 'Cancelada', class: 'status-cancelled' }
+  };
+
+  const status = statusMap[order.status] || { label: order.status, class: '' };
+  const date = new Date(order.scheduled_date).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+
+  return `
+    <div class="order-card glass-effect hover-lift">
+      <div class="order-header">
+        <span class="order-number">${order.order_number || '#' + order.id}</span>
+        <span class="order-status ${status.class}">${status.label}</span>
+      </div>
+      <h3 class="order-client">${order.client_name}</h3>
+      <p class="order-address">
+        <i class="fas fa-map-marker-alt"></i>
+        ${order.address}${order.city ? ', ' + order.city : ''}
+      </p>
+      <div class="order-details">
+        <div class="order-detail">
+          <i class="fas fa-calendar"></i>
+          <span>${date}</span>
+        </div>
+        ${order.responsible_worker_name ? `
+          <div class="order-detail">
+            <i class="fas fa-user"></i>
+            <span>${order.responsible_worker_name}</span>
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+// Cargar tabla de trabajadores
+async function loadWorkersTable() {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    const response = await fetch(`${API_BASE_URL}/users`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    const tbody = document.getElementById('workersTableBody');
+
+    if (!response.ok) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem; color: #888;">No se pudieron cargar los trabajadores</td></tr>';
+      return;
+    }
+
+    const data = await response.json();
+    const users = data.users || [];
+
+    if (users.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem; color: #888;"><i class="fas fa-users-slash" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i><p>No hay usuarios registrados</p></td></tr>';
+      return;
+    }
+
+    const roleNames = {
+      'admin': 'Administrador',
+      'jefe': 'Jefe',
+      'gerente': 'Gerente',
+      'trabajador': 'Trabajador'
+    };
+
+    tbody.innerHTML = users.map(user => `
+      <tr>
+        <td><span class="worker-name">${user.name}</span></td>
+        <td>${user.email}</td>
+        <td>${user.phone || '-'}</td>
+        <td><span class="worker-role-badge ${user.role}">${roleNames[user.role] || user.role}</span></td>
+        <td><span class="worker-status-badge ${user.is_active ? 'active' : 'inactive'}">
+          <i class="fas fa-circle"></i>
+          ${user.is_active ? 'Activo' : 'Inactivo'}
+        </span></td>
+      </tr>
+    `).join('');
+
+  } catch (error) {
+    console.error('Error cargando trabajadores:', error);
+    document.getElementById('workersTableBody').innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem; color: #888;">Error al cargar trabajadores</td></tr>';
+  }
+}

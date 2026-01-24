@@ -54,16 +54,15 @@ function createMaterialCard(material) {
     div.className = 'material-card';
     div.dataset.materialId = material.id;
 
-    // Determinar si el stock está bajo
-    const stockClass = material.current_stock <= material.min_stock ? 'low' : '';
-
     // Obtener nombre de unidad en español
     const unitNames = {
-        'unit': 'Unidad',
-        'liter': 'Litro',
+        'unidad': 'Unidad',
+        'litro': 'Litro',
         'kg': 'Kilogramo',
-        'box': 'Caja',
-        'pack': 'Paquete'
+        'caja': 'Caja',
+        'paquete': 'Paquete',
+        'rollo': 'Rollo',
+        'par': 'Par'
     };
     const unitName = unitNames[material.unit] || material.unit;
 
@@ -71,20 +70,25 @@ function createMaterialCard(material) {
     const inCart = cart[material.id];
     const currentQuantity = inCart ? inCart.quantity : 0;
 
+    // Iconos por categoría de material
+    const materialIcons = {
+        'litro': 'fa-flask',
+        'unidad': 'fa-box',
+        'rollo': 'fa-toilet-paper',
+        'par': 'fa-hand-sparkles',
+        'caja': 'fa-boxes',
+        'paquete': 'fa-cube'
+    };
+    const icon = materialIcons[material.unit] || 'fa-box';
+
     div.innerHTML = `
         <div class="material-header">
-            <div class="material-name">${material.name}</div>
-            <div class="material-unit">${unitName}</div>
-        </div>
-        ${material.description ? `<div class="material-description">${material.description}</div>` : ''}
-        <div class="material-stock">
-            <div class="stock-item">
-                <span class="stock-label">Stock Actual</span>
-                <span class="stock-value ${stockClass}">${material.current_stock || 0}</span>
+            <div class="material-icon">
+                <i class="fas ${icon}"></i>
             </div>
-            <div class="stock-item">
-                <span class="stock-label">Stock Mínimo</span>
-                <span class="stock-value">${material.min_stock || 0}</span>
+            <div class="material-info">
+                <div class="material-name">${material.name || material.name_es}</div>
+                <div class="material-unit"><i class="fas fa-ruler"></i> ${unitName}</div>
             </div>
         </div>
         <div class="quantity-selector">

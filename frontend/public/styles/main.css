@@ -964,6 +964,124 @@ a {
 }
 
 /* ================================================
+   WORKERS TABLE
+   ================================================ */
+
+.workers-section {
+  margin-top: var(--spacing-xl);
+}
+
+.workers-table-container {
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+}
+
+.workers-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.workers-table thead {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  color: var(--color-white);
+}
+
+.workers-table th {
+  padding: var(--spacing-md);
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.workers-table th:first-child {
+  border-top-left-radius: var(--radius-md);
+}
+
+.workers-table th:last-child {
+  border-top-right-radius: var(--radius-md);
+}
+
+.workers-table tbody tr {
+  border-bottom: 1px solid var(--color-gray-200);
+  transition: background-color var(--transition-fast);
+}
+
+.workers-table tbody tr:hover {
+  background-color: var(--color-gray-100);
+}
+
+.workers-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.workers-table td {
+  padding: var(--spacing-md);
+  font-size: 0.9rem;
+  color: var(--color-gray-600);
+}
+
+.worker-name {
+  font-weight: 600;
+  color: var(--color-gray-700);
+}
+
+.worker-role-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.worker-role-badge.admin {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: var(--color-white);
+}
+
+.worker-role-badge.jefe {
+  background: linear-gradient(135deg, var(--color-orange) 0%, #f5576c 100%);
+  color: var(--color-white);
+}
+
+.worker-role-badge.gerente {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #0077AA 100%);
+  color: var(--color-white);
+}
+
+.worker-role-badge.trabajador {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, #008040 100%);
+  color: var(--color-white);
+}
+
+.worker-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.worker-status-badge.active {
+  background: rgba(0, 166, 81, 0.1);
+  color: var(--color-secondary);
+}
+
+.worker-status-badge.inactive {
+  background: rgba(244, 67, 54, 0.1);
+  color: var(--color-red);
+}
+
+.worker-status-badge i {
+  font-size: 0.5rem;
+}
+
+/* ================================================
    FLOATING CHAT
    ================================================ */
 

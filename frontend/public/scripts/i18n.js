@@ -18,31 +18,38 @@ const translations = {
 
         // Hero Section
         'heroTitle': 'Bienvenido al Sistema JDI',
-        'heroSubtitle': 'Sistema de gestión de limpieza profesional',
+        'heroSubtitle': 'Administra tus órdenes de limpieza de manera eficiente y profesional',
         'newOrder': 'Nueva Orden',
         'viewCalendar': 'Ver Calendario',
+        'welcome': 'Bienvenido',
 
         // Statistics
         'statActiveOrders': 'Órdenes Activas',
         'statCompletedOrders': 'Órdenes Completadas',
+        'statCompleted': 'Completadas',
         'statPending': 'Pendientes',
         'statWorkers': 'Trabajadores',
 
-        // Quick Actions
+        // Sections
+        'recentOrders': 'Órdenes Recientes',
+        'viewAll': 'Ver todas',
         'quickActions': 'Acciones Rápidas',
+        'workersTitle': 'Trabajadores',
+
+        // Actions
         'newWorker': 'Nuevo Trabajador',
         'requestMaterial': 'Solicitar Material',
         'generateReport': 'Generar Reporte',
         'manageInventory': 'Gestionar Inventario',
 
         // Workers Table
-        'workersTitle': 'Trabajadores',
         'name': 'Nombre',
         'email': 'Email',
         'phone': 'Teléfono',
         'role': 'Rol',
         'status': 'Estado',
         'noWorkersRegistered': 'No hay usuarios registrados',
+        'loadingWorkers': 'Cargando trabajadores...',
 
         // Roles
         'admin': 'Administrador',
@@ -54,19 +61,17 @@ const translations = {
         'active': 'Activo',
         'inactive': 'Inactivo',
 
-        // Notifications
+        // Notifications & Chat
         'notifications': 'Notificaciones',
         'noNotifications': 'No hay notificaciones',
-
-        // Chat
         'chat': 'Chat de Soporte',
         'chatPlaceholder': 'Escribe tu mensaje...',
 
-        // Messages
-        'welcome': '¡Bienvenido!',
+        // Common
         'loading': 'Cargando...',
         'error': 'Error',
-        'success': 'Éxito'
+        'success': 'Éxito',
+        'loadingOrders': 'Cargando órdenes...'
     },
 
     en: {
@@ -84,31 +89,38 @@ const translations = {
 
         // Hero Section
         'heroTitle': 'Welcome to JDI System',
-        'heroSubtitle': 'Professional cleaning management system',
+        'heroSubtitle': 'Manage your cleaning orders efficiently and professionally',
         'newOrder': 'New Order',
         'viewCalendar': 'View Calendar',
+        'welcome': 'Welcome',
 
         // Statistics
         'statActiveOrders': 'Active Orders',
         'statCompletedOrders': 'Completed Orders',
+        'statCompleted': 'Completed',
         'statPending': 'Pending',
         'statWorkers': 'Workers',
 
-        // Quick Actions
+        // Sections
+        'recentOrders': 'Recent Orders',
+        'viewAll': 'View all',
         'quickActions': 'Quick Actions',
+        'workersTitle': 'Workers',
+
+        // Actions
         'newWorker': 'New Worker',
         'requestMaterial': 'Request Material',
         'generateReport': 'Generate Report',
         'manageInventory': 'Manage Inventory',
 
         // Workers Table
-        'workersTitle': 'Workers',
         'name': 'Name',
         'email': 'Email',
         'phone': 'Phone',
         'role': 'Role',
         'status': 'Status',
         'noWorkersRegistered': 'No workers registered',
+        'loadingWorkers': 'Loading workers...',
 
         // Roles
         'admin': 'Administrator',
@@ -120,19 +132,17 @@ const translations = {
         'active': 'Active',
         'inactive': 'Inactive',
 
-        // Notifications
+        // Notifications & Chat
         'notifications': 'Notifications',
         'noNotifications': 'No notifications',
-
-        // Chat
         'chat': 'Support Chat',
         'chatPlaceholder': 'Type your message...',
 
-        // Messages
-        'welcome': 'Welcome!',
+        // Common
         'loading': 'Loading...',
         'error': 'Error',
-        'success': 'Success'
+        'success': 'Success',
+        'loadingOrders': 'Loading orders...'
     },
 
     fr: {
@@ -147,6 +157,65 @@ const translations = {
         'logout': 'Déconnexion',
         'language': 'Langue',
         'currentLanguage': 'Français',
+
+        // Hero Section
+        'heroTitle': 'Bienvenue au système JDI',
+        'heroSubtitle': 'Gérez vos commandes de nettoyage de manière efficace et professionnelle',
+        'newOrder': 'Nouvelle Commande',
+        'viewCalendar': 'Voir le Calendrier',
+        'welcome': 'Bienvenue',
+
+        // Statistics
+        'statActiveOrders': 'Commandes Actives',
+        'statCompletedOrders': 'Commandes Terminées',
+        'statCompleted': 'Terminées',
+        'statPending': 'En Attente',
+        'statWorkers': 'Travailleurs',
+
+        // Sections
+        'recentOrders': 'Commandes Récentes',
+        'viewAll': 'Voir tout',
+        'quickActions': 'Actions Rapides',
+        'workersTitle': 'Travailleurs',
+
+        // Actions
+        'newWorker': 'Nouveau Travailleur',
+        'requestMaterial': 'Demander du Matériel',
+        'generateReport': 'Générer un Rapport',
+        'manageInventory': 'Gérer l\'Inventaire',
+
+        // Workers Table
+        'name': 'Nom',
+        'email': 'Email',
+        'phone': 'Téléphone',
+        'role': 'Rôle',
+        'status': 'Statut',
+        'noWorkersRegistered': 'Aucun travailleur enregistré',
+        'loadingWorkers': 'Chargement des travailleurs...',
+
+        // Roles
+        'admin': 'Administrateur',
+        'jefe': 'Chef',
+        'gerente': 'Gestionnaire',
+        'trabajador': 'Travailleur',
+
+        // Status
+        'active': 'Actif',
+        'inactive': 'Inactif',
+
+        // Notifications & Chat
+        'notifications': 'Notifications',
+        'noNotifications': 'Aucune notification',
+        'chat': 'Chat de Support',
+        'chatPlaceholder': 'Tapez votre message...',
+
+        // Common
+        'loading': 'Chargement...',
+        'error': 'Erreur',
+        'success': 'Succès',
+        'loadingOrders': 'Chargement des commandes...'
+    }
+};
 
         // Hero Section
         'heroTitle': 'Bienvenue au système JDI',
@@ -280,34 +349,98 @@ function translateCommonElements() {
         'Chat de Soporte': 'chat',
         'Órdenes Activas': 'statActiveOrders',
         'Órdenes Completadas': 'statCompletedOrders',
+        'Completadas': 'statCompleted',
         'Pendientes': 'statPending',
         'Administrador': 'admin',
         'Jefe': 'jefe',
         'Gerente': 'gerente',
         'Trabajador': 'trabajador',
         'Activo': 'active',
-        'Inactivo': 'inactive'
+        'Inactivo': 'inactive',
+        'Ver todas': 'viewAll',
+        'Órdenes Recientes': 'recentOrders',
+        'Cargando órdenes...': 'loadingOrders',
+        'Cargando trabajadores...': 'loadingWorkers',
+        'Bienvenido': 'welcome',
+        'Cargando...': 'loading'
     };
 
-    // Traducir span y button con texto coincidente
-    document.querySelectorAll('span:not([id]), button span, a span, th, h2, h3').forEach(element => {
+    // Traducir elementos de texto (span, p, th, h2, h3, button text)
+    document.querySelectorAll('span:not([id]):not(.gradient-text), button span, a span, th, h2, h3, p.stat-label, p.section-title').forEach(element => {
         const text = element.textContent.trim();
         if (textMappings[text]) {
             element.textContent = t(textMappings[text]);
         }
     });
 
-    // Traducir hero
-    const heroSubtitle = document.querySelector('.hero-subtitle');
-    if (heroSubtitle && heroSubtitle.textContent.includes('Administra tus órdenes')) {
-        heroSubtitle.textContent = t('heroSubtitle');
+    // Traducir botones completos (sin hijos)
+    document.querySelectorAll('button:not(:has(span))').forEach(button => {
+        const text = button.textContent.trim();
+        // Solo traducir el texto, mantener el icono
+        const icon = button.querySelector('i');
+        const textContent = text.replace(/\s*\n\s*/g, ' ').trim();
+
+        Object.keys(textMappings).forEach(key => {
+            if (textContent.includes(key)) {
+                if (icon) {
+                    button.innerHTML = `<i class="${icon.className}"></i> ${t(textMappings[key])}`;
+                } else {
+                    button.textContent = t(textMappings[key]);
+                }
+            }
+        });
+    });
+
+    // Traducir hero section
+    const heroTitle = document.querySelector('.hero-title .gradient-text');
+    if (heroTitle && heroTitle.textContent.trim() === 'Bienvenido') {
+        heroTitle.textContent = t('welcome');
     }
+
+    const heroSubtitle = document.querySelector('.hero-subtitle');
+    if (heroSubtitle) {
+        const originalText = heroSubtitle.textContent.trim();
+        if (originalText.includes('Administra tus órdenes') || originalText.includes('Manage your cleaning') || originalText.includes('Gérez vos commandes')) {
+            heroSubtitle.textContent = t('heroSubtitle');
+        }
+    }
+
+    // Traducir labels de navegación
+    document.querySelectorAll('.nav-link span').forEach(span => {
+        const text = span.textContent.trim();
+        if (text === 'Órdenes') span.textContent = t('orders');
+        else if (text === 'Trabajadores') span.textContent = t('workers');
+        else if (text === 'Materiales') span.textContent = t('materials');
+        else if (text === 'Reportes') span.textContent = t('reports');
+        else if (text === 'Dashboard') span.textContent = t('dashboard');
+    });
 
     // Traducir placeholders
     const chatInput = document.getElementById('chatInput');
     if (chatInput) {
         chatInput.placeholder = t('chatPlaceholder');
     }
+
+    // Traducir encabezados de sección
+    document.querySelectorAll('.section-title').forEach(title => {
+        const text = title.textContent.trim().replace(/\s+/g, ' ');
+        if (text.includes('Órdenes Recientes')) {
+            const icon = title.querySelector('i');
+            if (icon) {
+                title.innerHTML = `<i class="${icon.className}"></i> ${t('recentOrders')}`;
+            }
+        } else if (text.includes('Trabajadores')) {
+            const icon = title.querySelector('i');
+            if (icon) {
+                title.innerHTML = `<i class="${icon.className}"></i> ${t('workersTitle')}`;
+            }
+        } else if (text.includes('Acciones Rápidas')) {
+            const icon = title.querySelector('i');
+            if (icon) {
+                title.innerHTML = `<i class="${icon.className}"></i> ${t('quickActions')}`;
+            }
+        }
+    });
 }
 
 // Inicializar al cargar la página

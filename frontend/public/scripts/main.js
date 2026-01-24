@@ -677,6 +677,11 @@ async function loadDashboardData() {
     loadRecentOrders()
     // loadWorkersTable() - Movido a página dedicada /trabajadores
   ]);
+
+  // Aplicar traducciones después de cargar datos dinámicos
+  if (window.i18n && window.i18n.applyTranslations) {
+    window.i18n.applyTranslations();
+  }
 }
 
 // Cargar nombre de usuario

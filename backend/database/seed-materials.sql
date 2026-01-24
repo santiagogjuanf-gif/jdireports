@@ -3,6 +3,9 @@
 -- JDI Cleaning Services
 -- ================================================
 
+-- IMPORTANTE: Primero ejecuta fix-materials-table.sql si la tabla
+-- aún tiene la estructura antigua (columna 'name' en lugar de 'name_es/name_en/name_fr')
+
 -- Limpiar tabla si existe data previa (OPCIONAL - comentar si no quieres borrar)
 -- DELETE FROM materials;
 

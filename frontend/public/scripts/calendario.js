@@ -133,7 +133,10 @@ function createOrderCard(order) {
 
     div.innerHTML = `
         <div class="order-header">
-            <div class="order-number">#${order.order_number}</div>
+            <div class="order-number">
+                <i class="fas fa-hashtag" style="font-size: 0.9rem; opacity: 0.6;"></i>
+                ID: ${order.id} - #${order.order_number}
+            </div>
             <div class="order-status status-${order.status}">${statusText[order.status] || order.status}</div>
         </div>
         <div class="order-info">
@@ -162,12 +165,21 @@ function createOrderCard(order) {
                 </div>
             ` : ''}
         </div>
+        <div class="order-actions">
+            <button class="btn-action btn-view" onclick="viewOrder(${order.id}); event.stopPropagation();">
+                <i class="fas fa-eye"></i>
+                Ver Detalles
+            </button>
+            <button class="btn-action btn-edit" onclick="editOrder(${order.id}); event.stopPropagation();">
+                <i class="fas fa-edit"></i>
+                Modificar
+            </button>
+            <button class="btn-action btn-delete" onclick="deleteOrder(${order.id}, '${order.order_number}'); event.stopPropagation();">
+                <i class="fas fa-trash"></i>
+                Eliminar
+            </button>
+        </div>
     `;
-
-    div.addEventListener('click', () => {
-        // Opcional: abrir detalle de orden
-        console.log('Ver orden:', order.id);
-    });
 
     return div;
 }
@@ -192,6 +204,264 @@ function aplicarFiltros() {
     if (endDate) params.end_date = endDate;
 
     cargarOrdenes(params);
+}
+
+// ================================================
+// CRUD OPERATIONS
+// ================================================
+
+// Ver detalles del reporte
+async function viewOrder(orderId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/orders/${orderId}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al cargar detalles de la orden');
+        }
+
+        const data = await response.json();
+        const order = data.order;
+
+        const statusText = {
+            'pending': 'Pendiente',
+            'assigned': 'Asignada',
+            'in_progress': 'En Progreso',
+            'completed': 'Completada',
+            'cancelled': 'Cancelada'
+        };
+
+        const modalBody = document.getElementById('modalBody');
+        modalBody.innerHTML = `
+            <div class="detail-group">
+                <div class="detail-label">
+                    <i class="fas fa-hashtag"></i>
+                    ID del Reporte
+                </div>
+                <div class="detail-value">${order.id}</div>
+            </div>
+
+            <div class="detail-group">
+                <div class="detail-label">
+                    <i class="fas fa-file-alt"></i>
+                    Número de Orden
+                </div>
+                <div class="detail-value">#${order.order_number}</div>
+            </div>
+
+            <div class="detail-group">
+                <div class="detail-label">
+                    <i class="fas fa-user"></i>
+                    Cliente
+                </div>
+                <div class="detail-value">${order.client_name}</div>
+            </div>
+
+            <div class="detail-group">
+                <div class="detail-label">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Dirección
+                </div>
+                <div class="detail-value">${order.address}</div>
+            </div>
+
+            <div class="detail-group">
+                <div class="detail-label">
+                    <i class="fas fa-calendar-alt"></i>
+                    Fecha Programada
+                </div>
+                <div class="detail-value">${new Date(order.scheduled_date).toLocaleString('es-ES')}</div>
+            </div>
+
+            <div class="detail-group">
+                <div class="detail-label">
+                    <i class="fas fa-clock"></i>
+                    Hora
+                </div>
+                <div class="detail-value">${order.scheduled_date.split(' ')[1] ? order.scheduled_date.split(' ')[1].substring(0, 5) : 'Sin hora'}</div>
+            </div>
+
+            <div class="detail-group">
+                <div class="detail-label">
+                    <i class="fas fa-info-circle"></i>
+                    Estado
+                </div>
+                <div class="detail-value">
+                    <span class="order-status status-${order.status}">${statusText[order.status]}</span>
+                </div>
+            </div>
+
+            ${order.responsible_worker_name ? `
+                <div class="detail-group">
+                    <div class="detail-label">
+                        <i class="fas fa-user-check"></i>
+                        Responsable
+                    </div>
+                    <div class="detail-value">${order.responsible_worker_name}</div>
+                </div>
+            ` : ''}
+
+            ${order.workers_count > 0 ? `
+                <div class="detail-group">
+                    <div class="detail-label">
+                        <i class="fas fa-users"></i>
+                        Trabajadores Asignados
+                    </div>
+                    <div class="detail-value">${order.workers_count} trabajador(es)</div>
+                </div>
+            ` : ''}
+
+            ${order.notes ? `
+                <div class="detail-group">
+                    <div class="detail-label">
+                        <i class="fas fa-sticky-note"></i>
+                        Notas
+                    </div>
+                    <div class="detail-value">${order.notes}</div>
+                </div>
+            ` : ''}
+
+            ${order.total_price ? `
+                <div class="detail-group">
+                    <div class="detail-label">
+                        <i class="fas fa-dollar-sign"></i>
+                        Precio Total
+                    </div>
+                    <div class="detail-value">$${parseFloat(order.total_price).toFixed(2)}</div>
+                </div>
+            ` : ''}
+
+            <div class="detail-group">
+                <div class="detail-label">
+                    <i class="fas fa-calendar-plus"></i>
+                    Creada el
+                </div>
+                <div class="detail-value">${new Date(order.created_at).toLocaleString('es-ES')}</div>
+            </div>
+        `;
+
+        // Mostrar modal
+        document.getElementById('detailsModal').classList.add('show');
+
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al cargar los detalles de la orden');
+    }
+}
+
+// Modificar reporte
+function editOrder(orderId) {
+    // Redirigir a página de edición (si existe) o mostrar formulario
+    const editUrl = `/editar-orden?id=${orderId}`;
+    window.location.href = editUrl;
+}
+
+// Eliminar reporte
+async function deleteOrder(orderId, orderNumber) {
+    if (!confirm(`¿Estás seguro de que deseas eliminar la orden #${orderNumber}?\n\nEsta acción no se puede deshacer.`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/orders/${orderId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Error al eliminar la orden');
+        }
+
+        // Mostrar notificación de éxito
+        showNotification('Orden eliminada exitosamente', 'success');
+
+        // Recargar órdenes
+        aplicarFiltros();
+
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification(error.message || 'Error al eliminar la orden', 'error');
+    }
+}
+
+// Cerrar modal
+function closeModal() {
+    document.getElementById('detailsModal').classList.remove('show');
+}
+
+// Cerrar modal al hacer clic fuera
+document.addEventListener('click', (e) => {
+    const modal = document.getElementById('detailsModal');
+    if (e.target === modal) {
+        closeModal();
+    }
+});
+
+// Mostrar notificaciones
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        background: ${type === 'success' ? '#00A651' : type === 'error' ? '#F44336' : '#0099CC'};
+        color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        z-index: 10000;
+        font-family: 'Poppins', sans-serif;
+        animation: slideIn 0.3s ease-out;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    `;
+    notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+        ${message}
+    `;
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Agregar animaciones si no existen
+if (!document.querySelector('#notificationAnimations')) {
+    const style = document.createElement('style');
+    style.id = 'notificationAnimations';
+    style.textContent = `
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
 }
 
 // ================================================

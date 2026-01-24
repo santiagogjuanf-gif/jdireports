@@ -430,6 +430,16 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    // Mostrar botón de solicitudes para admin/jefe/gerente
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const viewRequestsBtn = document.getElementById('viewRequestsBtn');
+    if (viewRequestsBtn && ['admin', 'jefe', 'gerente'].includes(user.role)) {
+        viewRequestsBtn.style.display = 'inline-flex';
+        viewRequestsBtn.addEventListener('click', () => {
+            window.location.href = '/solicitudes-materiales';
+        });
+    }
+
     // Cargar materiales
     cargarMateriales();
 });

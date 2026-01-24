@@ -11,19 +11,31 @@ let selectedAreas = [];
 
 async function cargarTrabajadores() {
     try {
+        console.log('👥 [NUEVA-ORDEN] Cargando trabajadores...');
         const response = await fetch(`${API_BASE_URL}/users?role=trabajador&status=active`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
         });
 
+        console.log('📡 [NUEVA-ORDEN] Respuesta trabajadores status:', response.status);
+
         if (!response.ok) {
-            console.warn('No se pudieron cargar los trabajadores');
+            console.warn('⚠️ [NUEVA-ORDEN] No se pudieron cargar los trabajadores');
             return;
         }
 
         const data = await response.json();
+        console.log('📦 [NUEVA-ORDEN] Datos de trabajadores:', data);
+
         const select = document.getElementById('responsible_worker_id');
+
+        if (!select) {
+            console.error('❌ [NUEVA-ORDEN] No se encontró el select responsible_worker_id');
+            return;
+        }
+
+        console.log(`👤 [NUEVA-ORDEN] ${data.users?.length || 0} trabajadores encontrados`);
 
         if (data.users && data.users.length > 0) {
             data.users.forEach(worker => {
@@ -31,11 +43,16 @@ async function cargarTrabajadores() {
                 option.value = worker.id;
                 option.textContent = `${worker.name} ${worker.email ? '(' + worker.email + ')' : ''}`;
                 select.appendChild(option);
+                console.log(`  ✓ Agregado: ${worker.name} (ID: ${worker.id})`);
             });
+            console.log('✅ [NUEVA-ORDEN] Trabajadores cargados en select');
+        } else {
+            console.warn('⚠️ [NUEVA-ORDEN] No hay trabajadores activos');
         }
 
     } catch (error) {
-        console.error('Error cargando trabajadores:', error);
+        console.error('❌ [NUEVA-ORDEN] Error cargando trabajadores:', error);
+        console.error('❌ [NUEVA-ORDEN] Stack:', error.stack);
     }
 }
 

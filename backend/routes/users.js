@@ -350,6 +350,7 @@ router.post('/', authenticateToken, createUserValidation, handleValidationErrors
     // Insertar nuevo usuario
     const userData = {
       name: name.trim(),
+      full_name: name.trim(),  // Agregar full_name
       email: email.toLowerCase(),
       password: hashedPassword,
       role,

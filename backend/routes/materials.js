@@ -442,7 +442,7 @@ router.post('/requests', authenticateToken, createRequestValidation, handleValid
 
     // Crear la solicitud
     const requestData = {
-      requested_by: userId,
+      requester_id: userId,  // ARREGLADO: campo correcto en BD
       notes: notes?.trim() || null,
       status: 'pending'
     };
@@ -519,10 +519,10 @@ router.get('/requests', authenticateToken, async (req, res) => {
 
     // Filtrar por rol
     if (userRole === 'trabajador') {
-      conditions.push('mr.requested_by = ?');
+      conditions.push('mr.requester_id = ?');
       params.push(userId);
     } else if (userRole === 'gerente') {
-      conditions.push('(mr.requested_by = ? OR mr.requested_by IN (SELECT id FROM users WHERE created_by = ?))');
+      conditions.push('(mr.requester_id = ? OR mr.requester_id IN (SELECT id FROM users WHERE created_by = ?))');
       params.push(userId, userId);
     }
 
@@ -541,20 +541,20 @@ router.get('/requests', authenticateToken, async (req, res) => {
     const requestsResult = await query(`
       SELECT
         mr.id,
-        mr.requested_by,
+        mr.requester_id as requested_by,
         mr.status,
         mr.notes,
-        mr.requested_at,
+        mr.created_at as requested_at,
         mr.approved_by,
         mr.approved_at,
         mr.delivered_at,
         requester.name as requester_name,
         approver.name as approver_name
       FROM material_requests mr
-      JOIN users requester ON mr.requested_by = requester.id
+      JOIN users requester ON mr.requester_id = requester.id
       LEFT JOIN users approver ON mr.approved_by = approver.id
       ${whereClause}
-      ORDER BY mr.requested_at DESC
+      ORDER BY mr.created_at DESC
       LIMIT ? OFFSET ?
     `, [...params, parseInt(limit), offset]);
 
@@ -637,7 +637,7 @@ router.get('/requests/:id', authenticateToken, async (req, res) => {
         requester.email as requester_email,
         approver.name as approver_name
       FROM material_requests mr
-      JOIN users requester ON mr.requested_by = requester.id
+      JOIN users requester ON mr.requester_id = requester.id
       LEFT JOIN users approver ON mr.approved_by = approver.id
       WHERE mr.id = ?
     `, [requestId]);
@@ -647,12 +647,12 @@ router.get('/requests/:id', authenticateToken, async (req, res) => {
     }
 
     // Verificar permisos
-    if (userRole === 'trabajador' && request.requested_by !== userId) {
+    if (userRole === 'trabajador' && request.requester_id !== userId) {
       throw new ForbiddenError('No tienes acceso a esta solicitud');
     } else if (userRole === 'gerente') {
       const hasAccess = await queryOne(`
         SELECT 1 FROM users WHERE id = ? AND (id = ? OR created_by = ?)
-      `, [request.requested_by, userId, userId]);
+      `, [request.requester_id, userId, userId]);
 
       if (!hasAccess) {
         throw new ForbiddenError('No tienes acceso a esta solicitud');
@@ -716,7 +716,7 @@ router.post('/requests/:id/approve', authenticateToken, requireRole(['admin', 'j
     const userId = req.userId;
 
     const request = await queryOne(`
-      SELECT id, status, requested_by
+      SELECT id, status, requester_id
       FROM material_requests WHERE id = ?
     `, [requestId]);
 
@@ -836,7 +836,7 @@ router.post('/requests/:id/cancel', authenticateToken, async (req, res) => {
     const { reason } = req.body;
 
     const request = await queryOne(`
-      SELECT id, status, requested_by FROM material_requests WHERE id = ?
+      SELECT id, status, requester_id FROM material_requests WHERE id = ?
     `, [requestId]);
 
     if (!request) {
@@ -844,7 +844,7 @@ router.post('/requests/:id/cancel', authenticateToken, async (req, res) => {
     }
 
     // Solo el solicitante o admin/jefe pueden cancelar
-    if (userRole !== 'admin' && userRole !== 'jefe' && request.requested_by !== userId) {
+    if (userRole !== 'admin' && userRole !== 'jefe' && request.requester_id !== userId) {
       throw new ForbiddenError('No tienes permiso para cancelar esta solicitud');
     }
 

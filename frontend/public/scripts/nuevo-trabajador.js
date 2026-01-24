@@ -118,7 +118,7 @@ document.getElementById('nuevoTrabajadorForm').addEventListener('submit', async 
         name: document.getElementById('name').value.trim(),
         email: document.getElementById('email').value.trim(),
         password: document.getElementById('password').value,
-        role: 'trabajador' // Siempre crear como trabajador
+        role: document.getElementById('role').value
     };
 
     // Campos opcionales
@@ -301,4 +301,85 @@ if (!document.querySelector('#customAnimations')) {
         }
     `;
     document.head.appendChild(style);
+}
+
+// ================================================
+// SELECTOR DE ROL Y PERMISOS
+// ================================================
+
+const roleSelect = document.getElementById('role');
+const roleInfo = document.getElementById('roleInfo');
+const rolePermissions = document.getElementById('rolePermissions');
+
+const rolesPermissions = {
+    'trabajador': {
+        description: 'Acceso básico para ejecutar trabajos',
+        permissions: [
+            'Ver órdenes asignadas',
+            'Iniciar y completar trabajos',
+            'Subir fotos de antes/después',
+            'Crear reportes diarios (post-construcción)',
+            'Solicitar materiales',
+            'Ver mensajes y tutoriales'
+        ]
+    },
+    'gerente': {
+        description: 'Gestiona trabajadores y órdenes',
+        permissions: [
+            'Todas las funciones de trabajador',
+            'Crear y editar órdenes',
+            'Asignar trabajadores a órdenes',
+            'Ver reportes de trabajadores',
+            'Aprobar solicitudes de materiales',
+            'Gestionar inventario'
+        ]
+    },
+    'jefe': {
+        description: 'Supervisor con acceso a crear usuarios',
+        permissions: [
+            'Todas las funciones de gerente',
+            'Crear trabajadores y gerentes',
+            'Ver todos los reportes',
+            'Cancelar órdenes',
+            'Gestionar áreas de limpieza',
+            'Acceso a estadísticas'
+        ]
+    },
+    'admin': {
+        description: 'Acceso total al sistema',
+        permissions: [
+            'Todas las funciones del sistema',
+            'Crear cualquier tipo de usuario',
+            'Modificar configuración del sistema',
+            'Acceso a logs y actividad',
+            'Gestionar mensajes motivacionales',
+            'Administrar base de datos'
+        ]
+    }
+};
+
+roleSelect.addEventListener('change', (e) => {
+    const selectedRole = e.target.value;
+
+    if (!selectedRole || !rolesPermissions[selectedRole]) {
+        roleInfo.style.display = 'none';
+        return;
+    }
+
+    const roleData = rolesPermissions[selectedRole];
+
+    // Actualizar descripción
+    document.getElementById('roleDescription').textContent = roleData.description;
+
+    // Mostrar permisos
+    rolePermissions.innerHTML = roleData.permissions.map(permission =>
+        `<li><i class="fas fa-check" style="color: #00A651; margin-right: 0.5rem;"></i>${permission}</li>`
+    ).join('');
+
+    roleInfo.style.display = 'block';
+});
+
+// Trigger inicial si ya hay un valor seleccionado
+if (roleSelect.value) {
+    roleSelect.dispatchEvent(new Event('change'));
 }

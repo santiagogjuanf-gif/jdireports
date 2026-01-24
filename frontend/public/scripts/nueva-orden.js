@@ -11,7 +11,7 @@ let selectedAreas = [];
 
 async function cargarAreas() {
     try {
-        const response = await fetch(`${API_BASE_URL}/cleaning-areas`, {
+        const response = await fetch(`${API_BASE_URL}/areas`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }

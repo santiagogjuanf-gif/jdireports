@@ -258,8 +258,8 @@
                 <div class="form-header">
                     <i class="fas fa-user-plus"></i>
                     <div>
-                        <h1>Nuevo Trabajador</h1>
-                        <p style="margin: 0; color: #888;">Complete la información para registrar un nuevo trabajador</p>
+                        <h1>Nuevo Usuario</h1>
+                        <p style="margin: 0; color: #888;">Complete la información para registrar un nuevo usuario en el sistema</p>
                     </div>
                 </div>
 
@@ -298,6 +298,29 @@
                             <label for="username">Usuario (Opcional)</label>
                             <input type="text" id="username" name="username" placeholder="Ej: jperez">
                             <span class="help-text">Si no se proporciona, se usará el email para login</span>
+                        </div>
+                    </div>
+
+                    <!-- Sección: Rol y Permisos -->
+                    <div class="form-section">
+                        <h2><i class="fas fa-user-shield"></i> Rol y Permisos</h2>
+
+                        <div class="form-group">
+                            <label for="role">Rol en el Sistema *</label>
+                            <select id="role" name="role" required>
+                                <option value="">Seleccione un rol</option>
+                                <option value="trabajador" selected>Trabajador</option>
+                                <option value="gerente">Gerente</option>
+                                <option value="jefe">Jefe</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                            <span class="help-text" id="roleDescription">Define los permisos y acceso del usuario</span>
+                        </div>
+
+                        <div class="role-info" id="roleInfo" style="margin-top: 1rem; padding: 1rem; background: #f0f8ff; border-left: 4px solid #0099CC; border-radius: 4px; display: none;">
+                            <strong>Permisos del rol seleccionado:</strong>
+                            <ul id="rolePermissions" style="margin: 0.5rem 0 0 1.5rem; color: #555;">
+                            </ul>
                         </div>
                     </div>
 
@@ -345,7 +368,7 @@
                             <i class="fas fa-times"></i> Cancelar
                         </button>
                         <button type="submit" class="btn btn-primary" id="submitBtn">
-                            <i class="fas fa-save"></i> Crear Trabajador
+                            <i class="fas fa-save"></i> Crear Usuario
                         </button>
                     </div>
                 </form>

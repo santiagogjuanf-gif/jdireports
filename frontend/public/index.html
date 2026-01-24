@@ -83,11 +83,27 @@
                                 <i class="fas fa-cog"></i>
                                 <span>Configuración</span>
                             </a>
-                            <a href="#" class="dropdown-item" id="menuLanguage">
-                                <i class="fas fa-language"></i>
-                                <span>Idioma</span>
-                                <i class="fas fa-chevron-right ml-auto"></i>
-                            </a>
+                            <div class="dropdown-item-group">
+                                <a href="#" class="dropdown-item" id="menuLanguage">
+                                    <i class="fas fa-language"></i>
+                                    <span>Idioma: <span id="currentLanguage">Español</span></span>
+                                    <i class="fas fa-chevron-down ml-auto"></i>
+                                </a>
+                                <div class="language-submenu hidden" id="languageSubmenu">
+                                    <a href="#" class="submenu-item" data-lang="es">
+                                        <i class="fas fa-check" id="checkEs"></i>
+                                        <span>🇪🇸 Español</span>
+                                    </a>
+                                    <a href="#" class="submenu-item" data-lang="en">
+                                        <i class="fas fa-check hidden" id="checkEn"></i>
+                                        <span>🇺🇸 English</span>
+                                    </a>
+                                    <a href="#" class="submenu-item" data-lang="fr">
+                                        <i class="fas fa-check hidden" id="checkFr"></i>
+                                        <span>🇫🇷 Français</span>
+                                    </a>
+                                </div>
+                            </div>
                             <div class="dropdown-divider"></div>
                             <a href="#" class="dropdown-item text-danger" id="menuLogout">
                                 <i class="fas fa-sign-out-alt"></i>
@@ -267,10 +283,51 @@
         </div>
     </main>
 
+    <!-- Notifications Panel -->
+    <div class="notifications-panel hidden" id="notificationsPanel">
+        <div class="panel-header">
+            <h3><i class="fas fa-bell"></i> Notificaciones</h3>
+            <button class="btn-close" id="closeNotifications"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="panel-content" id="notificationsList">
+            <div class="notification-item unread">
+                <i class="fas fa-info-circle notification-icon info"></i>
+                <div class="notification-content">
+                    <p class="notification-title">Bienvenido al Sistema JDI</p>
+                    <p class="notification-text">Sistema de gestión de limpieza activo</p>
+                    <span class="notification-time">Hace 2 minutos</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Panel -->
+    <div class="chat-panel hidden" id="chatPanel">
+        <div class="panel-header">
+            <h3><i class="fas fa-comments"></i> Chat de Soporte</h3>
+            <button class="btn-close" id="closeChat"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message bot">
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <p>¡Hola! Soy el asistente virtual de JDI. ¿En qué puedo ayudarte?</p>
+                    <span class="message-time">Ahora</span>
+                </div>
+            </div>
+        </div>
+        <div class="chat-input-container">
+            <input type="text" id="chatInput" placeholder="Escribe tu mensaje..." autocomplete="off">
+            <button id="sendChatBtn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
     <!-- Floating Chat Button -->
-    <button class="floating-chat-btn pulse">
+    <button class="floating-chat-btn pulse" id="floatingChatBtn">
         <i class="fas fa-comments"></i>
-        <span class="chat-badge">2</span>
+        <span class="chat-badge">1</span>
     </button>
 
     <script src="scripts/auth.js"></script>

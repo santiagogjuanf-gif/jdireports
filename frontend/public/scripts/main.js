@@ -501,14 +501,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // OPCIÓN: IDIOMA
     const menuLanguage = document.getElementById('menuLanguage');
-    if (menuLanguage) {
+    const languageSubmenu = document.getElementById('languageSubmenu');
+
+    if (menuLanguage && languageSubmenu) {
       menuLanguage.addEventListener('click', function(e) {
         e.preventDefault();
-        console.log('🔘 [MAIN] Click en "Idioma"');
-        userDropdown.classList.add('hidden');
-        showNotification('Funcionalidad de cambio de idioma en desarrollo', 'info');
-        // TODO: Mostrar selector de idioma
+        e.stopPropagation();
+        console.log('🔘 [MAIN] Click en "Idioma" - Toggle submenu');
+        languageSubmenu.classList.toggle('show');
+        languageSubmenu.classList.toggle('hidden');
       });
+
+      // Manejar selección de idioma
+      document.querySelectorAll('.submenu-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          const selectedLang = this.dataset.lang;
+          console.log('🌐 [MAIN] Idioma seleccionado:', selectedLang);
+
+          // Guardar idioma en localStorage
+          localStorage.setItem('language', selectedLang);
+
+          // Actualizar checks
+          document.querySelectorAll('.submenu-item i').forEach(check => check.classList.add('hidden'));
+          document.getElementById('check' + selectedLang.charAt(0).toUpperCase() + selectedLang.slice(1)).classList.remove('hidden');
+
+          // Actualizar texto de idioma actual
+          const langNames = { es: 'Español', en: 'English', fr: 'Français' };
+          document.getElementById('currentLanguage').textContent = langNames[selectedLang];
+
+          // Cerrar menus
+          languageSubmenu.classList.add('hidden');
+          languageSubmenu.classList.remove('show');
+          userDropdown.classList.add('hidden');
+
+          // Recargar página para aplicar idioma
+          location.reload();
+        });
+      });
+
+      // Inicializar idioma actual
+      const currentLang = localStorage.getItem('language') || 'es';
+      const langNames = { es: 'Español', en: 'English', fr: 'Français' };
+      document.getElementById('currentLanguage').textContent = langNames[currentLang];
+      document.getElementById('check' + currentLang.charAt(0).toUpperCase() + currentLang.slice(1)).classList.remove('hidden');
     }
 
     // OPCIÓN: CERRAR SESIÓN
@@ -537,17 +574,125 @@ document.addEventListener('DOMContentLoaded', function() {
     console.warn('⚠️ [MAIN] Avatar de usuario o dropdown NO encontrado');
   }
 
-  // CAMPANA DE NOTIFICACIONES
+  // ================================================
+  // SISTEMA DE NOTIFICACIONES
+  // ================================================
   const notificationBell = document.querySelector('.notification-bell');
-  if (notificationBell) {
-    console.log('✅ [MAIN] Campana de notificaciones encontrada');
+  const notificationsPanel = document.getElementById('notificationsPanel');
+  const closeNotifications = document.getElementById('closeNotifications');
+
+  if (notificationBell && notificationsPanel) {
+    console.log('✅ [MAIN] Sistema de notificaciones inicializado');
+
     notificationBell.addEventListener('click', function(e) {
       e.preventDefault();
-      console.log('🔘 [MAIN] Click en campana de notificaciones');
-      alert('Notificaciones\n\n• Nueva orden asignada\n• Recordatorio: Revisión pendiente\n• Material disponible para recoger\n\n(En desarrollo)');
+      e.stopPropagation();
+      console.log('🔘 [MAIN] Toggle panel de notificaciones');
+      notificationsPanel.classList.toggle('hidden');
+      notificationsPanel.classList.toggle('show');
+      // Cerrar chat si está abierto
+      if (chatPanel) {
+        chatPanel.classList.add('hidden');
+        chatPanel.classList.remove('show');
+      }
     });
-  } else {
-    console.warn('⚠️ [MAIN] Campana de notificaciones NO encontrada');
+
+    closeNotifications.addEventListener('click', function() {
+      notificationsPanel.classList.add('hidden');
+      notificationsPanel.classList.remove('show');
+    });
+
+    // Cerrar al hacer click fuera
+    document.addEventListener('click', function(e) {
+      if (!notificationsPanel.contains(e.target) && !notificationBell.contains(e.target)) {
+        notificationsPanel.classList.add('hidden');
+        notificationsPanel.classList.remove('show');
+      }
+    });
+  }
+
+  // ================================================
+  // SISTEMA DE CHAT
+  // ================================================
+  const floatingChatBtn = document.getElementById('floatingChatBtn');
+  const chatPanel = document.getElementById('chatPanel');
+  const closeChat = document.getElementById('closeChat');
+  const chatInput = document.getElementById('chatInput');
+  const sendChatBtn = document.getElementById('sendChatBtn');
+  const chatMessages = document.getElementById('chatMessages');
+
+  if (floatingChatBtn && chatPanel) {
+    console.log('✅ [MAIN] Sistema de chat inicializado');
+
+    floatingChatBtn.addEventListener('click', function() {
+      console.log('🔘 [MAIN] Toggle panel de chat');
+      chatPanel.classList.toggle('hidden');
+      chatPanel.classList.toggle('show');
+      // Cerrar notificaciones si están abiertas
+      if (notificationsPanel) {
+        notificationsPanel.classList.add('hidden');
+        notificationsPanel.classList.remove('show');
+      }
+      // Focus en input si se abre
+      if (chatPanel.classList.contains('show')) {
+        chatInput.focus();
+      }
+    });
+
+    closeChat.addEventListener('click', function() {
+      chatPanel.classList.add('hidden');
+      chatPanel.classList.remove('show');
+    });
+
+    // Enviar mensaje
+    function sendMessage() {
+      const message = chatInput.value.trim();
+      if (!message) return;
+
+      // Agregar mensaje del usuario
+      const userMessage = document.createElement('div');
+      userMessage.className = 'chat-message user';
+      userMessage.innerHTML = `
+        <div class="message-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="message-content">
+          <p>${message}</p>
+          <span class="message-time">Ahora</span>
+        </div>
+      `;
+      chatMessages.appendChild(userMessage);
+
+      // Limpiar input
+      chatInput.value = '';
+
+      // Scroll to bottom
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      // Respuesta automática del bot
+      setTimeout(() => {
+        const botMessage = document.createElement('div');
+        botMessage.className = 'chat-message bot';
+        botMessage.innerHTML = `
+          <div class="message-avatar">
+            <i class="fas fa-robot"></i>
+          </div>
+          <div class="message-content">
+            <p>Gracias por tu mensaje. Un miembro del equipo te responderá pronto.</p>
+            <span class="message-time">Ahora</span>
+          </div>
+        `;
+        chatMessages.appendChild(botMessage);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }, 1000);
+    }
+
+    sendChatBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
   }
 
   console.log('✅ [MAIN] Todos los event listeners registrados correctamente');

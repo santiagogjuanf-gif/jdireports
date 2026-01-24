@@ -1,0 +1,7 @@
+# Ignorar backups y logs (contienen datos sensibles)
+backups/
+logs/
+
+# Permitir el directorio pero no su contenido
+!backups/.gitkeep
+!logs/.gitkeep

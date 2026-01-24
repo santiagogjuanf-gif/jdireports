@@ -105,6 +105,15 @@ function loadUserData(user) {
     };
     const userRoleName = roleNames[userRole] || userRole;
 
+    // Mapeo de roles a badges
+    const roleBadges = {
+        'admin': 'AD',
+        'jefe': 'J',
+        'gerente': 'G',
+        'trabajador': 'T'
+    };
+    const roleBadge = roleBadges[userRole] || 'U';
+
     // Actualizar nombre en dropdown
     const dropdownUserName = document.getElementById('dropdownUserName');
     if (dropdownUserName) {
@@ -129,6 +138,16 @@ function loadUserData(user) {
     if (dropdownAvatarImg) {
         const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0099CC&color=fff`;
         dropdownAvatarImg.src = avatarUrl;
+    }
+
+    // Actualizar badge de rol
+    const userRoleBadge = document.getElementById('userRoleBadge');
+    if (userRoleBadge) {
+        userRoleBadge.textContent = roleBadge;
+        // Remover todas las clases de rol previas
+        userRoleBadge.classList.remove('admin', 'jefe', 'gerente', 'trabajador');
+        // Agregar la clase del rol actual
+        userRoleBadge.classList.add(userRole);
     }
 
     // Guardar usuario actualizado

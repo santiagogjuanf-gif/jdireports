@@ -271,13 +271,14 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="name">Nombre *</label>
-                                <input type="text" autocomplete="off" id="name" name="name" required placeholder="Ej: Juan Pérez">
-                                <span class="help-text">Nombre como aparecerá en el sistema</span>
+                                <input type="text" autocomplete="off" id="name" name="name" required placeholder="Ej: Juan">
+                                <span class="help-text">Nombre del trabajador</span>
                             </div>
 
                             <div class="form-group">
-                                <label for="full_name">Nombre Completo</label>
-                                <input type="text" autocomplete="off" id="full_name" name="full_name" placeholder="Ej: Juan Carlos Pérez García">
+                                <label for="apellido">Apellido *</label>
+                                <input type="text" autocomplete="off" id="apellido" name="apellido" required placeholder="Ej: Santiago">
+                                <span class="help-text">Apellido del trabajador</span>
                             </div>
                         </div>
 
@@ -295,9 +296,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="username">Usuario (Opcional)</label>
-                            <input type="text" autocomplete="off" id="username" name="username" placeholder="Ej: jperez">
-                            <span class="help-text">Si no se proporciona, se usará el email para login</span>
+                            <label for="username">Usuario (Auto-generado)</label>
+                            <input type="text" autocomplete="off" id="username" name="username" readonly style="background-color: #f5f5f5; cursor: not-allowed;" placeholder="Se generará automáticamente">
+                            <span class="help-text">Se genera automáticamente: Primera letra del nombre + Apellido</span>
                         </div>
                     </div>
 

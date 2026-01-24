@@ -5,6 +5,33 @@
 const API_BASE_URL = 'http://localhost:3000/api';
 
 // ================================================
+// AUTO-GENERAR USERNAME
+// ================================================
+
+const nameInput = document.getElementById('name');
+const apellidoInput = document.getElementById('apellido');
+const usernameInput = document.getElementById('username');
+
+function generateUsername() {
+    const nombre = nameInput.value.trim();
+    const apellido = apellidoInput.value.trim();
+
+    if (nombre && apellido) {
+        // Primera letra del nombre + Apellido en camelCase
+        // Ejemplo: Juan Santiago -> JSantiago
+        const primeraLetra = nombre.charAt(0).toUpperCase();
+        const apellidoCapitalizado = apellido.charAt(0).toUpperCase() + apellido.slice(1).toLowerCase();
+        const username = primeraLetra + apellidoCapitalizado;
+        usernameInput.value = username;
+    } else {
+        usernameInput.value = '';
+    }
+}
+
+nameInput.addEventListener('input', generateUsername);
+apellidoInput.addEventListener('input', generateUsername);
+
+// ================================================
 // VALIDACIÓN DE CONTRASEÑA EN TIEMPO REAL
 // ================================================
 
@@ -96,6 +123,12 @@ function validateForm() {
         return { valid: false, message: 'El nombre debe tener al menos 2 caracteres' };
     }
 
+    // Verificar apellido
+    const apellido = document.getElementById('apellido').value.trim();
+    if (apellido.length < 2) {
+        return { valid: false, message: 'El apellido debe tener al menos 2 caracteres' };
+    }
+
     return { valid: true };
 }
 
@@ -114,21 +147,24 @@ document.getElementById('nuevoTrabajadorForm').addEventListener('submit', async 
     }
 
     // Obtener datos del formulario
-    const formData = {
-        name: document.getElementById('name').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        password: document.getElementById('password').value,
-        role: document.getElementById('role').value
-    };
-
-    // Campos opcionales
-    const fullName = document.getElementById('full_name').value.trim();
+    const nombre = document.getElementById('name').value.trim();
+    const apellido = document.getElementById('apellido').value.trim();
     const username = document.getElementById('username').value.trim();
     const phone = document.getElementById('phone').value.trim();
     const language = document.getElementById('preferred_language').value;
 
-    // Solo agregar si tienen valor (el backend los agregará via otro endpoint o UPDATE)
-    // Por ahora solo usamos los campos que el POST /users acepta directamente
+    // El campo "name" en la API debe ser el nombre completo
+    const fullName = `${nombre} ${apellido}`;
+
+    const formData = {
+        name: fullName,
+        email: document.getElementById('email').value.trim(),
+        password: document.getElementById('password').value,
+        role: document.getElementById('role').value,
+        username: username,
+        phone: phone || null,
+        preferred_language: language
+    };
 
     try {
         // Mostrar loading
@@ -160,33 +196,8 @@ document.getElementById('nuevoTrabajadorForm').addEventListener('submit', async 
             throw new Error(result.message || 'Error al crear el trabajador');
         }
 
-        // Si hay campos opcionales, actualizarlos (requiere otro endpoint PUT)
-        if (fullName || username || phone || language !== 'es') {
-            const userId = result.data.user.id;
-            const updateData = {};
-
-            if (fullName) updateData.full_name = fullName;
-            if (username) updateData.username = username;
-            if (phone) updateData.phone = phone;
-            if (language !== 'es') updateData.preferred_language = language;
-
-            try {
-                await fetch(`${API_BASE_URL}/users/${userId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    },
-                    body: JSON.stringify(updateData)
-                });
-            } catch (updateError) {
-                console.warn('Error actualizando campos opcionales:', updateError);
-                // No fallar si esto falla, el usuario ya fue creado
-            }
-        }
-
         // Mostrar éxito
-        showSuccess(`Trabajador ${result.data.user.name} creado exitosamente`);
+        showSuccess(`Trabajador ${fullName} creado exitosamente`);
 
         // Esperar un momento y redirigir
         setTimeout(() => {

@@ -36,8 +36,8 @@ const handleValidationErrors = (req, res, next) => {
     }));
 
     return res.status(400).json({
-      error: 'Errores de validaciÛn',
-      message: 'Los datos proporcionados no son v·lidos',
+      error: 'Errores de validaciÔøΩn',
+      message: 'Los datos proporcionados no son vÔøΩlidos',
       details: errorMessages
     });
   }
@@ -48,15 +48,15 @@ const createMaterialValidation = [
   body('name_es')
     .trim()
     .isLength({ min: 2, max: 100 })
-    .withMessage('Nombre en espaÒol debe tener entre 2 y 100 caracteres'),
+    .withMessage('Nombre en espaÔøΩol debe tener entre 2 y 100 caracteres'),
   body('name_en')
     .trim()
     .isLength({ min: 2, max: 100 })
-    .withMessage('Nombre en inglÈs debe tener entre 2 y 100 caracteres'),
+    .withMessage('Nombre en inglÔøΩs debe tener entre 2 y 100 caracteres'),
   body('name_fr')
     .trim()
     .isLength({ min: 2, max: 100 })
-    .withMessage('Nombre en francÈs debe tener entre 2 y 100 caracteres'),
+    .withMessage('Nombre en francÔøΩs debe tener entre 2 y 100 caracteres'),
   body('unit')
     .trim()
     .isLength({ min: 1, max: 20 })
@@ -73,10 +73,10 @@ const createRequestValidation = [
     .withMessage('Debe solicitar al menos un material'),
   body('materials.*.material_id')
     .isInt({ min: 1 })
-    .withMessage('ID de material no v·lido'),
+    .withMessage('ID de material no vÔøΩlido'),
   body('materials.*.quantity')
     .isInt({ min: 1 })
-    .withMessage('Cantidad debe ser un n˙mero positivo'),
+    .withMessage('Cantidad debe ser un nÔøΩmero positivo'),
   body('notes')
     .optional()
     .trim()
@@ -297,7 +297,7 @@ router.put('/:id', authenticateToken, requireRole(['admin', 'jefe']), [
 
     if (Object.keys(updates).length === 0) {
       return res.status(400).json({
-        error: 'Datos inv·lidos',
+        error: 'Datos invÔøΩlidos',
         message: 'Debes proporcionar al menos un campo para actualizar'
       });
     }
@@ -361,7 +361,7 @@ router.delete('/:id', authenticateToken, requireRole(['admin', 'jefe']), async (
     `, [materialId]);
 
     if (requestsUsingMaterial.count > 0) {
-      throw new ConflictError(`No se puede eliminar el material porque est· siendo usado en ${requestsUsingMaterial.count} solicitud(es)`);
+      throw new ConflictError(`No se puede eliminar el material porque estÔøΩ siendo usado en ${requestsUsingMaterial.count} solicitud(es)`);
     }
 
     await query('DELETE FROM materials WHERE id = ?', [materialId]);
@@ -412,7 +412,7 @@ router.post('/requests', authenticateToken, createRequestValidation, handleValid
     const { materials, notes } = req.body;
     const userId = req.userId;
 
-    // Verificar que todos los materiales existen y est·n activos
+    // Verificar que todos los materiales existen y estÔøΩn activos
     const materialIds = materials.map(m => m.material_id);
     const materialsResult = await query(`
       SELECT id, name_es FROM materials
@@ -421,7 +421,7 @@ router.post('/requests', authenticateToken, createRequestValidation, handleValid
     `, materialIds);
 
     if (materialsResult.rows.length !== materialIds.length) {
-      throw new ValidationError('Uno o m·s materiales no son v·lidos o no est·n activos');
+      throw new ValidationError('Uno o mÔøΩs materiales no son vÔøΩlidos o no estÔøΩn activos');
     }
 
     // Crear la solicitud
@@ -436,9 +436,10 @@ router.post('/requests', authenticateToken, createRequestValidation, handleValid
     // Insertar los items de la solicitud
     for (const item of materials) {
       await insert('material_request_items', {
-        request_id: requestId,
+        material_request_id: requestId,
         material_id: item.material_id,
-        quantity: item.quantity
+        quantity_requested: item.quantity,
+        quantity_approved: null
       });
     }
 
@@ -465,7 +466,7 @@ router.post('/requests', authenticateToken, createRequestValidation, handleValid
 
     if (error instanceof ValidationError) {
       return res.status(400).json({
-        error: 'Error de validaciÛn',
+        error: 'Error de validaciÔøΩn',
         message: error.message
       });
     }
@@ -540,14 +541,15 @@ router.get('/requests', authenticateToken, async (req, res) => {
           SELECT
             mri.id,
             mri.material_id,
-            mri.quantity,
+            mri.quantity_requested as quantity,
+            mri.quantity_approved,
             m.name_es,
             m.name_en,
             m.name_fr,
             m.unit
           FROM material_request_items mri
           JOIN materials m ON mri.material_id = m.id
-          WHERE mri.request_id = ?
+          WHERE mri.material_request_id = ?
         `, [request.id]);
 
         const items = (itemsResult.rows || []).map(item => ({
@@ -636,14 +638,18 @@ router.get('/requests/:id', authenticateToken, async (req, res) => {
     // Obtener items
     const itemsResult = await query(`
       SELECT
-        mri.*,
+        mri.id,
+        mri.material_id,
+        mri.quantity_requested,
+        mri.quantity_approved,
+        mri.custom_item_name,
         m.name_es,
         m.name_en,
         m.name_fr,
         m.unit
       FROM material_request_items mri
-      JOIN materials m ON mri.material_id = m.id
-      WHERE mri.request_id = ?
+      LEFT JOIN materials m ON mri.material_id = m.id
+      WHERE mri.material_request_id = ?
     `, [requestId]);
 
     const items = (itemsResult.rows || []).map(item => ({
@@ -700,7 +706,7 @@ router.post('/requests/:id/approve', authenticateToken, requireRole(['admin', 'j
 
     await query(`
       UPDATE material_requests SET
-        status = 'requested',
+        status = 'approved',
         approved_by = ?,
         approved_at = NOW()
       WHERE id = ?
@@ -753,8 +759,8 @@ router.post('/requests/:id/deliver', authenticateToken, requireRole(['admin', 'j
       throw new NotFoundError('Solicitud no encontrada');
     }
 
-    if (request.status !== 'requested' && request.status !== 'in_transit') {
-      throw new ConflictError('Solo se pueden entregar solicitudes aprobadas o en tr·nsito');
+    if (request.status !== 'approved') {
+      throw new ConflictError('Solo se pueden entregar solicitudes aprobadas');
     }
 
     await query(`
@@ -818,16 +824,17 @@ router.post('/requests/:id/cancel', authenticateToken, async (req, res) => {
       throw new ForbiddenError('No tienes permiso para cancelar esta solicitud');
     }
 
-    if (request.status === 'delivered' || request.status === 'cancelled') {
+    if (request.status === 'delivered' || request.status === 'rejected') {
       throw new ConflictError('No se puede cancelar una solicitud entregada o ya cancelada');
     }
 
     await query(`
       UPDATE material_requests SET
-        status = 'cancelled',
+        status = 'rejected',
+        rejected_reason = ?,
         notes = CONCAT(COALESCE(notes, ''), '\n\nCANCELADA: ', ?)
       WHERE id = ?
-    `, [reason || 'Sin razÛn especificada', requestId]);
+    `, [reason || 'Sin raz√≥n especificada', reason || 'Sin raz√≥n especificada', requestId]);
 
     await logActivity(
       userId,

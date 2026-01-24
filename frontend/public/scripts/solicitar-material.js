@@ -296,7 +296,10 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
 // ================================================
 
 document.getElementById('submitBtn').addEventListener('click', async () => {
+    console.log('📦 [MATERIALES] Iniciando envío de solicitud...');
+
     if (Object.keys(cart).length === 0) {
+        console.warn('⚠️ [MATERIALES] Carrito vacío');
         showError('Debe seleccionar al menos un material');
         return;
     }
@@ -314,10 +317,17 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
         notes: notes || null
     };
 
+    console.log('📋 [MATERIALES] Datos de solicitud preparados:', requestData);
+    console.log(`  → Materiales: ${materials.length}`);
+    console.log(`  → Notas: ${notes || '(sin notas)'}`);
+
     try {
         // Mostrar loading
         document.getElementById('loadingOverlay').classList.remove('hidden');
         document.getElementById('submitBtn').disabled = true;
+
+        console.log('🚀 [MATERIALES] Enviando petición POST a:', `${API_BASE_URL}/materials/requests`);
+        console.log('📤 [MATERIALES] Body:', JSON.stringify(requestData, null, 2));
 
         const response = await fetch(`${API_BASE_URL}/materials/requests`, {
             method: 'POST',
@@ -328,13 +338,17 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
             body: JSON.stringify(requestData)
         });
 
+        console.log('📡 [MATERIALES] Respuesta recibida, status:', response.status);
+
         const result = await response.json();
+        console.log('📦 [MATERIALES] Resultado:', result);
 
         // Ocultar loading
         document.getElementById('loadingOverlay').classList.add('hidden');
         document.getElementById('submitBtn').disabled = false;
 
         if (!response.ok) {
+            console.error('❌ [MATERIALES] Error en respuesta:', result);
             // Manejar errores específicos
             if (result.details && Array.isArray(result.details)) {
                 const errors = result.details.map(d => d.message).join(', ');
@@ -344,7 +358,9 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
         }
 
         // Mostrar éxito
-        showSuccess(`Solicitud creada exitosamente (ID: ${result.request?.id || result.data?.id || ''})`);
+        const requestId = result.request?.id || result.data?.id || '';
+        console.log('✅ [MATERIALES] Solicitud creada exitosamente, ID:', requestId);
+        showSuccess(`Solicitud creada exitosamente (ID: ${requestId})`);
 
         // Esperar un momento y redirigir
         setTimeout(() => {
@@ -352,7 +368,8 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
         }, 2000);
 
     } catch (error) {
-        console.error('Error:', error);
+        console.error('❌ [MATERIALES] Error completo:', error);
+        console.error('❌ [MATERIALES] Stack:', error.stack);
         document.getElementById('loadingOverlay').classList.add('hidden');
         document.getElementById('submitBtn').disabled = false;
         showError(error.message || 'Error al crear la solicitud');

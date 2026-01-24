@@ -409,18 +409,34 @@ router.delete('/:id', authenticateToken, requireRole(['admin', 'jefe']), async (
 // ================================================
 router.post('/requests', authenticateToken, createRequestValidation, handleValidationErrors, async (req, res) => {
   try {
+    console.log('📦 [MATERIALES-BACKEND] Nueva solicitud recibida');
     const { materials, notes } = req.body;
     const userId = req.userId;
 
+    console.log('👤 [MATERIALES-BACKEND] Usuario:', userId, req.user?.name);
+    console.log('📋 [MATERIALES-BACKEND] Materiales solicitados:', materials);
+    console.log('📝 [MATERIALES-BACKEND] Notas:', notes);
+
+    // Validar que hay materiales
+    if (!materials || materials.length === 0) {
+      console.error('❌ [MATERIALES-BACKEND] No se proporcionaron materiales');
+      throw new ValidationError('Debe solicitar al menos un material');
+    }
+
     // Verificar que todos los materiales existen y est�n activos
     const materialIds = materials.map(m => m.material_id);
+    console.log('🔍 [MATERIALES-BACKEND] Verificando materiales con IDs:', materialIds);
+
     const materialsResult = await query(`
       SELECT id, name_es FROM materials
       WHERE id IN (${materialIds.map(() => '?').join(',')})
       AND is_active = 1
     `, materialIds);
 
+    console.log(`✅ [MATERIALES-BACKEND] Materiales encontrados: ${materialsResult.rows.length}/${materialIds.length}`);
+
     if (materialsResult.rows.length !== materialIds.length) {
+      console.error('❌ [MATERIALES-BACKEND] Algunos materiales no son válidos');
       throw new ValidationError('Uno o m�s materiales no son v�lidos o no est�n activos');
     }
 
@@ -431,10 +447,16 @@ router.post('/requests', authenticateToken, createRequestValidation, handleValid
       status: 'pending'
     };
 
+    console.log('💾 [MATERIALES-BACKEND] Creando solicitud con datos:', requestData);
+
     const requestId = await insert('material_requests', requestData);
 
+    console.log(`✅ [MATERIALES-BACKEND] Solicitud creada con ID: ${requestId}`);
+
     // Insertar los items de la solicitud
+    console.log('📝 [MATERIALES-BACKEND] Insertando items de la solicitud...');
     for (const item of materials) {
+      console.log(`  → Material ID: ${item.material_id}, Cantidad: ${item.quantity}`);
       await insert('material_request_items', {
         material_request_id: requestId,
         material_id: item.material_id,
@@ -442,6 +464,8 @@ router.post('/requests', authenticateToken, createRequestValidation, handleValid
         quantity_approved: null
       });
     }
+
+    console.log('✅ [MATERIALES-BACKEND] Items insertados correctamente');
 
     await logActivity(
       userId,

@@ -173,6 +173,24 @@ app.use('/api/*', (req, res) => {
 // RUTAS DE FRONTEND
 // ================================================
 
+// Middleware para reescribir URLs sin .html
+app.use((req, res, next) => {
+  // Si la petición NO es para API, NO tiene extensión, y NO termina en /
+  if (!req.path.startsWith('/api') &&
+      !req.path.includes('.') &&
+      req.path !== '/') {
+
+    // Intentar servir el archivo .html
+    const htmlPath = path.join(__dirname, '../frontend/public', req.path + '.html');
+    const fs = require('fs');
+
+    if (fs.existsSync(htmlPath)) {
+      return res.sendFile(htmlPath);
+    }
+  }
+  next();
+});
+
 // Ruta de login
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/public/login.html'));

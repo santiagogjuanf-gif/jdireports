@@ -220,26 +220,8 @@ function getNotificationIcon(type) {
 // MANEJO DE NAVEGACIÓN
 // ================================================
 
-document.querySelectorAll('.nav-link').forEach(link => {
-  link.addEventListener('click', function(e) {
-    e.preventDefault();
-
-    // Remover clase activa de todos
-    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-
-    // Agregar clase activa al clickeado
-    this.classList.add('active');
-
-    // Smooth scroll a la sección
-    const target = this.getAttribute('href');
-    if (target.startsWith('#')) {
-      const section = document.querySelector(target);
-      if (section) {
-        section.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  });
-});
+// La navegación ahora funciona con enlaces reales a páginas
+// No se necesita JavaScript adicional para manejar la navegación
 
 // ================================================
 // PROGRESS BARS
@@ -421,7 +403,7 @@ document.addEventListener('DOMContentLoaded', function() {
     btnNuevaOrden.addEventListener('click', function(e) {
       e.preventDefault();
       console.log('🔘 [MAIN] Click en "Nueva Orden" - Redirigiendo...');
-      window.location.href = '/nueva-orden.html';
+      window.location.href = '/nueva-orden';
     });
   } else {
     console.warn('⚠️ [MAIN] Botón "Nueva Orden" NO encontrado');
@@ -432,7 +414,7 @@ document.addEventListener('DOMContentLoaded', function() {
     btnVerCalendario.addEventListener('click', function(e) {
       e.preventDefault();
       console.log('🔘 [MAIN] Click en "Ver Calendario" - Redirigiendo...');
-      window.location.href = '/calendario.html';
+      window.location.href = '/calendario';
     });
   } else {
     console.warn('⚠️ [MAIN] Botón "Ver Calendario" NO encontrado');
@@ -452,10 +434,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Redirigir según la acción
       const redirects = {
-        'Nueva Orden': '/nueva-orden.html',
-        'Nuevo Trabajador': '/nuevo-trabajador.html',
-        'Solicitar Material': '/solicitar-material.html',
-        'Generar Reporte': '/generar-reporte.html'
+        'Nueva Orden': '/nueva-orden',
+        'Nuevo Trabajador': '/nuevo-trabajador',
+        'Solicitar Material': '/solicitar-material',
+        'Generar Reporte': '/generar-reporte'
       };
 
       if (redirects[title]) {
@@ -471,28 +453,88 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // BOTÓN DE LOGOUT EN EL MENÚ DE USUARIO
+  // MENÚ DROPDOWN DE USUARIO
   const userAvatar = document.querySelector('.user-avatar');
-  if (userAvatar) {
-    console.log('✅ [MAIN] Avatar de usuario encontrado');
+  const userDropdown = document.getElementById('userDropdown');
+
+  if (userAvatar && userDropdown) {
+    console.log('✅ [MAIN] Avatar de usuario y dropdown encontrados');
+
+    // Toggle dropdown al hacer click en avatar
     userAvatar.addEventListener('click', function(e) {
       e.preventDefault();
-      console.log('🔘 [MAIN] Click en avatar de usuario');
+      e.stopPropagation();
+      console.log('🔘 [MAIN] Click en avatar de usuario - toggleando dropdown');
+      userDropdown.classList.toggle('hidden');
+    });
 
-      // Mostrar menú contextual
-      const shouldLogout = confirm('¿Deseas cerrar sesión?');
-      if (shouldLogout) {
-        console.log('🚪 [MAIN] Usuario confirma logout');
-        if (window.auth && typeof window.auth.logout === 'function') {
-          window.auth.logout();
-        } else {
-          console.error('❌ [MAIN] Función logout no disponible');
-          window.location.href = '/login.html';
-        }
+    // Cerrar dropdown al hacer click fuera
+    document.addEventListener('click', function(e) {
+      if (!userDropdown.contains(e.target) && !userAvatar.contains(e.target)) {
+        userDropdown.classList.add('hidden');
       }
     });
+
+    // OPCIÓN: MI PERFIL
+    const menuProfile = document.getElementById('menuProfile');
+    if (menuProfile) {
+      menuProfile.addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('🔘 [MAIN] Click en "Mi Perfil"');
+        userDropdown.classList.add('hidden');
+        showNotification('Funcionalidad de perfil en desarrollo', 'info');
+        // TODO: window.location.href = '/perfil';
+      });
+    }
+
+    // OPCIÓN: CONFIGURACIÓN
+    const menuSettings = document.getElementById('menuSettings');
+    if (menuSettings) {
+      menuSettings.addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('🔘 [MAIN] Click en "Configuración"');
+        userDropdown.classList.add('hidden');
+        showNotification('Funcionalidad de configuración en desarrollo', 'info');
+        // TODO: window.location.href = '/configuracion';
+      });
+    }
+
+    // OPCIÓN: IDIOMA
+    const menuLanguage = document.getElementById('menuLanguage');
+    if (menuLanguage) {
+      menuLanguage.addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('🔘 [MAIN] Click en "Idioma"');
+        userDropdown.classList.add('hidden');
+        showNotification('Funcionalidad de cambio de idioma en desarrollo', 'info');
+        // TODO: Mostrar selector de idioma
+      });
+    }
+
+    // OPCIÓN: CERRAR SESIÓN
+    const menuLogout = document.getElementById('menuLogout');
+    if (menuLogout) {
+      menuLogout.addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('🔘 [MAIN] Click en "Cerrar Sesión"');
+        userDropdown.classList.add('hidden');
+
+        const shouldLogout = confirm('¿Estás seguro de que deseas cerrar sesión?');
+        if (shouldLogout) {
+          console.log('🚪 [MAIN] Usuario confirma logout');
+          if (window.auth && typeof window.auth.logout === 'function') {
+            window.auth.logout();
+          } else {
+            console.error('❌ [MAIN] Función logout no disponible');
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+          }
+        }
+      });
+    }
   } else {
-    console.warn('⚠️ [MAIN] Avatar de usuario NO encontrado');
+    console.warn('⚠️ [MAIN] Avatar de usuario o dropdown NO encontrado');
   }
 
   // CAMPANA DE NOTIFICACIONES

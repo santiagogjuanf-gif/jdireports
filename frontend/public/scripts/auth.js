@@ -17,22 +17,22 @@ function checkAuth() {
         console.log('🔍 [AUTH DEBUG] Token:', token.substring(0, 30) + '...');
     }
 
-    // Si estamos en login.html y ya hay token, redirigir al dashboard
-    if (currentPage.includes('login.html') && token) {
-        console.log('🔍 [AUTH DEBUG] Ya hay token en login.html, redirigiendo al dashboard...');
+    // Si estamos en login y ya hay token, redirigir al dashboard
+    if (currentPage.includes('login') && token) {
+        console.log('🔍 [AUTH DEBUG] Ya hay token en login, redirigiendo al dashboard...');
         window.location.href = '/';
         return;
     }
 
-    // Si NO estamos en login.html y NO hay token, redirigir a login
-    if (!currentPage.includes('login.html') && !token) {
+    // Si NO estamos en login y NO hay token, redirigir a login
+    if (!currentPage.includes('login') && !token) {
         console.log('🔍 [AUTH DEBUG] No hay token, redirigiendo a login...');
-        window.location.href = '/login.html';
+        window.location.href = '/login';
         return;
     }
 
     // Si hay token, verificarlo con el servidor
-    if (token && !currentPage.includes('login.html')) {
+    if (token && !currentPage.includes('login')) {
         console.log('🔍 [AUTH DEBUG] Hay token, verificando con servidor...');
         verifyToken(token);
     }
@@ -62,9 +62,17 @@ async function verifyToken(token) {
 
         if (!response.ok) {
             console.error('❌ [AUTH DEBUG] Token inválido o expirado');
-            console.error('❌ [AUTH DEBUG] Respuesta:', await response.text());
-            // Token inválido, cerrar sesión
-            logout();
+            console.error('❌ [AUTH DEBUG] Status:', response.status);
+
+            // Si es 401 (no autorizado), el token es inválido - cerrar sesión
+            if (response.status === 401) {
+                console.error('❌ [AUTH DEBUG] Token inválido (401), cerrando sesión...');
+                logout();
+                return;
+            }
+
+            // Para otros errores del servidor, registrar pero no cerrar sesión
+            console.error('❌ [AUTH DEBUG] Error del servidor:', await response.text());
         } else {
             console.log('✅ [AUTH DEBUG] Token válido');
             // Token válido, cargar datos del usuario
@@ -73,19 +81,54 @@ async function verifyToken(token) {
             loadUserData(data.user);
         }
     } catch (error) {
-        console.error('❌ [AUTH DEBUG] Error verificando token:', error);
-        console.error('❌ [AUTH DEBUG] Error completo:', error.message, error.stack);
-        // Si hay error de red, NO cerrar sesión automáticamente
-        // logout();
+        console.error('❌ [AUTH DEBUG] Error de red verificando token:', error);
+        console.error('❌ [AUTH DEBUG] El servidor podría estar reiniciándose o no disponible');
+
+        // Si hay error de red (servidor no responde), intentar logout
+        // Esto limpiará la sesión cuando el servidor se reinicie
+        console.warn('⚠️ [AUTH DEBUG] No se pudo conectar con el servidor, limpiando sesión...');
+        logout();
     }
 }
 
 // Cargar datos del usuario en la interfaz
 function loadUserData(user) {
-    // Si hay un elemento para mostrar el nombre del usuario
-    const userNameElement = document.querySelector('.user-name');
-    if (userNameElement) {
-        userNameElement.textContent = user.full_name || user.name || user.username;
+    const userName = user.name || user.username || 'Usuario';
+    const userRole = user.role || 'usuario';
+
+    // Mapeo de roles a español
+    const roleNames = {
+        'admin': 'Administrador',
+        'jefe': 'Jefe',
+        'gerente': 'Gerente',
+        'trabajador': 'Trabajador'
+    };
+    const userRoleName = roleNames[userRole] || userRole;
+
+    // Actualizar nombre en dropdown
+    const dropdownUserName = document.getElementById('dropdownUserName');
+    if (dropdownUserName) {
+        dropdownUserName.textContent = userName;
+    }
+
+    // Actualizar rol en dropdown
+    const dropdownUserRole = document.getElementById('dropdownUserRole');
+    if (dropdownUserRole) {
+        dropdownUserRole.textContent = userRoleName;
+    }
+
+    // Actualizar avatar principal
+    const userAvatarImg = document.getElementById('userAvatarImg');
+    if (userAvatarImg) {
+        const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0099CC&color=fff`;
+        userAvatarImg.src = avatarUrl;
+    }
+
+    // Actualizar avatar en dropdown
+    const dropdownAvatarImg = document.getElementById('dropdownAvatarImg');
+    if (dropdownAvatarImg) {
+        const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0099CC&color=fff`;
+        dropdownAvatarImg.src = avatarUrl;
     }
 
     // Guardar usuario actualizado
@@ -100,7 +143,7 @@ function logout() {
     localStorage.removeItem('user');
     console.log('🚪 [AUTH DEBUG] Token y usuario eliminados de localStorage');
     console.log('🚪 [AUTH DEBUG] Redirigiendo a /login.html...');
-    window.location.href = '/login.html';
+    window.location.href = '/login';
 }
 
 // Obtener token para hacer requests

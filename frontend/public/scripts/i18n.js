@@ -42,6 +42,12 @@ const translations = {
         'generateReport': 'Generar Reporte',
         'manageInventory': 'Gestionar Inventario',
 
+        // Actions Descriptions (Quick Actions subtitles)
+        'newOrderDesc': 'Crear orden de limpieza',
+        'newWorkerDesc': 'Registrar trabajador',
+        'generateReportDesc': 'Descargar PDF',
+        'requestMaterialDesc': 'Gestionar inventario',
+
         // Workers Table
         'name': 'Nombre',
         'email': 'Email',
@@ -113,6 +119,12 @@ const translations = {
         'generateReport': 'Generate Report',
         'manageInventory': 'Manage Inventory',
 
+        // Actions Descriptions (Quick Actions subtitles)
+        'newOrderDesc': 'Create cleaning order',
+        'newWorkerDesc': 'Register worker',
+        'generateReportDesc': 'Download PDF',
+        'requestMaterialDesc': 'Manage inventory',
+
         // Workers Table
         'name': 'Name',
         'email': 'Email',
@@ -183,6 +195,12 @@ const translations = {
         'requestMaterial': 'Demander du Matériel',
         'generateReport': 'Générer un Rapport',
         'manageInventory': 'Gérer l\'Inventaire',
+
+        // Actions Descriptions (Quick Actions subtitles)
+        'newOrderDesc': 'Créer une commande de nettoyage',
+        'newWorkerDesc': 'Enregistrer un travailleur',
+        'generateReportDesc': 'Télécharger PDF',
+        'requestMaterialDesc': 'Gérer l\'inventaire',
 
         // Workers Table
         'name': 'Nom',

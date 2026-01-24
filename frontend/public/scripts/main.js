@@ -674,8 +674,8 @@ async function loadDashboardData() {
   await Promise.all([
     loadUserName(),
     loadStatistics(),
-    loadRecentOrders(),
-    loadWorkersTable()
+    loadRecentOrders()
+    // loadWorkersTable() - Movido a página dedicada /trabajadores
   ]);
 }
 

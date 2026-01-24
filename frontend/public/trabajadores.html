@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trabajadores - JDI Cleaning Services</title>
+    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .page-header {
+            background: linear-gradient(135deg, #0099CC 0%, #00A651 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 153, 204, 0.2);
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .workers-filters {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: #0099CC;
+        }
+
+        .workers-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-mini {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-mini-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-mini-icon.total {
+            background: linear-gradient(135deg, #0099CC, #0077AA);
+            color: white;
+        }
+
+        .stat-mini-icon.active {
+            background: linear-gradient(135deg, #00A651, #008040);
+            color: white;
+        }
+
+        .stat-mini-icon.inactive {
+            background: linear-gradient(135deg, #999, #666);
+            color: white;
+        }
+
+        .stat-mini-icon.admins {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .stat-mini-content h4 {
+            margin: 0;
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .stat-mini-content p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .workers-table-wrapper {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .workers-table-header {
+            padding: 1.5rem;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .workers-table-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: #333;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .worker-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            padding: 0.5rem 0.75rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-icon.edit {
+            background: #0099CC;
+            color: white;
+        }
+
+        .btn-icon.edit:hover {
+            background: #0077AA;
+        }
+
+        .btn-icon.delete {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-icon.delete:hover {
+            background: #d32f2f;
+        }
+
+        .btn-icon.view {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-icon.view:hover {
+            background: #45a049;
+        }
+
+        .empty-state {
+            padding: 3rem;
+            text-align: center;
+            color: #888;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            .workers-filters {
+                flex-direction: column;
+            }
+
+            .workers-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .table-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Back Button -->
+            <div style="margin-bottom: 1.5rem;">
+                <a href="/" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver al Dashboard
+                </a>
+            </div>
+
+            <!-- Page Header -->
+            <div class="page-header slide-up">
+                <h1>
+                    <i class="fas fa-users"></i>
+                    Gestión de Trabajadores
+                </h1>
+                <p>Administra los usuarios del sistema y sus permisos</p>
+            </div>
+
+            <!-- Workers Stats -->
+            <div class="workers-stats slide-up" style="animation-delay: 0.1s;">
+                <div class="stat-mini">
+                    <div class="stat-mini-icon total">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-mini-content">
+                        <h4 id="totalWorkers">0</h4>
+                        <p>Total Trabajadores</p>
+                    </div>
+                </div>
+
+                <div class="stat-mini">
+                    <div class="stat-mini-icon active">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="stat-mini-content">
+                        <h4 id="activeWorkers">0</h4>
+                        <p>Activos</p>
+                    </div>
+                </div>
+
+                <div class="stat-mini">
+                    <div class="stat-mini-icon inactive">
+                        <i class="fas fa-user-slash"></i>
+                    </div>
+                    <div class="stat-mini-content">
+                        <h4 id="inactiveWorkers">0</h4>
+                        <p>Inactivos</p>
+                    </div>
+                </div>
+
+                <div class="stat-mini">
+                    <div class="stat-mini-icon admins">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="stat-mini-content">
+                        <h4 id="adminCount">0</h4>
+                        <p>Administradores</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="workers-filters slide-up" style="animation-delay: 0.2s;">
+                <div class="filter-group">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchWorkers" placeholder="Buscar por nombre, email...">
+                </div>
+
+                <div class="filter-group" style="max-width: 200px;">
+                    <i class="fas fa-filter"></i>
+                    <select id="filterRole">
+                        <option value="">Todos los roles</option>
+                        <option value="admin">Administrador</option>
+                        <option value="jefe">Jefe</option>
+                        <option value="gerente">Gerente</option>
+                        <option value="trabajador">Trabajador</option>
+                    </select>
+                </div>
+
+                <div class="filter-group" style="max-width: 180px;">
+                    <i class="fas fa-toggle-on"></i>
+                    <select id="filterStatus">
+                        <option value="">Todos</option>
+                        <option value="1">Activos</option>
+                        <option value="0">Inactivos</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Workers Table -->
+            <div class="workers-table-wrapper slide-up" style="animation-delay: 0.3s;">
+                <div class="workers-table-header">
+                    <h2>
+                        <i class="fas fa-list"></i>
+                        Lista de Trabajadores
+                    </h2>
+                    <div class="table-actions">
+                        <button class="btn btn-secondary" onclick="window.location.reload()">
+                            <i class="fas fa-sync-alt"></i>
+                            Actualizar
+                        </button>
+                        <button class="btn btn-primary" onclick="window.location.href='/nuevo-trabajador'">
+                            <i class="fas fa-user-plus"></i>
+                            Nuevo Trabajador
+                        </button>
+                    </div>
+                </div>
+
+                <div class="workers-table-container">
+                    <table class="workers-table" id="workersTable">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Teléfono</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="workersTableBody">
+                            <tr>
+                                <td colspan="6" class="empty-state">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <p>Cargando trabajadores...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="scripts/auth.js"></script>
+    <script src="scripts/trabajadores.js"></script>
+</body>
+</html>

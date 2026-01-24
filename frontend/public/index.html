@@ -128,7 +128,7 @@
                     </h1>
                     <p class="hero-subtitle">Administra tus órdenes de limpieza de manera eficiente y profesional</p>
                     <div class="hero-actions">
-                        <button class="btn btn-primary btn-glow" onclick="window.location.href='/nueva-orden'">
+                        <button id="nueva-orden-link" class="btn btn-primary btn-glow" onclick="window.location.href='/nueva-orden'">
                             <i class="fas fa-plus"></i>
                             Nueva Orden
                         </button>
@@ -247,7 +247,7 @@
                     Acciones Rápidas
                 </h2>
                 <div class="actions-grid">
-                    <button class="action-card glass-effect hover-lift">
+                    <button id="card-nueva-orden" class="action-card glass-effect hover-lift" onclick="window.location.href='/nueva-orden'">
                         <div class="action-icon blue">
                             <i class="fas fa-plus-circle"></i>
                         </div>
@@ -255,7 +255,7 @@
                         <p>Crear orden de limpieza</p>
                     </button>
 
-                    <button class="action-card glass-effect hover-lift">
+                    <button id="nuevo-trabajador-link" class="action-card glass-effect hover-lift" onclick="window.location.href='/nuevo-trabajador'">
                         <div class="action-icon green">
                             <i class="fas fa-user-plus"></i>
                         </div>
@@ -263,7 +263,7 @@
                         <p>Registrar trabajador</p>
                     </button>
 
-                    <button class="action-card glass-effect hover-lift">
+                    <button id="generar-reporte-link" class="action-card glass-effect hover-lift" onclick="alert('Función de generación de reportes en desarrollo')">
                         <div class="action-icon purple">
                             <i class="fas fa-file-pdf"></i>
                         </div>

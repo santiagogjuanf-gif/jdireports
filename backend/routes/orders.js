@@ -398,19 +398,20 @@ router.get('/:id', authenticateToken, async (req, res) => {
     }
 
     // Obtener trabajadores asignados
+    console.log('📋 [ORDERS] Obteniendo trabajadores para orden:', orderId);
     const workersResult = await query(`
       SELECT
         u.id,
         u.name,
         u.email,
         u.phone,
-        oa.assigned_at,
-        oa.is_responsible
+        oa.assigned_at
       FROM order_assignments oa
       JOIN users u ON oa.worker_id = u.id
       WHERE oa.order_id = ?
-      ORDER BY oa.is_responsible DESC, u.name ASC
+      ORDER BY u.name ASC
     `, [orderId]);
+    console.log('👥 [ORDERS] Trabajadores encontrados:', workersResult.rows?.length || 0);
 
     // Obtener áreas asignadas (solo para órdenes regulares)
     let areas = [];

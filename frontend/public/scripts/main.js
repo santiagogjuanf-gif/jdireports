@@ -866,3 +866,96 @@ async function loadWorkersTable() {
     document.getElementById('workersTableBody').innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem; color: #888;">Error al cargar trabajadores</td></tr>';
   }
 }
+
+// ================================================
+// CONTROL DE PERMISOS POR ROL
+// ================================================
+
+function aplicarPermisosDeRol() {
+  try {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const userRole = user.role;
+
+    console.log('🔐 [PERMISOS] Aplicando permisos para rol:', userRole);
+
+    // Elementos que solo pueden ver admin, jefe, gerente
+    const elementosSupervision = [
+      'nuevo-trabajador-link',  // Botón "Nuevo Trabajador"
+      'generar-reporte-link',   // Botón "Generar Reporte"
+      'nueva-orden-link',       // Botón "Nueva Orden" (hero)
+      'card-nueva-orden'        // Tarjeta "Nueva Orden" (actions)
+    ];
+
+    // Elementos que solo pueden ver admin
+    const elementosAdmin = [
+      // Agregar IDs específicos de admin aquí
+    ];
+
+    // Trabajador: solo puede ver calendario y sus órdenes
+    if (userRole === 'trabajador') {
+      console.log('👷 [PERMISOS] Usuario es trabajador - ocultando opciones de supervisión');
+
+      // Ocultar todos los elementos de supervisión
+      elementosSupervision.forEach(elementId => {
+        const elemento = document.getElementById(elementId);
+        if (elemento) {
+          elemento.style.display = 'none';
+          console.log(`  ❌ Ocultado: ${elementId}`);
+        }
+      });
+
+      // También ocultar las tarjetas de acción rápida si existen
+      const quickActionsCards = document.querySelectorAll('.action-card');
+      quickActionsCards.forEach((card) => {
+        const cardText = card.textContent;
+        if (cardText.includes('Nuevo Trabajador') ||
+            cardText.includes('Generar Reporte') ||
+            cardText.includes('Nueva Orden')) {
+          card.style.display = 'none';
+          console.log(`  ❌ Ocultada tarjeta: ${cardText.substring(0, 30)}...`);
+        }
+      });
+
+      // Ocultar sección de trabajadores si existe
+      const workersSection = document.querySelector('.workers-section');
+      if (workersSection) {
+        workersSection.style.display = 'none';
+        console.log('  ❌ Ocultada sección de trabajadores');
+      }
+
+      // Ocultar estadísticas que no son relevantes para trabajador
+      const statWorkers = document.getElementById('statWorkers');
+      if (statWorkers) {
+        const statCard = statWorkers.closest('.stat-card');
+        if (statCard) {
+          statCard.style.display = 'none';
+          console.log('  ❌ Ocultada estadística de trabajadores');
+        }
+      }
+    }
+    // Admin, Jefe, Gerente: pueden ver todo
+    else if (['admin', 'jefe', 'gerente'].includes(userRole)) {
+      console.log('👔 [PERMISOS] Usuario es supervisor - mostrando todas las opciones');
+
+      // Asegurar que todos los elementos de supervisión estén visibles
+      elementosSupervision.forEach(elementId => {
+        const elemento = document.getElementById(elementId);
+        if (elemento) {
+          elemento.style.display = '';
+          console.log(`  ✅ Mostrado: ${elementId}`);
+        }
+      });
+    }
+
+    console.log('✅ [PERMISOS] Permisos aplicados exitosamente');
+
+  } catch (error) {
+    console.error('❌ [PERMISOS] Error aplicando permisos:', error);
+  }
+}
+
+// Aplicar permisos cuando la página carga
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('📄 [MAIN] Dashboard cargando...');
+  aplicarPermisosDeRol();
+});

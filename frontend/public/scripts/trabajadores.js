@@ -13,7 +13,16 @@ let filteredWorkers = [];
 
 async function loadWorkers() {
     try {
+        console.log('👥 [TRABAJADORES] Iniciando carga de trabajadores...');
         const token = localStorage.getItem('token');
+
+        if (!token) {
+            console.error('❌ [TRABAJADORES] No hay token de autenticación');
+            window.location.href = '/login';
+            return;
+        }
+
+        console.log('🔑 [TRABAJADORES] Token encontrado, haciendo petición a:', `${API_BASE_URL}/users`);
 
         const response = await fetch(`${API_BASE_URL}/users`, {
             headers: {
@@ -21,18 +30,27 @@ async function loadWorkers() {
             }
         });
 
+        console.log('📡 [TRABAJADORES] Respuesta recibida, status:', response.status);
+
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error('❌ [TRABAJADORES] Error en respuesta:', errorText);
             throw new Error('Error al cargar trabajadores');
         }
 
         const data = await response.json();
+        console.log('📦 [TRABAJADORES] Datos recibidos:', data);
+
         allWorkers = data.users || [];
         filteredWorkers = [...allWorkers];
+
+        console.log(`✅ [TRABAJADORES] ${allWorkers.length} trabajadores cargados`);
+        console.log('👤 [TRABAJADORES] Lista de trabajadores:', allWorkers);
 
         updateStats();
         displayWorkers(filteredWorkers);
     } catch (error) {
-        console.error('Error:', error);
+        console.error('❌ [TRABAJADORES] Error:', error);
         showError('Error al cargar los trabajadores');
     }
 }
@@ -42,9 +60,16 @@ async function loadWorkers() {
 // ================================================
 
 function displayWorkers(workers) {
+    console.log('🖼️ [TRABAJADORES] Mostrando trabajadores en tabla:', workers.length);
     const tbody = document.getElementById('workersTableBody');
 
+    if (!tbody) {
+        console.error('❌ [TRABAJADORES] No se encontró el elemento workersTableBody');
+        return;
+    }
+
     if (workers.length === 0) {
+        console.log('⚠️ [TRABAJADORES] No hay trabajadores para mostrar');
         tbody.innerHTML = `
             <tr>
                 <td colspan="6" class="empty-state">
@@ -55,6 +80,8 @@ function displayWorkers(workers) {
         `;
         return;
     }
+
+    console.log('📝 [TRABAJADORES] Construyendo filas de tabla...');
 
     const roleNames = {
         'admin': 'Administrador',

@@ -217,59 +217,8 @@ const translations = {
     }
 };
 
-        // Hero Section
-        'heroTitle': 'Bienvenue au système JDI',
-        'heroSubtitle': 'Système de gestion de nettoyage professionnel',
-        'newOrder': 'Nouvelle Commande',
-        'viewCalendar': 'Voir le Calendrier',
-
-        // Statistics
-        'statActiveOrders': 'Commandes Actives',
-        'statCompletedOrders': 'Commandes Terminées',
-        'statPending': 'En Attente',
-        'statWorkers': 'Travailleurs',
-
-        // Quick Actions
-        'quickActions': 'Actions Rapides',
-        'newWorker': 'Nouveau Travailleur',
-        'requestMaterial': 'Demander du Matériel',
-        'generateReport': 'Générer un Rapport',
-        'manageInventory': 'Gérer l\'Inventaire',
-
-        // Workers Table
-        'workersTitle': 'Travailleurs',
-        'name': 'Nom',
-        'email': 'Email',
-        'phone': 'Téléphone',
-        'role': 'Rôle',
-        'status': 'Statut',
-        'noWorkersRegistered': 'Aucun travailleur enregistré',
-
-        // Roles
-        'admin': 'Administrateur',
-        'jefe': 'Chef',
-        'gerente': 'Gestionnaire',
-        'trabajador': 'Travailleur',
-
-        // Status
-        'active': 'Actif',
-        'inactive': 'Inactif',
-
-        // Notifications
-        'notifications': 'Notifications',
-        'noNotifications': 'Aucune notification',
-
-        // Chat
-        'chat': 'Chat de Support',
-        'chatPlaceholder': 'Tapez votre message...',
-
-        // Messages
-        'welcome': 'Bienvenue!',
-        'loading': 'Chargement...',
-        'error': 'Erreur',
-        'success': 'Succès'
-    }
-};
+console.log('🌍 [i18n] Sistema de traducción cargado correctamente');
+console.log('📋 [i18n] Idiomas disponibles:', Object.keys(translations));
 
 // Obtener idioma actual
 function getCurrentLanguage() {

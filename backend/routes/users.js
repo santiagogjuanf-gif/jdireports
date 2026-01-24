@@ -304,39 +304,67 @@ router.get('/:id', authenticateToken, userIdValidation, handleValidationErrors, 
 // ================================================
 router.post('/', authenticateToken, createUserValidation, handleValidationErrors, requireSupervisor, async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, username, phone, preferred_language } = req.body;
     const creatorRole = req.userRole;
     const creatorId = req.userId;
-    
+
+    console.log('👤 [USERS] Creando nuevo usuario:', {
+      name,
+      email,
+      role,
+      username,
+      phone,
+      preferred_language
+    });
+
     // Verificar que jefe no cree admins
     if (creatorRole === 'jefe' && role === 'admin') {
       throw new AuthorizationError('Los jefes no pueden crear administradores');
     }
-    
+
     // Verificar si el email ya existe
     const existingUser = await queryOne(
       'SELECT id FROM users WHERE email = ?',
       [email.toLowerCase()]
     );
-    
+
     if (existingUser) {
       throw new ConflictError('Este email ya está registrado');
     }
-    
+
+    // Verificar si el username ya existe (si se proporcionó)
+    if (username) {
+      const existingUsername = await queryOne(
+        'SELECT id FROM users WHERE username = ?',
+        [username]
+      );
+
+      if (existingUsername) {
+        throw new ConflictError('Este nombre de usuario ya está en uso');
+      }
+    }
+
     // Hash de la contraseña
     const hashedPassword = await hashPassword(password);
-    
+
     // Insertar nuevo usuario
     const userData = {
       name: name.trim(),
       email: email.toLowerCase(),
       password: hashedPassword,
       role,
+      username: username || null,
+      phone: phone || null,
+      preferred_language: preferred_language || 'es',
       created_by: creatorId,
       is_active: true
     };
-    
+
+    console.log('💾 [USERS] Guardando usuario en BD:', userData);
+
     const newUserId = await insert('users', userData);
+
+    console.log('✅ [USERS] Usuario creado exitosamente con ID:', newUserId);
     
     // Registrar la actividad
     await logActivity(

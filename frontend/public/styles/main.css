@@ -1512,3 +1512,554 @@ a {
     justify-content: center;
   }
 }
+
+/* ================================================
+   DARK THEME
+   ================================================ */
+
+.dark-theme {
+  /* Colores oscuros */
+  --color-dark-bg: #121212;
+  --color-dark-surface: #1E1E1E;
+  --color-dark-surface-light: #2A2A2A;
+  --color-dark-border: #333333;
+  --color-dark-text: #E0E0E0;
+  --color-dark-text-secondary: #B0B0B0;
+}
+
+/* Background principal */
+.dark-theme {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: var(--color-dark-text);
+}
+
+.dark-theme .animated-background {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+/* Header */
+.dark-theme .header {
+  background: rgba(30, 30, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .logo-text {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .nav-link {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark-theme .nav-link:hover {
+  color: var(--color-white);
+}
+
+/* Dropdown Menu */
+.dark-theme .user-dropdown {
+  background: var(--color-dark-surface);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.dark-theme .dropdown-user-name {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .dropdown-user-role {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark-theme .dropdown-divider {
+  background: var(--color-dark-border);
+}
+
+.dark-theme .dropdown-item {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .dropdown-item:hover {
+  background: var(--color-dark-surface-light);
+  color: var(--color-primary);
+}
+
+.dark-theme .language-submenu {
+  border-left-color: var(--color-dark-border);
+}
+
+.dark-theme .submenu-item {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .submenu-item:hover {
+  background: var(--color-dark-surface-light);
+}
+
+/* Hero Section */
+.dark-theme .hero-content {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .hero-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.dark-theme .section-title {
+  color: var(--color-dark-text);
+}
+
+/* Cards y Panels */
+.dark-theme .glass-effect {
+  background: rgba(30, 30, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .stat-card {
+  background: var(--color-dark-surface);
+  border: 1px solid var(--color-dark-border);
+}
+
+.dark-theme .stat-number {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .stat-label {
+  color: var(--color-dark-text-secondary);
+}
+
+/* Floating Cards */
+.dark-theme .floating-card {
+  background: rgba(30, 30, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .floating-card span {
+  color: var(--color-dark-text);
+}
+
+/* Orders */
+.dark-theme .order-card {
+  background: var(--color-dark-surface);
+  border: 1px solid var(--color-dark-border);
+}
+
+.dark-theme .order-client {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .order-address {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark-theme .order-detail {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark-theme .progress-bar {
+  background: var(--color-dark-border);
+}
+
+.dark-theme .progress-text {
+  color: var(--color-dark-text-secondary);
+}
+
+/* Quick Actions */
+.dark-theme .action-card {
+  background: var(--color-dark-surface);
+  border: 1px solid var(--color-dark-border);
+}
+
+.dark-theme .action-card h3 {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .action-card p {
+  color: var(--color-dark-text-secondary);
+}
+
+/* Workers Table */
+.dark-theme .workers-table-container {
+  background: var(--color-dark-surface);
+  border: 1px solid var(--color-dark-border);
+}
+
+.dark-theme .workers-table tbody tr {
+  border-bottom-color: var(--color-dark-border);
+}
+
+.dark-theme .workers-table tbody tr:hover {
+  background-color: var(--color-dark-surface-light);
+}
+
+.dark-theme .workers-table td {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .worker-name {
+  color: var(--color-dark-text);
+}
+
+/* Notifications Panel */
+.dark-theme .notifications-panel,
+.dark-theme .chat-panel {
+  background: var(--color-dark-surface);
+}
+
+.dark-theme .notification-item {
+  background: var(--color-dark-surface-light);
+}
+
+.dark-theme .notification-item:hover {
+  background: var(--color-dark-border);
+}
+
+.dark-theme .notification-title {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .notification-text {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark-theme .notification-time {
+  color: var(--color-dark-text-secondary);
+}
+
+/* Chat */
+.dark-theme .chat-messages {
+  background: var(--color-dark-surface);
+}
+
+.dark-theme .message-content p {
+  background: var(--color-dark-surface-light);
+  color: var(--color-dark-text);
+}
+
+.dark-theme .chat-message.user .message-content p {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.dark-theme .message-time {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark-theme .chat-input-container {
+  background: var(--color-dark-surface);
+  border-top-color: var(--color-dark-border);
+}
+
+.dark-theme .chat-input-container input {
+  background: var(--color-dark-surface-light);
+  border-color: var(--color-dark-border);
+  color: var(--color-dark-text);
+}
+
+.dark-theme .chat-input-container input:focus {
+  border-color: var(--color-primary);
+}
+
+/* Forms (para perfil y configuración) */
+.dark-theme .form-container {
+  background: rgba(30, 30, 30, 0.95) !important;
+  border: 1px solid var(--color-dark-border);
+}
+
+.dark-theme .form-group label {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .form-control,
+.dark-theme input[type="text"],
+.dark-theme input[type="email"],
+.dark-theme input[type="password"],
+.dark-theme input[type="tel"],
+.dark-theme input[type="number"],
+.dark-theme textarea,
+.dark-theme select {
+  background: var(--color-dark-surface-light);
+  border-color: var(--color-dark-border);
+  color: var(--color-dark-text);
+}
+
+.dark-theme .form-control:hover {
+  border-color: var(--color-primary);
+  background: var(--color-dark-surface);
+}
+
+.dark-theme .form-control:focus {
+  background: var(--color-dark-surface);
+  border-color: var(--color-primary);
+}
+
+.dark-theme .form-control:disabled {
+  background: var(--color-dark-border);
+  color: var(--color-dark-text-secondary);
+}
+
+.dark-theme ::placeholder {
+  color: var(--color-dark-text-secondary);
+  opacity: 0.6;
+}
+
+/* Buttons - mantener gradientes pero ajustar secundarios */
+.dark-theme .btn-secondary {
+  background: var(--color-dark-surface-light);
+  color: var(--color-dark-text);
+  border: 2px solid var(--color-dark-border);
+}
+
+.dark-theme .btn-secondary:hover {
+  background: var(--color-dark-surface);
+  border-color: var(--color-primary);
+}
+
+.dark-theme .btn-text {
+  color: var(--color-primary);
+}
+
+/* Profile/Settings específicos */
+.dark-theme .profile-header {
+  background: var(--gradient-primary) !important;
+}
+
+.dark-theme .sidebar-section {
+  background: var(--color-dark-surface);
+  border: 1px solid var(--color-dark-border);
+}
+
+.dark-theme .sidebar-section h3 {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .sidebar-link {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark-theme .sidebar-link:hover {
+  background: var(--color-dark-surface-light);
+  color: var(--color-primary);
+}
+
+.dark-theme .sidebar-link.active {
+  background: var(--gradient-primary);
+  color: white;
+}
+
+.dark-theme .profile-content {
+  background: var(--color-dark-surface);
+  border: 1px solid var(--color-dark-border);
+}
+
+.dark-theme .profile-content h2,
+.dark-theme .profile-content h3 {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .setting-item {
+  background: var(--color-dark-surface-light);
+}
+
+.dark-theme .setting-item:hover {
+  background: var(--color-dark-border);
+}
+
+.dark-theme .setting-label label {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .setting-description {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark-theme .info-item {
+  background: var(--color-dark-surface-light);
+}
+
+.dark-theme .info-label {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark-theme .info-value {
+  color: var(--color-dark-text);
+}
+
+/* Dashboard Header (para configuración) */
+.dark-theme .dashboard-header {
+  background: var(--color-dark-surface);
+  border-bottom: 1px solid var(--color-dark-border);
+}
+
+.dark-theme .logo-section h1 {
+  color: var(--color-dark-text);
+}
+
+/* Material Cards */
+.dark-theme .material-card {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+}
+
+.dark-theme .material-card:hover {
+  border-color: var(--color-primary);
+  background: var(--color-dark-surface-light);
+}
+
+.dark-theme .material-card.selected {
+  background: rgba(0, 153, 204, 0.2);
+  border-color: var(--color-primary);
+}
+
+.dark-theme .material-name {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .material-unit {
+  background: var(--color-dark-surface-light);
+  color: var(--color-dark-text-secondary);
+}
+
+.dark-theme .cart-section {
+  background: var(--color-dark-surface-light);
+}
+
+.dark-theme .cart-header h3 {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .cart-item {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+}
+
+.dark-theme .cart-item-name {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .cart-empty {
+  color: var(--color-dark-text-secondary);
+}
+
+/* Quantity Controls */
+.dark-theme .quantity-btn {
+  background: var(--color-dark-surface);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.dark-theme .quantity-btn:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+.dark-theme .quantity-input {
+  background: var(--color-dark-surface-light);
+  border-color: var(--color-dark-border);
+  color: var(--color-dark-text);
+}
+
+/* Loading Overlay */
+.dark-theme .loading-overlay {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.dark-theme .loading-content {
+  background: var(--color-dark-surface);
+  color: var(--color-dark-text);
+}
+
+/* Trabajadores Page */
+.dark-theme .page-header {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .workers-stats {
+  background: var(--color-dark-surface);
+}
+
+.dark-theme .stat-mini {
+  background: var(--color-dark-surface-light);
+  border: 1px solid var(--color-dark-border);
+}
+
+.dark-theme .stat-mini h4 {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .stat-mini p {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark-theme .workers-filters input,
+.dark-theme .workers-filters select {
+  background: var(--color-dark-surface-light);
+  border-color: var(--color-dark-border);
+  color: var(--color-dark-text);
+}
+
+/* Request Cards (Solicitudes) */
+.dark-theme .request-card {
+  background: var(--color-dark-surface);
+  border: 1px solid var(--color-dark-border);
+}
+
+.dark-theme .request-card h3 {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .request-meta-item {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark-theme .request-item {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .item-name {
+  color: var(--color-dark-text);
+}
+
+.dark-theme .request-notes {
+  background: var(--color-dark-surface-light);
+  color: var(--color-dark-text);
+}
+
+.dark-theme .filter-tabs {
+  background: var(--color-dark-surface);
+}
+
+.dark-theme .filter-tab {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark-theme .filter-tab:hover {
+  background: var(--color-dark-surface-light);
+  color: var(--color-dark-text);
+}
+
+.dark-theme .filter-tab.active {
+  background: var(--color-primary);
+  color: white;
+}
+
+.dark-theme .empty-state {
+  color: var(--color-dark-text-secondary);
+}
+
+/* Scrollbars para dark theme */
+.dark-theme ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.dark-theme ::-webkit-scrollbar-track {
+  background: var(--color-dark-surface);
+}
+
+.dark-theme ::-webkit-scrollbar-thumb {
+  background: var(--color-dark-border);
+  border-radius: 5px;
+}
+
+.dark-theme ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-dark-text-secondary);
+}

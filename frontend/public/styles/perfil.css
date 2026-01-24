@@ -455,37 +455,200 @@ input:checked + .slider:before {
     }
 }
 
-/* Dark Theme Support (for future implementation) */
+/* ================================================
+   DARK THEME - COMPLETE IMPLEMENTATION
+   ================================================ */
+
+.dark-theme {
+    --color-dark-bg: #121212;
+    --color-dark-surface: #1E1E1E;
+    --color-dark-surface-light: #2A2A2A;
+    --color-dark-border: #333333;
+    --color-dark-text: #E0E0E0;
+    --color-dark-text-secondary: #B0B0B0;
+}
+
+/* Profile Grid & Layout */
 .dark-theme .profile-sidebar,
 .dark-theme .profile-content {
-    background: #2a2a2a;
-    color: #e0e0e0;
+    background: var(--color-dark-surface);
+    color: var(--color-dark-text);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
+.dark-theme .sidebar-section {
+    background: var(--color-dark-surface);
+    border: 1px solid var(--color-dark-border);
+}
+
+/* Typography */
 .dark-theme h2,
 .dark-theme h3,
-.dark-theme .setting-label label {
-    color: #e0e0e0;
+.dark-theme .setting-label label,
+.dark-theme .profile-name,
+.dark-theme .info-value {
+    color: var(--color-dark-text);
 }
 
-.dark-theme .form-control {
-    background: #333;
-    border-color: #444;
-    color: #e0e0e0;
+.dark-theme .profile-role,
+.dark-theme .setting-description,
+.dark-theme .info-label {
+    color: var(--color-dark-text-secondary);
 }
 
+/* Forms */
+.dark-theme .form-control,
+.dark-theme input[type="text"],
+.dark-theme input[type="email"],
+.dark-theme input[type="password"],
+.dark-theme input[type="tel"],
+.dark-theme textarea,
+.dark-theme select {
+    background: var(--color-dark-surface-light);
+    border-color: var(--color-dark-border);
+    color: var(--color-dark-text);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dark-theme .form-control:hover {
+    border-color: #555;
+    background: #2d2d2d;
+}
+
+.dark-theme .form-control:focus {
+    border-color: #0099CC;
+    background: #2d2d2d;
+    box-shadow: 0 0 0 3px rgba(0, 153, 204, 0.2),
+                0 2px 8px rgba(0, 153, 204, 0.15);
+}
+
+.dark-theme .form-control:disabled {
+    background: var(--color-dark-border);
+    color: var(--color-dark-text-secondary);
+}
+
+.dark-theme ::placeholder {
+    color: var(--color-dark-text-secondary);
+    opacity: 0.5;
+}
+
+/* Sidebar Navigation */
 .dark-theme .sidebar-link {
-    color: #b0b0b0;
+    color: var(--color-dark-text-secondary);
 }
 
 .dark-theme .sidebar-link:hover {
-    background: #333;
+    background: var(--color-dark-surface-light);
     color: #0099CC;
 }
 
+.dark-theme .sidebar-link.active {
+    background: linear-gradient(135deg, #0099CC 0%, #00A651 100%);
+    color: white;
+}
+
+/* Settings Items */
 .dark-theme .setting-item,
 .dark-theme .info-item {
-    background: #333;
+    background: var(--color-dark-surface-light);
+    border: 1px solid var(--color-dark-border);
+}
+
+.dark-theme .setting-item:hover {
+    background: #2d2d2d;
+}
+
+/* Profile Header */
+.dark-theme .profile-header {
+    background: linear-gradient(135deg, #0099CC 0%, #00A651 100%) !important;
+    color: white;
+}
+
+.dark-theme .profile-avatar {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Form Groups */
+.dark-theme .profile-form h3 {
+    color: var(--color-dark-text);
+    border-bottom-color: var(--color-dark-border);
+}
+
+.dark-theme .form-group label {
+    color: var(--color-dark-text);
+}
+
+.dark-theme .form-group label i {
+    color: #0099CC;
+}
+
+/* Form Actions */
+.dark-theme .form-actions {
+    border-top-color: var(--color-dark-border);
+}
+
+/* Buttons */
+.dark-theme .btn-secondary {
+    background: var(--color-dark-surface-light);
+    color: var(--color-dark-text);
+    border: 2px solid var(--color-dark-border);
+}
+
+.dark-theme .btn-secondary:hover {
+    background: var(--color-dark-surface);
+    border-color: #0099CC;
+}
+
+.dark-theme .btn-danger {
+    background: #f44336;
+    color: white;
+}
+
+.dark-theme .btn-danger:hover {
+    background: #d32f2f;
+}
+
+/* Toggle Switch */
+.dark-theme .slider {
+    background-color: var(--color-dark-border);
+}
+
+.dark-theme input:checked + .slider {
+    background: linear-gradient(135deg, #0099CC 0%, #00A651 100%);
+}
+
+/* Info Grid */
+.dark-theme .info-grid {
+    color: var(--color-dark-text);
+}
+
+.dark-theme .info-value.status-active {
+    color: #00A651;
+}
+
+/* Settings Groups */
+.dark-theme .settings-group h3 {
+    color: var(--color-dark-text);
+    border-bottom-color: var(--color-dark-border);
+}
+
+/* Dashboard Header (for configuracion page) */
+.dark-theme .dashboard-header {
+    background: var(--color-dark-surface);
+    color: var(--color-dark-text);
+    border-bottom: 2px solid var(--color-dark-border);
+}
+
+.dark-theme .logo-section {
+    color: var(--color-dark-text);
+}
+
+.dark-theme .logo-section h1 {
+    color: var(--color-dark-text);
+}
+
+.dark-theme .logo-section i {
+    color: #0099CC;
 }
 
 /* Font Size Classes */

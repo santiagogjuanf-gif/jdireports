@@ -8,12 +8,31 @@ let orderId = null;
 let orderData = null;
 
 // ================================================
-// OBTENER ID DE LA ORDEN DESDE URL
+// OBTENER ID DE LA ORDEN DESDE NAVEGACIÓN SEGURA
 // ================================================
 
 function getOrderIdFromURL() {
+    // Intentar primero obtener de navegación segura
+    const secureData = window.SecureNav ? window.SecureNav.getData('order') : null;
+
+    if (secureData && secureData.id) {
+        console.log('🔒 [EDITAR-ORDEN] ID obtenido de forma segura');
+        // Limpiar la URL después de obtener los datos
+        if (window.SecureNav) {
+            window.SecureNav.cleanURL();
+        }
+        return secureData.id;
+    }
+
+    // Fallback: leer de URL (para compatibilidad con código antiguo)
     const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('id');
+    const id = urlParams.get('id');
+
+    if (id) {
+        console.warn('⚠️ [EDITAR-ORDEN] ID obtenido de URL (método inseguro)');
+    }
+
+    return id;
 }
 
 // ================================================

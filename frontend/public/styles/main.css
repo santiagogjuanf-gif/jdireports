@@ -2063,3 +2063,399 @@ a {
 .dark-theme ::-webkit-scrollbar-thumb:hover {
   background: var(--color-dark-text-secondary);
 }
+
+/* ================================================
+   RESPONSIVE DESIGN MEJORADO - DASHBOARD
+   ================================================ */
+
+/* Tablets y pantallas medianas (1024px) */
+@media (max-width: 1024px) {
+  .container {
+    padding: 0 var(--spacing-md);
+  }
+
+  .header {
+    margin: var(--spacing-sm);
+  }
+
+  .header-content {
+    gap: var(--spacing-sm);
+  }
+
+  .logo-text {
+    font-size: 1.3rem;
+  }
+
+  .nav {
+    gap: var(--spacing-xs);
+  }
+
+  .nav-link {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.9rem;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .orders-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablets verticales (768px) */
+@media (max-width: 768px) {
+  .header {
+    position: relative;
+    top: 0;
+    margin: 0;
+    border-radius: 0;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .logo-container {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .logo-text {
+    font-size: 1.2rem;
+  }
+
+  .nav {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .nav-link {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.85rem;
+    flex: 0 1 auto;
+  }
+
+  .nav-link span {
+    display: inline; /* Mantener texto visible en tablets */
+  }
+
+  .user-menu {
+    width: 100%;
+    justify-content: flex-end;
+    gap: var(--spacing-sm);
+    padding-top: var(--spacing-xs);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .main-content {
+    padding: var(--spacing-md) 0;
+  }
+
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+  }
+
+  .orders-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .welcome-section {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+
+  .welcome-title {
+    font-size: 1.8rem;
+  }
+
+  .welcome-subtitle {
+    font-size: 1rem;
+  }
+
+  /* Cards más compactos */
+  .card {
+    padding: var(--spacing-md);
+  }
+
+  .section-header h2 {
+    font-size: 1.3rem;
+  }
+
+  /* User dropdown */
+  .user-dropdown {
+    position: fixed;
+    top: auto;
+    right: var(--spacing-sm);
+    left: var(--spacing-sm);
+    width: auto;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  /* Notifications panel */
+  .notifications-panel {
+    width: 90%;
+    max-width: 400px;
+  }
+
+  /* Chat panel */
+  .chat-panel {
+    width: 90%;
+    max-width: 400px;
+  }
+}
+
+/* Móviles grandes (640px) */
+@media (max-width: 640px) {
+  :root {
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 0.75rem;
+    --spacing-lg: 1rem;
+    --spacing-xl: 1.5rem;
+  }
+
+  .header {
+    padding: var(--spacing-sm);
+  }
+
+  .logo-text {
+    font-size: 1.1rem;
+  }
+
+  .nav-link span {
+    display: none; /* Ocultar texto en móviles, solo iconos */
+  }
+
+  .nav-link i {
+    font-size: 1.2rem;
+  }
+
+  .welcome-section {
+    padding: var(--spacing-md);
+  }
+
+  .welcome-title {
+    font-size: 1.5rem;
+  }
+
+  .welcome-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    padding: var(--spacing-md);
+  }
+
+  .stat-value {
+    font-size: 1.8rem;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+  }
+
+  .card {
+    padding: var(--spacing-sm);
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .section-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .btn {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.85rem;
+  }
+
+  /* Order cards */
+  .order-card {
+    padding: var(--spacing-sm);
+  }
+
+  .order-header h3 {
+    font-size: 1rem;
+  }
+
+  .order-info {
+    font-size: 0.85rem;
+  }
+
+  /* Tables responsive */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    font-size: 0.85rem;
+  }
+
+  th, td {
+    padding: var(--spacing-xs);
+  }
+
+  /* User menu más pequeño */
+  .user-avatar {
+    width: 35px;
+    height: 35px;
+  }
+
+  .notification-bell {
+    padding: var(--spacing-xs);
+  }
+
+  .badge {
+    font-size: 0.65rem;
+    padding: 2px 5px;
+  }
+}
+
+/* Móviles pequeños (480px) */
+@media (max-width: 480px) {
+  .header-content {
+    gap: var(--spacing-xs);
+  }
+
+  .logo-placeholder {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+  }
+
+  .logo-text {
+    font-size: 1rem;
+  }
+
+  .nav {
+    gap: 0;
+  }
+
+  .nav-link {
+    padding: var(--spacing-xs);
+    flex: 1;
+    justify-content: center;
+  }
+
+  .welcome-title {
+    font-size: 1.3rem;
+  }
+
+  .welcome-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .stat-card {
+    padding: var(--spacing-sm);
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .quick-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .action-btn {
+    padding: var(--spacing-md);
+  }
+
+  /* Panels full width en móviles pequeños */
+  .user-dropdown,
+  .notifications-panel,
+  .chat-panel {
+    width: 95%;
+    right: 2.5%;
+    left: 2.5%;
+  }
+
+  /* Modals full screen */
+  .modal-content {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    border-radius: 0;
+    max-height: 100vh;
+  }
+
+  .modal-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .modal-body {
+    padding: var(--spacing-sm);
+  }
+}
+
+/* Prevenir overflow horizontal */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Asegurar que imágenes y contenido no se salgan */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Textos largos se ajustan */
+h1, h2, h3, h4, h5, h6, p {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Links y botones no se salen */
+.btn, a {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}

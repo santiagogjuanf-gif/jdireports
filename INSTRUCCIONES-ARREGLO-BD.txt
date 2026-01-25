@@ -1,0 +1,47 @@
+============================================
+INSTRUCCIONES PARA ARREGLAR BASE DE DATOS
+============================================
+
+PROBLEMA: La tabla material_requests no tiene las columnas:
+- delivered_at
+- delivered_by
+- rejected_reason
+
+SOLUCIÓN:
+
+1. Abre phpMyAdmin (http://localhost/phpmyadmin)
+
+2. Selecciona la base de datos "jd_cleaning_services"
+
+3. Haz clic en la pestaña "SQL"
+
+4. Copia y pega este código:
+
+-------------------------------------------
+ALTER TABLE `material_requests`
+ADD COLUMN `rejected_reason` TEXT NULL
+AFTER `approved_at`;
+
+ALTER TABLE `material_requests`
+ADD COLUMN `delivered_by` INT NULL
+AFTER `rejected_reason`,
+ADD CONSTRAINT `fk_delivered_by` FOREIGN KEY (`delivered_by`) REFERENCES `users`(`id`) ON DELETE SET NULL;
+
+ALTER TABLE `material_requests`
+ADD COLUMN `delivered_at` TIMESTAMP NULL
+AFTER `delivered_by`;
+
+CREATE INDEX idx_delivered_at ON material_requests(delivered_at);
+-------------------------------------------
+
+5. Haz clic en "Continuar" o "Go"
+
+6. Deberías ver el mensaje "Query OK"
+
+7. ¡Listo! Ahora reinicia el servidor Node.js
+
+VERIFICAR:
+- Ve a la tabla material_requests en phpMyAdmin
+- Verifica que ahora tenga estas nuevas columnas
+
+============================================

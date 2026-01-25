@@ -344,9 +344,14 @@ async function viewOrder(orderId) {
 
 // Modificar reporte
 function editOrder(orderId) {
-    // Redirigir a página de edición (si existe) o mostrar formulario
-    const editUrl = `/editar-orden?id=${orderId}`;
-    window.location.href = editUrl;
+    // Navegar de forma segura sin exponer el ID en la URL
+    if (window.SecureNav) {
+        window.SecureNav.navigate('/editar-orden', { id: orderId, timestamp: Date.now() }, 'order');
+    } else {
+        // Fallback (si secure-nav.js no está cargado)
+        console.warn('⚠️ SecureNav no disponible, usando método antiguo');
+        window.location.href = `/editar-orden?id=${orderId}`;
+    }
 }
 
 // Eliminar reporte

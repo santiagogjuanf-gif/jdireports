@@ -112,10 +112,11 @@ router.get('/', authenticateToken, requireSupervisor, async (req, res) => {
     
     // Construir query base simple
     let baseQuery = `
-      SELECT 
+      SELECT
         u.id,
         u.name,
         u.email,
+        u.phone,
         u.role,
         u.is_active,
         u.created_at,

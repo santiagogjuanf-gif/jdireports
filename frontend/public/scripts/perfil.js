@@ -3,6 +3,8 @@
 // ================================================
 
 const API_BASE_URL = 'http://localhost:3000/api';
+let targetUserId = null; // ID del usuario que se está editando
+let isEditingOtherUser = false;
 
 document.addEventListener('DOMContentLoaded', async () => {
     await loadUserProfile();
@@ -11,25 +13,75 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadUserProfile() {
     try {
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
         const token = localStorage.getItem('token');
 
-        if (!user.id || !token) {
+        if (!currentUser.id || !token) {
             window.location.href = '/login';
             return;
         }
 
-        // Cargar datos del usuario
-        document.getElementById('profileName').textContent = user.name || 'Usuario';
-        document.getElementById('profileRole').textContent = getRoleName(user.role);
-        document.getElementById('name').value = user.name || '';
-        document.getElementById('email').value = user.email || '';
-        document.getElementById('phone').value = user.phone || '';
-        document.getElementById('username').value = user.username || '';
+        // Verificar si hay un parámetro 'id' en la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const userIdParam = urlParams.get('id');
+
+        if (userIdParam && userIdParam !== currentUser.id.toString()) {
+            // Intentando editar otro usuario
+            console.log('📝 [PERFIL] Cargando perfil de usuario ID:', userIdParam);
+
+            // Verificar permisos - solo admin y jefe pueden editar otros perfiles
+            if (!['admin', 'jefe'].includes(currentUser.role)) {
+                showNotification('No tienes permisos para editar otros perfiles', 'error');
+                setTimeout(() => window.location.href = '/trabajadores', 2000);
+                return;
+            }
+
+            targetUserId = parseInt(userIdParam);
+            isEditingOtherUser = true;
+
+            // Cargar datos del usuario desde la API
+            const response = await fetch(`${API_BASE_URL}/users/${targetUserId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('No se pudo cargar el usuario');
+            }
+
+            const data = await response.json();
+            const user = data.user || data;
+
+            // Rellenar formulario con datos del usuario
+            document.getElementById('profileName').textContent = user.name || 'Usuario';
+            document.getElementById('profileRole').textContent = getRoleName(user.role);
+            document.getElementById('name').value = user.name || '';
+            document.getElementById('email').value = user.email || '';
+            document.getElementById('phone').value = user.phone || '';
+            document.getElementById('username').value = user.username || '';
+
+            console.log('✅ [PERFIL] Perfil de otro usuario cargado');
+        } else {
+            // Editar perfil propio
+            targetUserId = currentUser.id;
+            isEditingOtherUser = false;
+
+            // Cargar datos del usuario logueado
+            document.getElementById('profileName').textContent = currentUser.name || 'Usuario';
+            document.getElementById('profileRole').textContent = getRoleName(currentUser.role);
+            document.getElementById('name').value = currentUser.name || '';
+            document.getElementById('email').value = currentUser.email || '';
+            document.getElementById('phone').value = currentUser.phone || '';
+            document.getElementById('username').value = currentUser.username || '';
+
+            console.log('✅ [PERFIL] Perfil propio cargado');
+        }
 
     } catch (error) {
-        console.error('Error cargando perfil:', error);
+        console.error('❌ [PERFIL] Error cargando perfil:', error);
         showNotification('Error al cargar el perfil', 'error');
+        setTimeout(() => window.location.href = '/trabajadores', 2000);
     }
 }
 
@@ -83,7 +135,9 @@ function setupFormHandler() {
         }
 
         try {
-            const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
+            console.log('💾 [PERFIL] Guardando perfil de usuario ID:', targetUserId);
+
+            const response = await fetch(`${API_BASE_URL}/users/${targetUserId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -95,11 +149,13 @@ function setupFormHandler() {
             const data = await response.json();
 
             if (response.ok) {
-                // Actualizar localStorage
-                const updatedUser = { ...user, ...updateData };
-                delete updatedUser.currentPassword;
-                delete updatedUser.newPassword;
-                localStorage.setItem('user', JSON.stringify(updatedUser));
+                // Solo actualizar localStorage si estamos editando nuestro propio perfil
+                if (!isEditingOtherUser) {
+                    const updatedUser = { ...user, ...updateData };
+                    delete updatedUser.currentPassword;
+                    delete updatedUser.newPassword;
+                    localStorage.setItem('user', JSON.stringify(updatedUser));
+                }
 
                 showNotification('Perfil actualizado exitosamente', 'success');
 
@@ -108,15 +164,21 @@ function setupFormHandler() {
                 document.getElementById('newPassword').value = '';
                 document.getElementById('confirmPassword').value = '';
 
-                // Recargar después de 1.5 segundos
+                console.log('✅ [PERFIL] Perfil actualizado');
+
+                // Redirigir según el caso
                 setTimeout(() => {
-                    location.reload();
+                    if (isEditingOtherUser) {
+                        window.location.href = '/trabajadores';
+                    } else {
+                        location.reload();
+                    }
                 }, 1500);
             } else {
                 showNotification(data.message || 'Error al actualizar el perfil', 'error');
             }
         } catch (error) {
-            console.error('Error:', error);
+            console.error('❌ [PERFIL] Error:', error);
             showNotification('Error de conexión', 'error');
         }
     });

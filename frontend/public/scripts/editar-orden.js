@@ -64,45 +64,67 @@ async function cargarOrdenExistente() {
 function rellenarFormulario(order) {
     console.log('📝 [EDITAR-ORDEN] Rellenando formulario...');
 
-    // Datos del cliente
-    document.getElementById('client_name').value = order.client_name || '';
-    document.getElementById('client_phone').value = order.client_phone || '';
-    document.getElementById('client_email').value = order.client_email || '';
+    try {
+        // Datos del cliente
+        const clientName = document.getElementById('client_name');
+        if (clientName) clientName.value = order.client_name || '';
 
-    // Dirección
-    document.getElementById('address').value = order.address || '';
+        const clientPhone = document.getElementById('client_phone');
+        if (clientPhone) clientPhone.value = order.client_phone || '';
 
-    // Fecha y hora
-    if (order.scheduled_date) {
-        const dateTime = order.scheduled_date.split(' ');
-        document.getElementById('scheduled_date').value = dateTime[0];
-        if (dateTime[1]) {
-            document.getElementById('scheduled_time').value = dateTime[1].substring(0, 5);
+        const clientEmail = document.getElementById('client_email');
+        if (clientEmail) clientEmail.value = order.client_email || '';
+
+        // Dirección y ciudad
+        const address = document.getElementById('address');
+        if (address) address.value = order.address || '';
+
+        const city = document.getElementById('city');
+        if (city) city.value = order.city || '';
+
+        // Fecha y hora
+        if (order.scheduled_date) {
+            const dateTime = order.scheduled_date.split(' ');
+            const schedDate = document.getElementById('scheduled_date');
+            if (schedDate) schedDate.value = dateTime[0];
+
+            if (dateTime[1]) {
+                const schedTime = document.getElementById('scheduled_time');
+                if (schedTime) schedTime.value = dateTime[1].substring(0, 5);
+            }
         }
-    }
 
-    // Trabajador responsable
-    if (order.responsible_worker_id) {
-        document.getElementById('responsible_worker_id').value = order.responsible_worker_id;
-    }
+        // Trabajador responsable
+        if (order.responsible_worker_id) {
+            const responsibleWorker = document.getElementById('responsible_worker_id');
+            if (responsibleWorker) {
+                responsibleWorker.value = order.responsible_worker_id;
+            }
+        }
 
-    // Precio
-    if (order.total_price) {
-        document.getElementById('total_price').value = order.total_price;
-    }
+        // Precio (si existe el campo)
+        if (order.total_price) {
+            const totalPrice = document.getElementById('total_price');
+            if (totalPrice) totalPrice.value = order.total_price;
+        }
 
-    // Notas
-    if (order.notes) {
-        document.getElementById('notes').value = order.notes;
-    }
+        // Notas
+        if (order.notes) {
+            const notes = document.getElementById('notes');
+            if (notes) notes.value = order.notes;
+        }
 
-    // Marcar áreas seleccionadas (se hace después de cargar las áreas)
-    if (order.areas && Array.isArray(order.areas)) {
-        selectedAreas = order.areas.map(area => area.id);
-        console.log('📍 [EDITAR-ORDEN] Áreas seleccionadas:', selectedAreas);
-    }
+        // Marcar áreas seleccionadas (se hace después de cargar las áreas)
+        if (order.areas && Array.isArray(order.areas)) {
+            selectedAreas = order.areas.map(area => area.id);
+            console.log('📍 [EDITAR-ORDEN] Áreas seleccionadas:', selectedAreas);
+        }
 
-    console.log('✅ [EDITAR-ORDEN] Formulario rellenado');
+        console.log('✅ [EDITAR-ORDEN] Formulario rellenado exitosamente');
+    } catch (error) {
+        console.error('❌ [EDITAR-ORDEN] Error rellenando formulario:', error);
+        showError('Error al cargar los datos de la orden');
+    }
 }
 
 // ================================================

@@ -419,9 +419,62 @@
                     <span class="logo-text">JDI Cleaning</span>
                 </div>
                 <div class="user-menu">
-                    <div class="user-avatar">
-                        <img src="https://ui-avatars.com/api/?name=Admin&background=0099CC&color=fff" alt="Usuario">
-                        <div class="status-indicator online"></div>
+                    <div class="notification-bell" id="notificationBell">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge" id="notificationBadge" style="display: none;">0</span>
+                    </div>
+                    <div class="user-avatar-container">
+                        <div class="user-avatar">
+                            <img src="https://ui-avatars.com/api/?name=Admin&background=0099CC&color=fff" alt="Usuario" id="userAvatarImg">
+                            <div class="status-indicator online"></div>
+                            <div class="role-badge" id="userRoleBadge">AD</div>
+                        </div>
+                        <div class="user-dropdown hidden" id="userDropdown">
+                            <div class="dropdown-header">
+                                <div class="dropdown-avatar">
+                                    <img src="https://ui-avatars.com/api/?name=Admin&background=0099CC&color=fff" alt="Usuario" id="dropdownAvatarImg">
+                                </div>
+                                <div class="dropdown-user-info">
+                                    <span class="dropdown-user-name" id="dropdownUserName">Admin</span>
+                                    <span class="dropdown-user-role" id="dropdownUserRole">Administrador</span>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item" id="menuProfile">
+                                <i class="fas fa-user"></i>
+                                <span data-i18n="menuProfile">Mi Perfil</span>
+                            </a>
+                            <a href="#" class="dropdown-item" id="menuSettings">
+                                <i class="fas fa-cog"></i>
+                                <span data-i18n="menuSettings">Configuración</span>
+                            </a>
+                            <div class="dropdown-item-group">
+                                <a href="#" class="dropdown-item" id="menuLanguage">
+                                    <i class="fas fa-language"></i>
+                                    <span>Idioma: <span id="currentLanguage">Español</span></span>
+                                    <i class="fas fa-chevron-down ml-auto"></i>
+                                </a>
+                                <div class="language-submenu hidden" id="languageSubmenu">
+                                    <a href="#" class="submenu-item" data-lang="es">
+                                        <i class="fas fa-check" id="checkEs"></i>
+                                        <span>🇪🇸 Español</span>
+                                    </a>
+                                    <a href="#" class="submenu-item" data-lang="en">
+                                        <i class="fas fa-check hidden" id="checkEn"></i>
+                                        <span>🇺🇸 English</span>
+                                    </a>
+                                    <a href="#" class="submenu-item" data-lang="fr">
+                                        <i class="fas fa-check hidden" id="checkFr"></i>
+                                        <span>🇫🇷 Français</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item text-danger" id="menuLogout">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span data-i18n="menuLogout">Cerrar Sesión</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -441,6 +494,10 @@
                         </div>
                     </div>
                     <div style="display: flex; gap: 1rem; align-items: center;">
+                        <button onclick="window.location.href='/'" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i>
+                            <span data-i18n="back">Volver</span>
+                        </button>
                         <button id="viewRequestsBtn" class="btn btn-secondary" style="display: none;">
                             <i class="fas fa-clipboard-list"></i>
                             Ver Solicitudes
@@ -504,7 +561,20 @@
         </div>
     </div>
 
+    <!-- Notifications Panel -->
+    <div class="notifications-panel hidden" id="notificationsPanel">
+        <div class="panel-header">
+            <h3><i class="fas fa-bell"></i> <span data-i18n="notifications">Notificaciones</span></h3>
+            <button class="btn-close" id="closeNotifications"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="panel-content" id="notificationsList">
+            <!-- Las notificaciones se cargarán dinámicamente -->
+        </div>
+    </div>
+
+    <script src="scripts/i18n.js"></script>
     <script src="scripts/auth.js"></script>
+    <script src="scripts/main.js"></script>
     <script src="scripts/solicitar-material.js"></script>
 </body>
 </html>

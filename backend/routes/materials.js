@@ -36,8 +36,8 @@ const handleValidationErrors = (req, res, next) => {
     }));
 
     return res.status(400).json({
-      error: 'Errores de validaci�n',
-      message: 'Los datos proporcionados no son v�lidos',
+      error: 'Errores de validación',
+      message: 'Los datos proporcionados no son válidos',
       details: errorMessages
     });
   }
@@ -48,15 +48,15 @@ const createMaterialValidation = [
   body('name_es')
     .trim()
     .isLength({ min: 2, max: 100 })
-    .withMessage('Nombre en espa�ol debe tener entre 2 y 100 caracteres'),
+    .withMessage('Nombre en español debe tener entre 2 y 100 caracteres'),
   body('name_en')
     .trim()
     .isLength({ min: 2, max: 100 })
-    .withMessage('Nombre en ingl�s debe tener entre 2 y 100 caracteres'),
+    .withMessage('Nombre en inglés debe tener entre 2 y 100 caracteres'),
   body('name_fr')
     .trim()
     .isLength({ min: 2, max: 100 })
-    .withMessage('Nombre en franc�s debe tener entre 2 y 100 caracteres'),
+    .withMessage('Nombre en francés debe tener entre 2 y 100 caracteres'),
   body('unit')
     .trim()
     .isLength({ min: 1, max: 20 })
@@ -73,10 +73,10 @@ const createRequestValidation = [
     .withMessage('Debe solicitar al menos un material'),
   body('materials.*.material_id')
     .isInt({ min: 1 })
-    .withMessage('ID de material no v�lido'),
+    .withMessage('ID de material no válido'),
   body('materials.*.quantity')
     .isInt({ min: 1 })
-    .withMessage('Cantidad debe ser un n�mero positivo'),
+    .withMessage('Cantidad debe ser un número positivo'),
   body('notes')
     .optional()
     .trim()
@@ -149,262 +149,6 @@ router.get('/', authenticateToken, async (req, res) => {
 });
 
 // ================================================
-// OBTENER MATERIAL POR ID
-// ================================================
-router.get('/:id', authenticateToken, async (req, res) => {
-  try {
-    const materialId = req.params.id;
-    const { language = 'es' } = req.query;
-
-    const validLanguages = ['es', 'en', 'fr'];
-    const lang = validLanguages.includes(language) ? language : 'es';
-
-    const material = await queryOne(`
-      SELECT
-        id,
-        name_es,
-        name_en,
-        name_fr,
-        unit,
-        is_active,
-        created_at,
-        updated_at
-      FROM materials
-      WHERE id = ?
-    `, [materialId]);
-
-    if (!material) {
-      throw new NotFoundError('Material no encontrado');
-    }
-
-    res.json({
-      success: true,
-      material: {
-        ...material,
-        name: material[`name_${lang}`]
-      },
-      language: lang
-    });
-
-  } catch (error) {
-    logError(error, req, 'Get Material Route');
-
-    if (error instanceof NotFoundError) {
-      return res.status(404).json({
-        error: 'No encontrado',
-        message: error.message
-      });
-    }
-
-    res.status(500).json({
-      error: 'Error interno',
-      message: 'Error al obtener material'
-    });
-  }
-});
-
-// ================================================
-// CREAR NUEVO MATERIAL (Solo admin/jefe)
-// ================================================
-router.post('/', authenticateToken, requireRole(['admin', 'jefe']), createMaterialValidation, handleValidationErrors, async (req, res) => {
-  try {
-    const {
-      name_es,
-      name_en,
-      name_fr,
-      unit,
-      is_active = true
-    } = req.body;
-
-    const userId = req.userId;
-
-    const materialData = {
-      name_es: name_es.trim(),
-      name_en: name_en.trim(),
-      name_fr: name_fr.trim(),
-      unit: unit.trim(),
-      is_active
-    };
-
-    const materialId = await insert('materials', materialData);
-
-    await logActivity(
-      userId,
-      null,
-      'material_created',
-      `Material "${name_es}" creado por ${req.user.name}`,
-      req
-    );
-
-    res.status(201).json({
-      success: true,
-      message: 'Material creado exitosamente',
-      material: {
-        id: materialId,
-        ...materialData
-      }
-    });
-
-  } catch (error) {
-    logError(error, req, 'Create Material Route');
-    res.status(500).json({
-      error: 'Error interno',
-      message: 'Error al crear material'
-    });
-  }
-});
-
-// ================================================
-// ACTUALIZAR MATERIAL (Solo admin/jefe)
-// ================================================
-router.put('/:id', authenticateToken, requireRole(['admin', 'jefe']), [
-  body('name_es')
-    .optional()
-    .trim()
-    .isLength({ min: 2, max: 100 }),
-  body('name_en')
-    .optional()
-    .trim()
-    .isLength({ min: 2, max: 100 }),
-  body('name_fr')
-    .optional()
-    .trim()
-    .isLength({ min: 2, max: 100 }),
-  body('unit')
-    .optional()
-    .trim()
-    .isLength({ min: 1, max: 20 }),
-  body('is_active')
-    .optional()
-    .isBoolean()
-], handleValidationErrors, async (req, res) => {
-  try {
-    const materialId = req.params.id;
-    const userId = req.userId;
-    const { name_es, name_en, name_fr, unit, is_active } = req.body;
-
-    const material = await queryOne('SELECT id, name_es FROM materials WHERE id = ?', [materialId]);
-    if (!material) {
-      throw new NotFoundError('Material no encontrado');
-    }
-
-    const updates = {};
-    if (name_es) updates.name_es = name_es.trim();
-    if (name_en) updates.name_en = name_en.trim();
-    if (name_fr) updates.name_fr = name_fr.trim();
-    if (unit) updates.unit = unit.trim();
-    if (is_active !== undefined) updates.is_active = is_active;
-
-    if (Object.keys(updates).length === 0) {
-      return res.status(400).json({
-        error: 'Datos inv�lidos',
-        message: 'Debes proporcionar al menos un campo para actualizar'
-      });
-    }
-
-    const setClause = Object.keys(updates).map(key => `${key} = ?`).join(', ');
-    const values = [...Object.values(updates), materialId];
-
-    await query(
-      `UPDATE materials SET ${setClause}, updated_at = NOW() WHERE id = ?`,
-      values
-    );
-
-    await logActivity(
-      userId,
-      null,
-      'material_updated',
-      `Material "${material.name_es}" actualizado por ${req.user.name}`,
-      req
-    );
-
-    res.json({
-      success: true,
-      message: 'Material actualizado exitosamente',
-      material_id: materialId,
-      updated: updates
-    });
-
-  } catch (error) {
-    logError(error, req, 'Update Material Route');
-
-    if (error instanceof NotFoundError) {
-      return res.status(404).json({
-        error: 'No encontrado',
-        message: error.message
-      });
-    }
-
-    res.status(500).json({
-      error: 'Error interno',
-      message: 'Error al actualizar material'
-    });
-  }
-});
-
-// ================================================
-// ELIMINAR MATERIAL (Solo admin/jefe)
-// ================================================
-router.delete('/:id', authenticateToken, requireRole(['admin', 'jefe']), async (req, res) => {
-  try {
-    const materialId = req.params.id;
-    const userId = req.userId;
-
-    const material = await queryOne('SELECT id, name_es FROM materials WHERE id = ?', [materialId]);
-    if (!material) {
-      throw new NotFoundError('Material no encontrado');
-    }
-
-    // Verificar si hay solicitudes usando este material
-    const requestsUsingMaterial = await queryOne(`
-      SELECT COUNT(*) as count FROM material_request_items WHERE material_id = ?
-    `, [materialId]);
-
-    if (requestsUsingMaterial.count > 0) {
-      throw new ConflictError(`No se puede eliminar el material porque est� siendo usado en ${requestsUsingMaterial.count} solicitud(es)`);
-    }
-
-    await query('DELETE FROM materials WHERE id = ?', [materialId]);
-
-    await logActivity(
-      userId,
-      null,
-      'material_deleted',
-      `Material "${material.name_es}" eliminado por ${req.user.name}`,
-      req
-    );
-
-    res.json({
-      success: true,
-      message: 'Material eliminado exitosamente',
-      material_id: materialId
-    });
-
-  } catch (error) {
-    logError(error, req, 'Delete Material Route');
-
-    if (error instanceof NotFoundError) {
-      return res.status(404).json({
-        error: 'No encontrado',
-        message: error.message
-      });
-    }
-
-    if (error instanceof ConflictError) {
-      return res.status(409).json({
-        error: 'Conflicto',
-        message: error.message
-      });
-    }
-
-    res.status(500).json({
-      error: 'Error interno',
-      message: 'Error al eliminar material'
-    });
-  }
-});
-
-// ================================================
 // CREAR SOLICITUD DE MATERIALES
 // ================================================
 router.post('/requests', authenticateToken, createRequestValidation, handleValidationErrors, async (req, res) => {
@@ -423,7 +167,7 @@ router.post('/requests', authenticateToken, createRequestValidation, handleValid
       throw new ValidationError('Debe solicitar al menos un material');
     }
 
-    // Verificar que todos los materiales existen y est�n activos
+    // Verificar que todos los materiales existen y están activos
     const materialIds = materials.map(m => m.material_id);
     console.log('🔍 [MATERIALES-BACKEND] Verificando materiales con IDs:', materialIds);
 
@@ -437,7 +181,7 @@ router.post('/requests', authenticateToken, createRequestValidation, handleValid
 
     if (materialsResult.rows.length !== materialIds.length) {
       console.error('❌ [MATERIALES-BACKEND] Algunos materiales no son válidos');
-      throw new ValidationError('Uno o m�s materiales no son v�lidos o no est�n activos');
+      throw new ValidationError('Uno o más materiales no son válidos o no están activos');
     }
 
     // Crear la solicitud
@@ -489,7 +233,7 @@ router.post('/requests', authenticateToken, createRequestValidation, handleValid
 
     if (error instanceof ValidationError) {
       return res.status(400).json({
-        error: 'Error de validaci�n',
+        error: 'Error de validación',
         message: error.message
       });
     }
@@ -886,6 +630,262 @@ router.post('/requests/:id/cancel', authenticateToken, async (req, res) => {
     res.status(500).json({
       error: 'Error interno',
       message: 'Error al cancelar solicitud'
+    });
+  }
+});
+
+// ================================================
+// OBTENER MATERIAL POR ID
+// ================================================
+router.get('/:id', authenticateToken, async (req, res) => {
+  try {
+    const materialId = req.params.id;
+    const { language = 'es' } = req.query;
+
+    const validLanguages = ['es', 'en', 'fr'];
+    const lang = validLanguages.includes(language) ? language : 'es';
+
+    const material = await queryOne(`
+      SELECT
+        id,
+        name_es,
+        name_en,
+        name_fr,
+        unit,
+        is_active,
+        created_at,
+        updated_at
+      FROM materials
+      WHERE id = ?
+    `, [materialId]);
+
+    if (!material) {
+      throw new NotFoundError('Material no encontrado');
+    }
+
+    res.json({
+      success: true,
+      material: {
+        ...material,
+        name: material[`name_${lang}`]
+      },
+      language: lang
+    });
+
+  } catch (error) {
+    logError(error, req, 'Get Material Route');
+
+    if (error instanceof NotFoundError) {
+      return res.status(404).json({
+        error: 'No encontrado',
+        message: error.message
+      });
+    }
+
+    res.status(500).json({
+      error: 'Error interno',
+      message: 'Error al obtener material'
+    });
+  }
+});
+
+// ================================================
+// CREAR NUEVO MATERIAL (Solo admin/jefe)
+// ================================================
+router.post('/', authenticateToken, requireRole(['admin', 'jefe']), createMaterialValidation, handleValidationErrors, async (req, res) => {
+  try {
+    const {
+      name_es,
+      name_en,
+      name_fr,
+      unit,
+      is_active = true
+    } = req.body;
+
+    const userId = req.userId;
+
+    const materialData = {
+      name_es: name_es.trim(),
+      name_en: name_en.trim(),
+      name_fr: name_fr.trim(),
+      unit: unit.trim(),
+      is_active
+    };
+
+    const materialId = await insert('materials', materialData);
+
+    await logActivity(
+      userId,
+      null,
+      'material_created',
+      `Material "${name_es}" creado por ${req.user.name}`,
+      req
+    );
+
+    res.status(201).json({
+      success: true,
+      message: 'Material creado exitosamente',
+      material: {
+        id: materialId,
+        ...materialData
+      }
+    });
+
+  } catch (error) {
+    logError(error, req, 'Create Material Route');
+    res.status(500).json({
+      error: 'Error interno',
+      message: 'Error al crear material'
+    });
+  }
+});
+
+// ================================================
+// ACTUALIZAR MATERIAL (Solo admin/jefe)
+// ================================================
+router.put('/:id', authenticateToken, requireRole(['admin', 'jefe']), [
+  body('name_es')
+    .optional()
+    .trim()
+    .isLength({ min: 2, max: 100 }),
+  body('name_en')
+    .optional()
+    .trim()
+    .isLength({ min: 2, max: 100 }),
+  body('name_fr')
+    .optional()
+    .trim()
+    .isLength({ min: 2, max: 100 }),
+  body('unit')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 20 }),
+  body('is_active')
+    .optional()
+    .isBoolean()
+], handleValidationErrors, async (req, res) => {
+  try {
+    const materialId = req.params.id;
+    const userId = req.userId;
+    const { name_es, name_en, name_fr, unit, is_active } = req.body;
+
+    const material = await queryOne('SELECT id, name_es FROM materials WHERE id = ?', [materialId]);
+    if (!material) {
+      throw new NotFoundError('Material no encontrado');
+    }
+
+    const updates = {};
+    if (name_es) updates.name_es = name_es.trim();
+    if (name_en) updates.name_en = name_en.trim();
+    if (name_fr) updates.name_fr = name_fr.trim();
+    if (unit) updates.unit = unit.trim();
+    if (is_active !== undefined) updates.is_active = is_active;
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({
+        error: 'Datos inválidos',
+        message: 'Debes proporcionar al menos un campo para actualizar'
+      });
+    }
+
+    const setClause = Object.keys(updates).map(key => `${key} = ?`).join(', ');
+    const values = [...Object.values(updates), materialId];
+
+    await query(
+      `UPDATE materials SET ${setClause}, updated_at = NOW() WHERE id = ?`,
+      values
+    );
+
+    await logActivity(
+      userId,
+      null,
+      'material_updated',
+      `Material "${material.name_es}" actualizado por ${req.user.name}`,
+      req
+    );
+
+    res.json({
+      success: true,
+      message: 'Material actualizado exitosamente',
+      material_id: materialId,
+      updated: updates
+    });
+
+  } catch (error) {
+    logError(error, req, 'Update Material Route');
+
+    if (error instanceof NotFoundError) {
+      return res.status(404).json({
+        error: 'No encontrado',
+        message: error.message
+      });
+    }
+
+    res.status(500).json({
+      error: 'Error interno',
+      message: 'Error al actualizar material'
+    });
+  }
+});
+
+// ================================================
+// ELIMINAR MATERIAL (Solo admin/jefe)
+// ================================================
+router.delete('/:id', authenticateToken, requireRole(['admin', 'jefe']), async (req, res) => {
+  try {
+    const materialId = req.params.id;
+    const userId = req.userId;
+
+    const material = await queryOne('SELECT id, name_es FROM materials WHERE id = ?', [materialId]);
+    if (!material) {
+      throw new NotFoundError('Material no encontrado');
+    }
+
+    // Verificar si hay solicitudes usando este material
+    const requestsUsingMaterial = await queryOne(`
+      SELECT COUNT(*) as count FROM material_request_items WHERE material_id = ?
+    `, [materialId]);
+
+    if (requestsUsingMaterial.count > 0) {
+      throw new ConflictError(`No se puede eliminar el material porque está siendo usado en ${requestsUsingMaterial.count} solicitud(es)`);
+    }
+
+    await query('DELETE FROM materials WHERE id = ?', [materialId]);
+
+    await logActivity(
+      userId,
+      null,
+      'material_deleted',
+      `Material "${material.name_es}" eliminado por ${req.user.name}`,
+      req
+    );
+
+    res.json({
+      success: true,
+      message: 'Material eliminado exitosamente',
+      material_id: materialId
+    });
+
+  } catch (error) {
+    logError(error, req, 'Delete Material Route');
+
+    if (error instanceof NotFoundError) {
+      return res.status(404).json({
+        error: 'No encontrado',
+        message: error.message
+      });
+    }
+
+    if (error instanceof ConflictError) {
+      return res.status(409).json({
+        error: 'Conflicto',
+        message: error.message
+      });
+    }
+
+    res.status(500).json({
+      error: 'Error interno',
+      message: 'Error al eliminar material'
     });
   }
 });

@@ -415,9 +415,11 @@ router.post('/', authenticateToken, createUserValidation, handleValidationErrors
 router.put('/:id', authenticateToken, userIdValidation, updateUserValidation, handleValidationErrors, requireUserModifyPermission, async (req, res) => {
   try {
     const userId = parseInt(req.params.id);
-    const { name, email, role } = req.body;
+    const { name, email, role, phone } = req.body;
     const currentUserRole = req.userRole;
     const currentUserId = req.userId;
+
+    console.log('📝 [USERS] Actualizando usuario:', userId, 'con datos:', { name, email, role, phone });
     
     // Obtener usuario actual
     const existingUser = await queryOne(
@@ -458,7 +460,10 @@ router.put('/:id', authenticateToken, userIdValidation, updateUserValidation, ha
     if (name) updateData.name = name.trim();
     if (email) updateData.email = email.toLowerCase();
     if (role) updateData.role = role;
-    
+    if (phone !== undefined) updateData.phone = phone ? phone.trim() : null;
+
+    console.log('💾 [USERS] Datos a actualizar:', updateData);
+
     // Solo actualizar si hay cambios
     if (Object.keys(updateData).length === 0) {
       return res.json({

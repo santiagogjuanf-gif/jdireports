@@ -95,7 +95,20 @@ const translations = {
         'orderDetails': 'Detalles de la Orden',
         'viewBtn': 'Ver',
         'editBtn': 'Modificar',
-        'deleteBtn': 'Eliminar'
+        'deleteBtn': 'Eliminar',
+
+        // Workers Page
+        'workersManagement': 'Gestión de Trabajadores',
+        'totalWorkers': 'Total Trabajadores',
+        'activeWorkers': 'Activos',
+        'inactiveWorkers': 'Inactivos',
+        'searchPlaceholder': 'Buscar por nombre, email...',
+        'filterByRole': 'Filtrar por rol',
+        'filterByStatus': 'Filtrar por estado',
+        'workersList': 'Lista de Trabajadores',
+        'actions': 'Acciones',
+        'viewProfile': 'Ver perfil',
+        'noWorkersFound': 'No se encontraron trabajadores'
     },
 
     en: {
@@ -190,7 +203,20 @@ const translations = {
         'orderDetails': 'Order Details',
         'viewBtn': 'View',
         'editBtn': 'Edit',
-        'deleteBtn': 'Delete'
+        'deleteBtn': 'Delete',
+
+        // Workers Page
+        'workersManagement': 'Workers Management',
+        'totalWorkers': 'Total Workers',
+        'activeWorkers': 'Active',
+        'inactiveWorkers': 'Inactive',
+        'searchPlaceholder': 'Search by name, email...',
+        'filterByRole': 'Filter by role',
+        'filterByStatus': 'Filter by status',
+        'workersList': 'Workers List',
+        'actions': 'Actions',
+        'viewProfile': 'View profile',
+        'noWorkersFound': 'No workers found'
     },
 
     fr: {
@@ -285,7 +311,20 @@ const translations = {
         'orderDetails': 'Détails de la Commande',
         'viewBtn': 'Voir',
         'editBtn': 'Modifier',
-        'deleteBtn': 'Supprimer'
+        'deleteBtn': 'Supprimer',
+
+        // Workers Page
+        'workersManagement': 'Gestion des Travailleurs',
+        'totalWorkers': 'Total Travailleurs',
+        'activeWorkers': 'Actifs',
+        'inactiveWorkers': 'Inactifs',
+        'searchPlaceholder': 'Rechercher par nom, email...',
+        'filterByRole': 'Filtrer par rôle',
+        'filterByStatus': 'Filtrer par statut',
+        'workersList': 'Liste des Travailleurs',
+        'actions': 'Actions',
+        'viewProfile': 'Voir profil',
+        'noWorkersFound': 'Aucun travailleur trouvé'
     }
 };
 

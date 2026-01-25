@@ -240,7 +240,7 @@
             <div class="page-header slide-up">
                 <h1>
                     <i class="fas fa-users"></i>
-                    Gestión de Trabajadores
+                    <span data-i18n="workersManagement">Gestión de Trabajadores</span>
                 </h1>
                 <p>Administra los usuarios del sistema y sus permisos</p>
             </div>
@@ -253,7 +253,7 @@
                     </div>
                     <div class="stat-mini-content">
                         <h4 id="totalWorkers">0</h4>
-                        <p>Total Trabajadores</p>
+                        <p data-i18n="totalWorkers">Total Trabajadores</p>
                     </div>
                 </div>
 
@@ -263,7 +263,7 @@
                     </div>
                     <div class="stat-mini-content">
                         <h4 id="activeWorkers">0</h4>
-                        <p>Activos</p>
+                        <p data-i18n="activeWorkers">Activos</p>
                     </div>
                 </div>
 
@@ -273,7 +273,7 @@
                     </div>
                     <div class="stat-mini-content">
                         <h4 id="inactiveWorkers">0</h4>
-                        <p>Inactivos</p>
+                        <p data-i18n="inactiveWorkers">Inactivos</p>
                     </div>
                 </div>
 
@@ -292,26 +292,26 @@
             <div class="workers-filters slide-up" style="animation-delay: 0.2s;">
                 <div class="filter-group">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="searchWorkers" placeholder="Buscar por nombre, email...">
+                    <input type="text" id="searchWorkers" data-i18n="searchPlaceholder" placeholder="Buscar por nombre, email...">
                 </div>
 
                 <div class="filter-group" style="max-width: 200px;">
                     <i class="fas fa-filter"></i>
                     <select id="filterRole">
-                        <option value="">Todos los roles</option>
-                        <option value="admin">Administrador</option>
-                        <option value="jefe">Jefe</option>
-                        <option value="gerente">Gerente</option>
-                        <option value="trabajador">Trabajador</option>
+                        <option value="" data-i18n="filterByRole">Todos los roles</option>
+                        <option value="admin" data-i18n="admin">Administrador</option>
+                        <option value="jefe" data-i18n="jefe">Jefe</option>
+                        <option value="gerente" data-i18n="gerente">Gerente</option>
+                        <option value="trabajador" data-i18n="trabajador">Trabajador</option>
                     </select>
                 </div>
 
                 <div class="filter-group" style="max-width: 180px;">
                     <i class="fas fa-toggle-on"></i>
                     <select id="filterStatus">
-                        <option value="">Todos</option>
-                        <option value="1">Activos</option>
-                        <option value="0">Inactivos</option>
+                        <option value="" data-i18n="all">Todos</option>
+                        <option value="1" data-i18n="active">Activos</option>
+                        <option value="0" data-i18n="inactive">Inactivos</option>
                     </select>
                 </div>
             </div>
@@ -321,7 +321,7 @@
                 <div class="workers-table-header">
                     <h2>
                         <i class="fas fa-list"></i>
-                        Lista de Trabajadores
+                        <span data-i18n="workersList">Lista de Trabajadores</span>
                     </h2>
                     <div class="table-actions">
                         <button class="btn btn-secondary" onclick="window.location.reload()">
@@ -339,19 +339,19 @@
                     <table class="workers-table" id="workersTable">
                         <thead>
                             <tr>
-                                <th>Nombre</th>
-                                <th>Email</th>
-                                <th>Teléfono</th>
-                                <th>Rol</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
+                                <th data-i18n="name">Nombre</th>
+                                <th data-i18n="email">Email</th>
+                                <th data-i18n="phone">Teléfono</th>
+                                <th data-i18n="role">Rol</th>
+                                <th data-i18n="status">Estado</th>
+                                <th data-i18n="actions">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="workersTableBody">
                             <tr>
                                 <td colspan="6" class="empty-state">
                                     <i class="fas fa-spinner fa-spin"></i>
-                                    <p>Cargando trabajadores...</p>
+                                    <p data-i18n="loadingWorkers">Cargando trabajadores...</p>
                                 </td>
                             </tr>
                         </tbody>
@@ -361,6 +361,7 @@
         </div>
     </main>
 
+    <script src="scripts/i18n.js"></script>
     <script src="scripts/auth.js"></script>
     <script src="scripts/trabajadores.js"></script>
 </body>

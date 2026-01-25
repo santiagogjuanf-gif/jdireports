@@ -707,7 +707,8 @@ async function loadDashboardData() {
   await Promise.all([
     loadUserName(),
     loadStatistics(),
-    loadRecentOrders()
+    loadRecentOrders(),
+    loadNotifications()
     // loadWorkersTable() - Movido a página dedicada /trabajadores
   ]);
 
@@ -847,6 +848,56 @@ function createOrderCard(order) {
       </div>
     </div>
   `;
+}
+
+// Cargar notificaciones de solicitudes de materiales pendientes
+async function loadNotifications() {
+  try {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const token = localStorage.getItem('token');
+
+    if (!token) return;
+
+    console.log('🔔 [NOTIFICATIONS] Cargando notificaciones para rol:', user.role);
+
+    // Solo admin y jefe reciben notificaciones de solicitudes
+    if (!['admin', 'jefe'].includes(user.role)) {
+      console.log('👤 [NOTIFICATIONS] Usuario no es admin/jefe, no carga notificaciones');
+      return;
+    }
+
+    // Obtener solicitudes pendientes
+    const response = await fetch(`${API_BASE_URL}/materials/requests?status=pending`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (!response.ok) {
+      console.warn('⚠️ [NOTIFICATIONS] Error al cargar notificaciones');
+      return;
+    }
+
+    const data = await response.json();
+    const requests = data.requests || [];
+    const count = requests.length;
+
+    console.log(`📊 [NOTIFICATIONS] ${count} solicitudes pendientes`);
+
+    // Actualizar badge
+    const badge = document.getElementById('notificationBadge');
+    if (badge) {
+      if (count > 0) {
+        badge.textContent = count;
+        badge.style.display = 'flex';
+        console.log(`✅ [NOTIFICATIONS] Badge actualizado: ${count}`);
+      } else {
+        badge.style.display = 'none';
+        console.log('✅ [NOTIFICATIONS] Sin notificaciones pendientes');
+      }
+    }
+
+  } catch (error) {
+    console.error('❌ [NOTIFICATIONS] Error:', error);
+  }
 }
 
 // Cargar tabla de trabajadores

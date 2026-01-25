@@ -295,6 +295,15 @@ function showError(message) {
 // ================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('📄 [TRABAJADORES] Inicializando página...');
+
+    // Aplicar traducciones
+    if (typeof applyTranslations === 'function') {
+        applyTranslations();
+        console.log('🌍 [TRABAJADORES] Traducciones aplicadas');
+    }
+
+    // Cargar trabajadores
     loadWorkers();
 });
 

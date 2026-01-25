@@ -302,14 +302,47 @@ function initSearch() {
 
 function toggleTheme() {
   document.body.classList.toggle('dark-theme');
-  localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+  const theme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+
+  // Guardar en ambos lugares para compatibilidad
+  localStorage.setItem('theme', theme);
+
+  // Actualizar appSettings
+  const settings = JSON.parse(localStorage.getItem('appSettings') || '{}');
+  settings.theme = theme;
+  localStorage.setItem('appSettings', JSON.stringify(settings));
 }
 
-// Cargar tema guardado
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme === 'dark') {
-  document.body.classList.add('dark-theme');
+// Función para aplicar tema globalmente
+function applyGlobalTheme() {
+  console.log('🎨 [THEME] Aplicando tema global...');
+
+  // Primero intentar cargar desde appSettings
+  const appSettings = JSON.parse(localStorage.getItem('appSettings') || '{}');
+  let theme = appSettings.theme || localStorage.getItem('theme') || 'light';
+
+  console.log('🎨 [THEME] Tema seleccionado:', theme);
+
+  if (theme === 'dark') {
+    document.body.classList.add('dark-theme');
+    console.log('🌙 [THEME] Tema oscuro activado');
+  } else if (theme === 'light') {
+    document.body.classList.remove('dark-theme');
+    console.log('☀️ [THEME] Tema claro activado');
+  } else if (theme === 'auto') {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (prefersDark) {
+      document.body.classList.add('dark-theme');
+      console.log('🌙 [THEME] Tema automático: oscuro');
+    } else {
+      document.body.classList.remove('dark-theme');
+      console.log('☀️ [THEME] Tema automático: claro');
+    }
+  }
 }
+
+// Aplicar tema al cargar la página
+applyGlobalTheme();
 
 // ================================================
 // UTILITY FUNCTIONS
@@ -880,10 +913,12 @@ function aplicarPermisosDeRol() {
 
     // Elementos que solo pueden ver admin, jefe, gerente
     const elementosSupervision = [
-      'nuevo-trabajador-link',  // Botón "Nuevo Trabajador"
-      'generar-reporte-link',   // Botón "Generar Reporte"
-      'nueva-orden-link',       // Botón "Nueva Orden" (hero)
-      'card-nueva-orden'        // Tarjeta "Nueva Orden" (actions)
+      'nuevo-trabajador-link',      // Botón "Nuevo Trabajador"
+      'generar-reporte-link',       // Botón "Generar Reporte"
+      'nueva-orden-link',           // Botón "Nueva Orden" (hero)
+      'card-nueva-orden',           // Tarjeta "Nueva Orden" (actions)
+      'header-trabajadores-link',   // Link "Trabajadores" en header
+      'header-reportes-link'        // Link "Reportes" en header
     ];
 
     // Elementos que solo pueden ver admin

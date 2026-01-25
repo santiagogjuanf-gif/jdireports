@@ -1,6 +1,6 @@
 // ================================================
 // RUTAS DE REPORTES DIARIOS - JD CLEANING SERVICES
-// (Para órdenes de tipo post-construcción)
+// (Para ï¿½rdenes de tipo post-construcciï¿½n)
 // ================================================
 
 const express = require('express');
@@ -37,8 +37,8 @@ const handleValidationErrors = (req, res, next) => {
     }));
 
     return res.status(400).json({
-      error: 'Errores de validación',
-      message: 'Los datos proporcionados no son válidos',
+      error: 'Errores de validaciï¿½n',
+      message: 'Los datos proporcionados no son vï¿½lidos',
       details: errorMessages
     });
   }
@@ -48,11 +48,11 @@ const handleValidationErrors = (req, res, next) => {
 const createDailyReportValidation = [
   body('report_date')
     .isISO8601()
-    .withMessage('Fecha del reporte debe ser válida'),
+    .withMessage('Fecha del reporte debe ser vï¿½lida'),
   body('description')
     .trim()
     .isLength({ min: 10, max: 2000 })
-    .withMessage('La descripción debe tener entre 10 y 2000 caracteres'),
+    .withMessage('La descripciï¿½n debe tener entre 10 y 2000 caracteres'),
   body('signature_worker')
     .optional()
     .isString()
@@ -68,7 +68,7 @@ router.post('/orders/:orderId/reports', authenticateToken, requireRole(['trabaja
     const workerId = req.userId;
     const { report_date, description, signature_worker } = req.body;
 
-    // Verificar que la orden existe y es de tipo post-construcción
+    // Verificar que la orden existe y es de tipo post-construcciï¿½n
     const order = await queryOne(`
       SELECT id, order_number, order_type, status
       FROM orders
@@ -80,20 +80,20 @@ router.post('/orders/:orderId/reports', authenticateToken, requireRole(['trabaja
     }
 
     if (order.order_type !== 'post_construction') {
-      throw new ConflictError('Los reportes diarios solo están disponibles para órdenes de post-construcción');
+      throw new ConflictError('Los reportes diarios solo estï¿½n disponibles para ï¿½rdenes de post-construcciï¿½n');
     }
 
-    // Verificar que el trabajador está asignado a esta orden
+    // Verificar que el trabajador estï¿½ asignado a esta orden
     const isAssigned = await queryOne(`
       SELECT id FROM order_assignments
       WHERE order_id = ? AND worker_id = ?
     `, [orderId, workerId]);
 
     if (!isAssigned) {
-      throw new ForbiddenError('No estás asignado a esta orden');
+      throw new ForbiddenError('No estï¿½s asignado a esta orden');
     }
 
-    // Verificar que la orden esté en progreso
+    // Verificar que la orden estï¿½ en progreso
     if (order.status !== 'in_progress') {
       throw new ConflictError('La orden debe estar en progreso para crear reportes diarios');
     }
@@ -189,7 +189,7 @@ router.get('/orders/:orderId/reports', authenticateToken, async (req, res) => {
     }
 
     if (order.order_type !== 'post_construction') {
-      throw new ConflictError('Los reportes diarios solo están disponibles para órdenes de post-construcción');
+      throw new ConflictError('Los reportes diarios solo estï¿½n disponibles para ï¿½rdenes de post-construcciï¿½n');
     }
 
     // Verificar permisos
@@ -332,12 +332,12 @@ router.get('/reports/:reportId', authenticateToken, async (req, res) => {
     }
 
     // Obtener fotos asociadas al reporte
+    console.log('ðŸ“¸ [DAILY-REPORTS] Obteniendo fotos para reporte:', reportId);
     const photosResult = await query(`
       SELECT
         op.id,
-        op.photo_url,
-        op.thumbnail_url,
-        op.caption,
+        op.photo_path,
+        op.photo_type,
         op.uploaded_at,
         uploader.name as uploaded_by_name
       FROM order_photos op
@@ -345,6 +345,7 @@ router.get('/reports/:reportId', authenticateToken, async (req, res) => {
       WHERE op.daily_report_id = ?
       ORDER BY op.uploaded_at ASC
     `, [reportId]);
+    console.log('ðŸ“¸ [DAILY-REPORTS] Fotos encontradas:', photosResult.rows?.length || 0);
 
     res.json({
       success: true,
@@ -386,7 +387,7 @@ router.put('/reports/:reportId', authenticateToken, requireRole(['trabajador']),
     .optional()
     .trim()
     .isLength({ min: 10, max: 2000 })
-    .withMessage('La descripción debe tener entre 10 y 2000 caracteres'),
+    .withMessage('La descripciï¿½n debe tener entre 10 y 2000 caracteres'),
   body('signature_worker')
     .optional()
     .isString()
@@ -409,24 +410,24 @@ router.put('/reports/:reportId', authenticateToken, requireRole(['trabajador']),
       throw new NotFoundError('Reporte diario no encontrado');
     }
 
-    // Verificar que el trabajador es quien creó el reporte
+    // Verificar que el trabajador es quien creï¿½ el reporte
     if (report.created_by !== workerId) {
-      throw new ForbiddenError('Solo puedes editar reportes que tú creaste');
+      throw new ForbiddenError('Solo puedes editar reportes que tï¿½ creaste');
     }
 
-    // No se puede editar si la orden está completada o cancelada
+    // No se puede editar si la orden estï¿½ completada o cancelada
     if (report.status === 'completed' || report.status === 'cancelled') {
       throw new ConflictError('No se puede editar un reporte de una orden completada o cancelada');
     }
 
-    // Construir objeto de actualización
+    // Construir objeto de actualizaciï¿½n
     const updates = {};
     if (description) updates.description = description.trim();
     if (signature_worker !== undefined) updates.signature_worker = signature_worker || null;
 
     if (Object.keys(updates).length === 0) {
       return res.status(400).json({
-        error: 'Datos inválidos',
+        error: 'Datos invï¿½lidos',
         message: 'Debes proporcionar al menos un campo para actualizar'
       });
     }
@@ -507,7 +508,7 @@ router.delete('/reports/:reportId', authenticateToken, requireRole(['admin', 'je
       throw new NotFoundError('Reporte diario no encontrado');
     }
 
-    // No se puede eliminar si la orden está completada
+    // No se puede eliminar si la orden estï¿½ completada
     if (report.status === 'completed') {
       throw new ConflictError('No se puede eliminar un reporte de una orden completada');
     }

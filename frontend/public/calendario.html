@@ -420,32 +420,32 @@
             <div class="calendar-container">
                 <div class="calendar-header">
                     <button class="btn-back" onclick="window.location.href='/'">
-                        <i class="fas fa-arrow-left"></i> Volver
+                        <i class="fas fa-arrow-left"></i> <span data-i18n="back">Volver</span>
                     </button>
                     <h1>
                         <i class="fas fa-calendar-alt"></i>
-                        Calendario de Órdenes
+                        <span data-i18n="calendarTitle">Calendario de Órdenes</span>
                     </h1>
                 </div>
 
                 <div class="filters">
                     <div class="filter-group">
-                        <label>Estado</label>
+                        <label data-i18n="filterStatus">Estado</label>
                         <select id="filterStatus">
-                            <option value="">Todos</option>
-                            <option value="pending">Pendiente</option>
-                            <option value="assigned">Asignada</option>
-                            <option value="in_progress">En Progreso</option>
-                            <option value="completed">Completada</option>
-                            <option value="cancelled">Cancelada</option>
+                            <option value="" data-i18n="all">Todos</option>
+                            <option value="pending" data-i18n="pending">Pendiente</option>
+                            <option value="assigned" data-i18n="assigned">Asignada</option>
+                            <option value="in_progress" data-i18n="in_progress">En Progreso</option>
+                            <option value="completed" data-i18n="completed">Completada</option>
+                            <option value="cancelled" data-i18n="cancelled">Cancelada</option>
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label>Desde</label>
+                        <label data-i18n="filterFrom">Desde</label>
                         <input type="date" id="filterStartDate">
                     </div>
                     <div class="filter-group">
-                        <label>Hasta</label>
+                        <label data-i18n="filterTo">Hasta</label>
                         <input type="date" id="filterEndDate">
                     </div>
                 </div>
@@ -453,7 +453,7 @@
                 <div id="ordersContainer">
                     <div class="loading">
                         <i class="fas fa-spinner"></i>
-                        <p>Cargando órdenes...</p>
+                        <p data-i18n="loadingOrders">Cargando órdenes...</p>
                     </div>
                 </div>
             </div>
@@ -464,7 +464,7 @@
     <div id="detailsModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2><i class="fas fa-file-alt"></i> Detalles del Reporte</h2>
+                <h2><i class="fas fa-file-alt"></i> <span data-i18n="orderDetails">Detalles del Reporte</span></h2>
                 <button class="modal-close" onclick="closeModal()">
                     <i class="fas fa-times"></i>
                 </button>
@@ -475,6 +475,7 @@
         </div>
     </div>
 
+    <script src="scripts/i18n.js"></script>
     <script src="scripts/auth.js"></script>
     <script src="scripts/calendario.js"></script>
 </body>

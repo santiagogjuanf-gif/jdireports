@@ -41,7 +41,8 @@ async function loadWorkers() {
         const data = await response.json();
         console.log('📦 [TRABAJADORES] Datos recibidos:', data);
 
-        allWorkers = data.users || [];
+        // ARREGLADO: Backend devuelve data.data.users, no data.users
+        allWorkers = data.data?.users || data.users || [];
         filteredWorkers = [...allWorkers];
 
         console.log(`✅ [TRABAJADORES] ${allWorkers.length} trabajadores cargados`);

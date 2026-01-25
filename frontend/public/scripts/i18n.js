@@ -77,7 +77,25 @@ const translations = {
         'loading': 'Cargando...',
         'error': 'Error',
         'success': 'Éxito',
-        'loadingOrders': 'Cargando órdenes...'
+        'loadingOrders': 'Cargando órdenes...',
+
+        // Calendar Page
+        'calendarTitle': 'Calendario de Órdenes',
+        'back': 'Volver',
+        'filterStatus': 'Estado',
+        'filterFrom': 'Desde',
+        'filterTo': 'Hasta',
+        'all': 'Todos',
+        'pending': 'Pendiente',
+        'assigned': 'Asignada',
+        'in_progress': 'En Progreso',
+        'completed': 'Completada',
+        'cancelled': 'Cancelada',
+        'reportDetails': 'Detalles del Reporte',
+        'orderDetails': 'Detalles de la Orden',
+        'viewBtn': 'Ver',
+        'editBtn': 'Modificar',
+        'deleteBtn': 'Eliminar'
     },
 
     en: {
@@ -154,7 +172,25 @@ const translations = {
         'loading': 'Loading...',
         'error': 'Error',
         'success': 'Success',
-        'loadingOrders': 'Loading orders...'
+        'loadingOrders': 'Loading orders...',
+
+        // Calendar Page
+        'calendarTitle': 'Orders Calendar',
+        'back': 'Back',
+        'filterStatus': 'Status',
+        'filterFrom': 'From',
+        'filterTo': 'To',
+        'all': 'All',
+        'pending': 'Pending',
+        'assigned': 'Assigned',
+        'in_progress': 'In Progress',
+        'completed': 'Completed',
+        'cancelled': 'Cancelled',
+        'reportDetails': 'Report Details',
+        'orderDetails': 'Order Details',
+        'viewBtn': 'View',
+        'editBtn': 'Edit',
+        'deleteBtn': 'Delete'
     },
 
     fr: {
@@ -231,7 +267,25 @@ const translations = {
         'loading': 'Chargement...',
         'error': 'Erreur',
         'success': 'Succès',
-        'loadingOrders': 'Chargement des commandes...'
+        'loadingOrders': 'Chargement des commandes...',
+
+        // Calendar Page
+        'calendarTitle': 'Calendrier des Commandes',
+        'back': 'Retour',
+        'filterStatus': 'Statut',
+        'filterFrom': 'De',
+        'filterTo': 'À',
+        'all': 'Tous',
+        'pending': 'En Attente',
+        'assigned': 'Assigné',
+        'in_progress': 'En Cours',
+        'completed': 'Terminé',
+        'cancelled': 'Annulé',
+        'reportDetails': 'Détails du Rapport',
+        'orderDetails': 'Détails de la Commande',
+        'viewBtn': 'Voir',
+        'editBtn': 'Modifier',
+        'deleteBtn': 'Supprimer'
     }
 };
 

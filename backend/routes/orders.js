@@ -456,20 +456,20 @@ router.get('/:id', authenticateToken, async (req, res) => {
     }
 
     // Obtener fotos
+    console.log('📸 [ORDERS] Obteniendo fotos para orden:', orderId);
     const photosResult = await query(`
       SELECT
         op.id,
-        op.photo_url,
-        op.thumbnail_url,
-        op.caption,
+        op.photo_path,
+        op.photo_type,
         op.uploaded_at,
-        op.daily_report_id,
         uploader.name as uploaded_by_name
       FROM order_photos op
       JOIN users uploader ON op.uploaded_by = uploader.id
       WHERE op.order_id = ?
       ORDER BY op.uploaded_at DESC
     `, [orderId]);
+    console.log('📸 [ORDERS] Fotos encontradas:', photosResult.rows?.length || 0);
 
     res.json({
       success: true,

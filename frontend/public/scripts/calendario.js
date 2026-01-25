@@ -120,13 +120,8 @@ function createOrderCard(order) {
     const div = document.createElement('div');
     div.className = `order-card ${order.status}`;
 
-    const statusText = {
-        'pending': 'Pendiente',
-        'assigned': 'Asignada',
-        'in_progress': 'En Progreso',
-        'completed': 'Completada',
-        'cancelled': 'Cancelada'
-    };
+    // Usar traducciones para los estados
+    const statusText = t(order.status);
 
     const time = order.scheduled_date.split(' ')[1] || '';
     const timeFormatted = time ? time.substring(0, 5) : '';
@@ -137,7 +132,7 @@ function createOrderCard(order) {
                 <i class="fas fa-hashtag" style="font-size: 0.9rem; opacity: 0.6;"></i>
                 ID: ${order.id} - #${order.order_number}
             </div>
-            <div class="order-status status-${order.status}">${statusText[order.status] || order.status}</div>
+            <div class="order-status status-${order.status}">${statusText}</div>
         </div>
         <div class="order-info">
             <div class="info-item">
@@ -168,15 +163,15 @@ function createOrderCard(order) {
         <div class="order-actions">
             <button class="btn-action btn-view" onclick="viewOrder(${order.id}); event.stopPropagation();">
                 <i class="fas fa-eye"></i>
-                Ver Detalles
+                ${t('viewBtn')}
             </button>
             <button class="btn-action btn-edit" onclick="editOrder(${order.id}); event.stopPropagation();">
                 <i class="fas fa-edit"></i>
-                Modificar
+                ${t('editBtn')}
             </button>
             <button class="btn-action btn-delete" onclick="deleteOrder(${order.id}, '${order.order_number}'); event.stopPropagation();">
                 <i class="fas fa-trash"></i>
-                Eliminar
+                ${t('deleteBtn')}
             </button>
         </div>
     `;
@@ -226,13 +221,8 @@ async function viewOrder(orderId) {
         const data = await response.json();
         const order = data.order;
 
-        const statusText = {
-            'pending': 'Pendiente',
-            'assigned': 'Asignada',
-            'in_progress': 'En Progreso',
-            'completed': 'Completada',
-            'cancelled': 'Cancelada'
-        };
+        // Usar traducciones para el estado
+        const statusText = t(order.status);
 
         const modalBody = document.getElementById('modalBody');
         modalBody.innerHTML = `
@@ -290,7 +280,7 @@ async function viewOrder(orderId) {
                     Estado
                 </div>
                 <div class="detail-value">
-                    <span class="order-status status-${order.status}">${statusText[order.status]}</span>
+                    <span class="order-status status-${order.status}">${statusText}</span>
                 </div>
             </div>
 
@@ -474,6 +464,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!token) {
         window.location.href = '/login';
         return;
+    }
+
+    // Aplicar traducciones
+    console.log('📄 [CALENDARIO] Aplicando traducciones...');
+    if (typeof applyTranslations === 'function') {
+        applyTranslations();
     }
 
     // Establecer fecha de inicio (hoy)

@@ -35,10 +35,12 @@ async function cargarTrabajadores() {
             return;
         }
 
-        console.log(`👤 [NUEVA-ORDEN] ${data.users?.length || 0} trabajadores encontrados`);
+        // ARREGLADO: Backend devuelve data.data.users, no data.users
+        const workers = data.data?.users || data.users || [];
+        console.log(`👤 [NUEVA-ORDEN] ${workers.length} trabajadores encontrados`);
 
-        if (data.users && data.users.length > 0) {
-            data.users.forEach(worker => {
+        if (workers && workers.length > 0) {
+            workers.forEach(worker => {
                 const option = document.createElement('option');
                 option.value = worker.id;
                 option.textContent = `${worker.name} ${worker.email ? '(' + worker.email + ')' : ''}`;

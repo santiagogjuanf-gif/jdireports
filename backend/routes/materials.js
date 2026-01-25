@@ -458,10 +458,9 @@ router.post('/requests', authenticateToken, createRequestValidation, handleValid
     for (const item of materials) {
       console.log(`  → Material ID: ${item.material_id}, Cantidad: ${item.quantity}`);
       await insert('material_request_items', {
-        material_request_id: requestId,
+        request_id: requestId,  // ARREGLADO: campo correcto en BD
         material_id: item.material_id,
-        quantity_requested: item.quantity,
-        quantity_approved: null
+        quantity: item.quantity  // ARREGLADO: campo correcto en BD
       });
     }
 

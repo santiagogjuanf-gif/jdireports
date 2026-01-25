@@ -24,7 +24,7 @@ const {
 const router = express.Router();
 
 // ================================================
-// CONFIGURACIÓN DE MULTER
+// CONFIGURACIï¿½N DE MULTER
 // ================================================
 
 const storage = multer.memoryStorage();
@@ -38,12 +38,12 @@ const upload = multer({
     if (validateImageFormat(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('Formato de imagen no válido. Solo se permiten JPG, PNG y WEBP'));
+      cb(new Error('Formato de imagen no vï¿½lido. Solo se permiten JPG, PNG y WEBP'));
     }
   }
 });
 
-// Inicializar directorios al cargar el módulo
+// Inicializar directorios al cargar el mï¿½dulo
 initializeDirectories().catch(console.error);
 
 // ================================================
@@ -56,7 +56,7 @@ router.post('/orders/:orderId/photos', authenticateToken, requireRole(['trabajad
     const { caption, daily_report_id } = req.body;
 
     if (!req.file) {
-      throw new ValidationError('No se proporcionó ninguna imagen');
+      throw new ValidationError('No se proporcionï¿½ ninguna imagen');
     }
 
     // Verificar que la orden existe
@@ -69,22 +69,22 @@ router.post('/orders/:orderId/photos', authenticateToken, requireRole(['trabajad
       throw new NotFoundError('Orden no encontrada');
     }
 
-    // Verificar que el trabajador está asignado
+    // Verificar que el trabajador estï¿½ asignado
     const isAssigned = await queryOne(`
       SELECT id FROM order_assignments
       WHERE order_id = ? AND worker_id = ?
     `, [orderId, workerId]);
 
     if (!isAssigned) {
-      throw new ForbiddenError('No estás asignado a esta orden');
+      throw new ForbiddenError('No estï¿½s asignado a esta orden');
     }
 
-    // Verificar que la orden esté en progreso
+    // Verificar que la orden estï¿½ en progreso
     if (order.status !== 'in_progress') {
-      throw new ConflictError('Solo se pueden subir fotos a órdenes en progreso');
+      throw new ConflictError('Solo se pueden subir fotos a ï¿½rdenes en progreso');
     }
 
-    // Verificar límite de fotos según tipo de orden
+    // Verificar lï¿½mite de fotos segï¿½n tipo de orden
     const photoCount = await queryOne(`
       SELECT COUNT(*) as count FROM order_photos
       WHERE order_id = ? ${daily_report_id ? 'AND daily_report_id = ?' : ''}
@@ -93,12 +93,12 @@ router.post('/orders/:orderId/photos', authenticateToken, requireRole(['trabajad
     const maxPhotos = order.order_type === 'regular' ? 15 : 50;
 
     if (photoCount.count >= maxPhotos) {
-      throw new ConflictError(`Se ha alcanzado el límite de ${maxPhotos} fotos para este ${order.order_type === 'regular' ? 'orden' : 'reporte diario'}`);
+      throw new ConflictError(`Se ha alcanzado el lï¿½mite de ${maxPhotos} fotos para este ${order.order_type === 'regular' ? 'orden' : 'reporte diario'}`);
     }
 
-    // Validar tamaño
+    // Validar tamaï¿½o
     if (!validateImageSize(req.file.size)) {
-      throw new ValidationError('La imagen excede el tamaño máximo permitido de 10MB');
+      throw new ValidationError('La imagen excede el tamaï¿½o mï¿½ximo permitido de 10MB');
     }
 
     // Procesar y guardar la imagen
@@ -111,16 +111,17 @@ router.post('/orders/:orderId/photos', authenticateToken, requireRole(['trabajad
     );
 
     // Guardar en base de datos
+    console.log('ðŸ“¸ [PHOTOS] Guardando foto en BD...');
     const photoData = {
       order_id: orderId,
-      daily_report_id: daily_report_id || null,
-      photo_url: photoUrl,
-      thumbnail_url: thumbnailUrl,
-      caption: caption?.trim() || null,
+      photo_path: photoUrl,  // ARREGLADO: campo correcto en BD
+      photo_type: 'during',  // Por defecto durante el servicio
       uploaded_by: workerId
     };
+    console.log('ðŸ“¸ [PHOTOS] Datos de foto:', photoData);
 
     const photoId = await insert('order_photos', photoData);
+    console.log('âœ… [PHOTOS] Foto guardada con ID:', photoId);
 
     // Registrar actividad
     await logActivity(
@@ -146,7 +147,7 @@ router.post('/orders/:orderId/photos', authenticateToken, requireRole(['trabajad
 
     if (error instanceof ValidationError) {
       return res.status(400).json({
-        error: 'Error de validación',
+        error: 'Error de validaciï¿½n',
         message: error.message
       });
     }
@@ -224,14 +225,13 @@ router.get('/orders/:orderId/photos', authenticateToken, async (req, res) => {
     }
 
     // Construir query
+    console.log('ðŸ“¸ [PHOTOS] Obteniendo fotos para orden:', orderId);
     let sql = `
       SELECT
         op.id,
-        op.photo_url,
-        op.thumbnail_url,
-        op.caption,
+        op.photo_path,
+        op.photo_type,
         op.uploaded_at,
-        op.daily_report_id,
         uploader.name as uploaded_by_name
       FROM order_photos op
       JOIN users uploader ON op.uploaded_by = uploader.id
@@ -381,14 +381,14 @@ router.put('/photos/:photoId/caption', authenticateToken, requireRole(['trabajad
       throw new NotFoundError('Foto no encontrada');
     }
 
-    // Solo el que subió la foto puede cambiar el caption
+    // Solo el que subiï¿½ la foto puede cambiar el caption
     if (photo.uploaded_by !== workerId) {
-      throw new ForbiddenError('Solo puedes editar fotos que tú subiste');
+      throw new ForbiddenError('Solo puedes editar fotos que tï¿½ subiste');
     }
 
-    // No se puede editar si la orden está completada
+    // No se puede editar si la orden estï¿½ completada
     if (photo.status === 'completed' || photo.status === 'cancelled') {
-      throw new ConflictError('No se puede editar fotos de órdenes completadas o canceladas');
+      throw new ConflictError('No se puede editar fotos de ï¿½rdenes completadas o canceladas');
     }
 
     await query(
@@ -461,20 +461,20 @@ router.delete('/photos/:photoId', authenticateToken, async (req, res) => {
       throw new NotFoundError('Foto no encontrada');
     }
 
-    // Solo admin, jefe o el que subió la foto pueden eliminar
+    // Solo admin, jefe o el que subiï¿½ la foto pueden eliminar
     if (!['admin', 'jefe'].includes(userRole) && photo.uploaded_by !== userId) {
       throw new ForbiddenError('No tienes permiso para eliminar esta foto');
     }
 
-    // No se puede eliminar si la orden está completada
+    // No se puede eliminar si la orden estï¿½ completada
     if (photo.status === 'completed') {
-      throw new ConflictError('No se pueden eliminar fotos de órdenes completadas');
+      throw new ConflictError('No se pueden eliminar fotos de ï¿½rdenes completadas');
     }
 
     // Extraer nombre de archivo de la URL
-    const filename = photo.photo_url.split('/').pop();
+    const filename = photo.photo_path.split('/').pop();
 
-    // Eliminar archivos físicos
+    // Eliminar archivos fï¿½sicos
     await deleteImage(filename);
 
     // Eliminar de base de datos

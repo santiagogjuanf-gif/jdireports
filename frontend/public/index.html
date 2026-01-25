@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JDI Cleaning Services - Sistema de Gestión</title>
+    <!-- Cargar tema ANTES de los estilos para evitar flash -->
+    <script src="scripts/theme.js"></script>
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/animations.css">
     <link rel="stylesheet" href="styles/logo.css">
@@ -40,7 +42,7 @@
                         <i class="fas fa-clipboard-list"></i>
                         <span>Órdenes</span>
                     </a>
-                    <a href="/trabajadores" class="nav-link">
+                    <a href="/trabajadores" class="nav-link" id="header-trabajadores-link">
                         <i class="fas fa-users"></i>
                         <span>Trabajadores</span>
                     </a>
@@ -48,7 +50,7 @@
                         <i class="fas fa-box"></i>
                         <span>Materiales</span>
                     </a>
-                    <a href="/generar-reporte" class="nav-link">
+                    <a href="/generar-reporte" class="nav-link" id="header-reportes-link">
                         <i class="fas fa-chart-bar"></i>
                         <span>Reportes</span>
                     </a>

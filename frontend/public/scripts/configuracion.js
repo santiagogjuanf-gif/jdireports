@@ -137,7 +137,12 @@ function saveSettings() {
     // También guardar idioma en la clave que usa el sistema
     localStorage.setItem('language', settings.language);
 
+    // Guardar tema para compatibilidad
+    localStorage.setItem('theme', settings.theme);
+
     showNotification('Configuración guardada exitosamente', 'success');
+
+    console.log('💾 [CONFIGURACION] Configuración guardada:', settings);
 
     // Si cambió el idioma, recargar la página después de 1.5 segundos
     const currentLang = localStorage.getItem('language');
